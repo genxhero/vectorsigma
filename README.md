@@ -1,11 +1,9 @@
 # Hedron Attack
 ## Background and Overview
 
-
-
 ### Motivation for project
 
-To gain a deeper understanding of Javascript and create a product which can be proudly presented to recruiters.  This game will showcase my skill with javascript as well as css and React.
+To gain a deeper understanding of Javascript and create a product which can be proudly presented to recruiters.  This game will showcase both my coding and creative abilities.
 
 ### High level overview
 
@@ -13,22 +11,25 @@ Hedron Attack is an online arcade-style game starring martial artist Kam Zelfari
 
 
 ## Functionality and MVP Features
-    * Blocks and Ki Orbs will fall from the sky at increasing speed and frequency
-    * When an orb is caught, a counter will go up. 
-    * When enough orbs are collected, the player moves on to the next level.
-    * When a block collides with Kam he loses hit points.
-    * Should Kam sustain enough damage, he will die and the game will end.
+*  Blocks and Ki Orbs will fall from the sky at increasing speed and frequency
+*  When an orb is caught, a counter will go up. 
+*  When enough orbs are collected, the player moves on to the next level.
+*  When a block collides with Kam he loses hit points.
+*  Should Kam sustain enough damage, he will die and the game will end.
 ## Architecture and Technologies
-    * Technology 1
-        * Description
-        * Justification
-    * React
-        * The game play area will be a series of divs upon which the canvas objects will load.  
-        * 
+* Canvas
+    *  My primary method for rendering graphics
+* React
+     * The game play area will be a series of divs upon which the canvas objects will load.  
+     * A React component is needed to store the number of orbs, lives, and levels in state
     
 ## Implementation Timeline
 ### Most important category
-*  Monday:
+
+The most important thing is to the the game to work.  
+
+### Daily breakdown
+*  Monday:  Finish proposal, research 
 *  Tuesday:
 *  Wednesday:
 *  Thursday:
@@ -36,10 +37,3 @@ Hedron Attack is an online arcade-style game starring martial artist Kam Zelfari
 *  Saturday:
 *  Sunday: Deploy to Heroku
 
-###Daily breakdown
-    * Aim to be done by Friday
-
-#  Ideas
-*  Spanify and other dev tools
-*  Dodge blocks, catch power orbs
-*  
