@@ -1,9 +1,11 @@
+const GameSprite = require('./game_sprite');
 
-
-class HeroSprite {
-    constructor(){
-        this.image = "https://i.imgur.com/FFUUbTi.png";
-        this.hp = 100;
+class HeroSprite extends GameSprite {
+    constructor(options){
+        super(options);
+        const image = new Image();
+        image.src = "https://i.imgur.com/p25KSOI.png";
+        this.image = image;
     }
 
     
