@@ -21,7 +21,7 @@ Hedron Attack is an online arcade-style game starring martial artist Kam Zelfari
     *  My primary method for rendering graphics
 * React
      * The game play area will be a series of divs upon which the canvas objects will load.  
-     * A React component is needed to store the number of orbs, lives, and levels in state
+     * A React component is needed to store the number of orbs, lives, and levels in state.  
     
 ## Implementation Timeline
 ### Most important category
@@ -29,11 +29,11 @@ Hedron Attack is an online arcade-style game starring martial artist Kam Zelfari
 The most important thing is to the the game to work.  
 
 ### Daily breakdown
-*  Monday:  Finish proposal, research 
-*  Tuesday:
-*  Wednesday:
-*  Thursday:
-*  Friday:
+*  Monday:  Finish proposal, research and experiment
+*  Tuesday: Get Kam moving left and right on the screen
+*  Wednesday:  Get blocks and orbs falling
+*  Thursday: Collision detection
+*  Friday: Collision detection
 *  Saturday:
 *  Sunday: Deploy to Heroku
 

@@ -1,0 +1,19 @@
+#canvas {
+ box-shadow: 3px 2px 2px;
+ border: 2px solid black;
+}
+body {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    background-image: url("https://i.pinimg.com/originals/b5/f4/76/b5f476003b95683ed591c73c2292319a.png");
+    background-repeat: repeat-x;
+}
+/* 
+.game-board-main{
+  width: 800px;
+  height: 500px;
+  display: flex;
+  flex-direction: column;
+} */
+
