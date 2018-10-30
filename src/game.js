@@ -6,8 +6,13 @@ class Game {
     constructor(ctx){
         this.blocks = [];
         this.kiOrbs = [];
-        // this.heroSprite = undefined;
         this.ctx = ctx;
+        this.drawField();
+        this.grassLoaded = false;
+        this.skyLoaded = false;
+        this.pillarsLoaded=false;
+
+        requestAnimationFrame(this.drawFrame.bind(this));
     }
 
     addHero(){
@@ -16,7 +21,7 @@ class Game {
         posX: 350,
         posY: 300
       });
-    //   this.heroSprite = hero;
+      this.hero = hero;
       hero.draw(this.ctx);
 
     }
@@ -31,26 +36,42 @@ class Game {
     }
 
     grassLoad(){
-        const grass = new Image();
-        grass.src = 'https://cmkt-image-prd.global.ssl.fastly.net/0.1.0/ps/2824633/300/200/m1/fpnw/wm0/1601.m10.i311.n029.s.c10.164511620-seamles-.jpg?1497007612&s=843a14180b1390bf4585dd7e668e1683';
+
+        this.grass = new Image();
+        this.grass.src = 'https://cmkt-image-prd.global.ssl.fastly.net/0.1.0/ps/2824633/300/200/m1/fpnw/wm0/1601.m10.i311.n029.s.c10.164511620-seamles-.jpg?1497007612&s=843a14180b1390bf4585dd7e668e1683';
         const grassLoad = () => {
             console.log("LINE 32: We are in the grass load function");
-            let pattern = this.ctx.createPattern(grass, 'repeat');
+            let pattern = this.ctx.createPattern(this.grass, 'repeat');
             this.ctx.fillStyle = pattern;
             this.ctx.fillRect(0, 400, 800, 100);
         };
-        grass.onload = function () { grassLoad() };
+        this.grass.onload = function () { grassLoad() };
      }
 
     skyLoad(){
-        const sky = new Image();
-        sky.src = 'https://i.imgur.com/MbBpcOx.png';
+        this.sky = new Image();
+        this.sky.src = 'https://i.imgur.com/MbBpcOx.png';
         const skyLoad = () => {
-        this.ctx.drawImage(sky, 0, -50);
+        this.ctx.drawImage(this.sky, 0, -50);
         };
 
-        sky.onload = function () { skyLoad() };
+        this.sky.onload = function () { skyLoad() };
     }
+
+    loadPillars(){
+        this.leftPillar= new Image();
+        this.leftPillar.src = "https://i.imgur.com/UibkSXB.png";
+        this.rightPillar = new Image();
+        this.rightPillar.src = "https://i.imgur.com/UibkSXB.png";
+        const loadPillars = () => {
+            this.ctx.drawImage(this.leftPillar, 0, 0);
+            this.ctx.drawImage(this.rightPillar, 750, 0)
+        };
+        this.rightPillar.onload = function () {loadPillars ();}
+        this.leftPillar.onload = function () {loadPillars() };
+    }
+
+    
 
     dummyBlocks() {
         for (let squares = 0; squares < 5; squares++) {
@@ -64,35 +85,21 @@ class Game {
    drawField(){
         this.grassLoad();
         this.skyLoad();
+        this.loadPillars();
         this.dummyBlocks();
         this.addHero();
-    //    const grass = new Image();
-    //    grass.src = 'https://cmkt-image-prd.global.ssl.fastly.net/0.1.0/ps/2824633/300/200/m1/fpnw/wm0/1601.m10.i311.n029.s.c10.164511620-seamles-.jpg?1497007612&s=843a14180b1390bf4585dd7e668e1683';
 
-    //    const grassLoad = () => {
-    //        console.log("LINE 32: We are in the grass load function");
-    //        let pattern = this.ctx.createPattern(grass, 'repeat');
-    //        this.ctx.fillStyle = pattern;
-    //        this.ctx.fillRect(0, 400, 800, 100);
-    //    };
-
-    //    grass.onload = function () { grassLoad() };
-      
-      
-
-       //dummy hero sprite for size testing
-    //    const hero = new Image();
-    //    hero.src = 'https://i.imgur.com/FFUUbTi.png';
-    //    const heroLoad = () => {
-    //        console.log("LINE 33: Drawing heroic rectangle");
-    //     //    this.ctx.drawImage(hero, 350, 350);
-    //     this.ctx.fillStyle="black";
-    //     this.ctx.fillRect(350, 300, 75, 150);
-    //    };
-    //    console.log("LINE 37: Past the hero load");
-    //    window.heroLoad = window.heroLoad;
-    //    hero.onload = () => { heroLoad() };
-
+  
+   }
+   drawFrame(){
+       this.ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+       let pattern = this.ctx.createPattern(this.grass, 'repeat');
+       this.ctx.fillStyle = pattern;
+       this.ctx.fillRect(0, 400, 800, 100);
+       this.ctx.drawImage(this.sky, 0, -50);
+       this.ctx.drawImage(this.leftPillar, 0, 0);
+       this.ctx.drawImage(this.rightPillar, 750, 0)
+       this.hero.draw(this.ctx);
    }
 }
 

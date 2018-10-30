@@ -110,9 +110,13 @@ function () {
     _classCallCheck(this, Game);
 
     this.blocks = [];
-    this.kiOrbs = []; // this.heroSprite = undefined;
-
+    this.kiOrbs = [];
     this.ctx = ctx;
+    this.drawField();
+    this.grassLoaded = false;
+    this.skyLoaded = false;
+    this.pillarsLoaded = false;
+    requestAnimationFrame(this.drawFrame.bind(this));
   }
 
   _createClass(Game, [{
@@ -122,8 +126,8 @@ function () {
         game: this,
         posX: 350,
         posY: 300
-      }); //   this.heroSprite = hero;
-
+      });
+      this.hero = hero;
       hero.draw(this.ctx);
     }
   }, {
@@ -137,20 +141,20 @@ function () {
     value: function grassLoad() {
       var _this = this;
 
-      var grass = new Image();
-      grass.src = 'https://cmkt-image-prd.global.ssl.fastly.net/0.1.0/ps/2824633/300/200/m1/fpnw/wm0/1601.m10.i311.n029.s.c10.164511620-seamles-.jpg?1497007612&s=843a14180b1390bf4585dd7e668e1683';
+      this.grass = new Image();
+      this.grass.src = 'https://cmkt-image-prd.global.ssl.fastly.net/0.1.0/ps/2824633/300/200/m1/fpnw/wm0/1601.m10.i311.n029.s.c10.164511620-seamles-.jpg?1497007612&s=843a14180b1390bf4585dd7e668e1683';
 
       var grassLoad = function grassLoad() {
         console.log("LINE 32: We are in the grass load function");
 
-        var pattern = _this.ctx.createPattern(grass, 'repeat');
+        var pattern = _this.ctx.createPattern(_this.grass, 'repeat');
 
         _this.ctx.fillStyle = pattern;
 
         _this.ctx.fillRect(0, 400, 800, 100);
       };
 
-      grass.onload = function () {
+      this.grass.onload = function () {
         grassLoad();
       };
     }
@@ -159,15 +163,39 @@ function () {
     value: function skyLoad() {
       var _this2 = this;
 
-      var sky = new Image();
-      sky.src = 'https://i.imgur.com/MbBpcOx.png';
+      this.sky = new Image();
+      this.sky.src = 'https://i.imgur.com/MbBpcOx.png';
 
       var skyLoad = function skyLoad() {
-        _this2.ctx.drawImage(sky, 0, -50);
+        _this2.ctx.drawImage(_this2.sky, 0, -50);
       };
 
-      sky.onload = function () {
+      this.sky.onload = function () {
         skyLoad();
+      };
+    }
+  }, {
+    key: "loadPillars",
+    value: function loadPillars() {
+      var _this3 = this;
+
+      this.leftPillar = new Image();
+      this.leftPillar.src = "https://i.imgur.com/UibkSXB.png";
+      this.rightPillar = new Image();
+      this.rightPillar.src = "https://i.imgur.com/UibkSXB.png";
+
+      var loadPillars = function loadPillars() {
+        _this3.ctx.drawImage(_this3.leftPillar, 0, 0);
+
+        _this3.ctx.drawImage(_this3.rightPillar, 750, 0);
+      };
+
+      this.rightPillar.onload = function () {
+        loadPillars();
+      };
+
+      this.leftPillar.onload = function () {
+        loadPillars();
       };
     }
   }, {
@@ -186,28 +214,21 @@ function () {
     value: function drawField() {
       this.grassLoad();
       this.skyLoad();
+      this.loadPillars();
       this.dummyBlocks();
-      this.addHero(); //    const grass = new Image();
-      //    grass.src = 'https://cmkt-image-prd.global.ssl.fastly.net/0.1.0/ps/2824633/300/200/m1/fpnw/wm0/1601.m10.i311.n029.s.c10.164511620-seamles-.jpg?1497007612&s=843a14180b1390bf4585dd7e668e1683';
-      //    const grassLoad = () => {
-      //        console.log("LINE 32: We are in the grass load function");
-      //        let pattern = this.ctx.createPattern(grass, 'repeat');
-      //        this.ctx.fillStyle = pattern;
-      //        this.ctx.fillRect(0, 400, 800, 100);
-      //    };
-      //    grass.onload = function () { grassLoad() };
-      //dummy hero sprite for size testing
-      //    const hero = new Image();
-      //    hero.src = 'https://i.imgur.com/FFUUbTi.png';
-      //    const heroLoad = () => {
-      //        console.log("LINE 33: Drawing heroic rectangle");
-      //     //    this.ctx.drawImage(hero, 350, 350);
-      //     this.ctx.fillStyle="black";
-      //     this.ctx.fillRect(350, 300, 75, 150);
-      //    };
-      //    console.log("LINE 37: Past the hero load");
-      //    window.heroLoad = window.heroLoad;
-      //    hero.onload = () => { heroLoad() };
+      this.addHero();
+    }
+  }, {
+    key: "drawFrame",
+    value: function drawFrame() {
+      this.ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+      var pattern = this.ctx.createPattern(this.grass, 'repeat');
+      this.ctx.fillStyle = pattern;
+      this.ctx.fillRect(0, 400, 800, 100);
+      this.ctx.drawImage(this.sky, 0, -50);
+      this.ctx.drawImage(this.leftPillar, 0, 0);
+      this.ctx.drawImage(this.rightPillar, 750, 0);
+      this.hero.draw(this.ctx);
     }
   }]);
 
@@ -342,9 +363,23 @@ module.exports = GameSprite;
 
 var Game = __webpack_require__(/*! ./game */ "./src/game.js");
 
-var GameField = __webpack_require__(/*! ./game_field */ "./src/game_field.js"); //const game = new Game();
-//new GameField(game, ctx).start();
+var GameField = __webpack_require__(/*! ./game_field */ "./src/game_field.js");
 
+var Key = {
+  //Special thanks to Arthur Schreiber
+  _pressed: {},
+  LEFT: 37,
+  RIGHT: 39,
+  isDown: function isDown(keyCode) {
+    return this._pressed[keyCode];
+  },
+  onKeydown: function onKeydown(event) {
+    this._pressed[event.keyCode] = true;
+  },
+  onKeyup: function onKeyup(event) {
+    delete this._pressed[event.keyCode];
+  }
+}; //new GameField(game, ctx).start();
 
 document.addEventListener("DOMContentLoaded", function () {
   var canvas = document.getElementById("canvas");
@@ -352,6 +387,12 @@ document.addEventListener("DOMContentLoaded", function () {
   var game = new Game(ctx);
   game.drawField();
   window.ctx = ctx;
+
+  document.onkeydown = function (e) {
+    if (game.hero) {
+      game.hero.move(e, ctx);
+    }
+  };
 });
 
 /***/ }),
@@ -367,15 +408,19 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
 
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
 var GameSprite = __webpack_require__(/*! ./game_sprite */ "./src/game_sprite.js");
 
@@ -390,11 +435,66 @@ function (_GameSprite) {
     _classCallCheck(this, HeroSprite);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(HeroSprite).call(this, options));
+    _this.speed = 0;
     var image = new Image();
     image.src = "https://i.imgur.com/p25KSOI.png";
+    image.height = 150;
+    image.width = 75;
     _this.image = image;
+    _this.draw = _this.draw.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+
+    _this.image.onload = function () {
+      _this.loaded = true;
+    };
+
     return _this;
   }
+
+  _createClass(HeroSprite, [{
+    key: "draw",
+    value: function draw(ctx) {
+      console.log(this.image);
+      console.log("X: ".concat(this.posX, ", Y: ").concat(this.posY));
+
+      if (this.loaded) {
+        ctx.drawImage(this.image, this.posX, this.posY);
+      } // this.image.onload = () => {
+      //             
+      // };
+      // ctx.fillStyle="red";
+      // ctx.fillRect(this.posX, this.posY, 75, 150);
+
+    }
+  }, {
+    key: "move",
+    value: function move(event, ctx) {
+      if (event.keyCode === 65) {
+        // alert("go left");
+        var oldRightSide = this.posX + this.image.width;
+
+        if (this.posX > 50) {
+          this.posX -= 10;
+        } // ctx.clearRect(oldRightSide, this.posY, 3, this.image.height);
+
+
+        this.draw(ctx);
+        this.game.drawFrame();
+      } else if (event.keyCode === 68) {
+        // alert("go right");
+        var oldPosX = this.posX;
+
+        if (this.posX + 75 < ctx.canvas.width - 50) {
+          this.posX += 10;
+        } // ctx.clearRect(oldPosX, this.posY, 3, this.image.height);
+
+
+        this.draw(ctx);
+        this.game.drawFrame();
+      } else {
+        console.log("Unbound key");
+      }
+    }
+  }]);
 
   return HeroSprite;
 }(GameSprite);
