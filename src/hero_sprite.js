@@ -27,7 +27,7 @@ class HeroSprite extends GameSprite {
 
     goLeft(){
         if (this.posX > 50) {
-            this.posX -= 1;
+            this.posX -= 5;
         }
         this.draw(ctx);
         // this.game.drawFrame();
@@ -35,7 +35,7 @@ class HeroSprite extends GameSprite {
 
     goRight(){
       if (this.posX + 75 < ctx.canvas.width - 50) {
-        this.posX += 1;
+        this.posX += 5;
       }
         this.draw(ctx);
         // this.game.drawFrame();
@@ -52,7 +52,7 @@ class HeroSprite extends GameSprite {
             // alert("go left");
             let oldRightSide = this.posX+this.image.width;
             if(this.posX > 50){
-                this.posX -= 40;
+                this.posX -= 10;
             }
 
             // ctx.clearRect(oldRightSide, this.posY, 3, this.image.height);
@@ -63,7 +63,7 @@ class HeroSprite extends GameSprite {
             // alert("go right");
             let oldPosX = this.posX;
            if (this.posX+75 < ctx.canvas.width-50){
-            this.posX += 40;
+            this.posX += 10;
            }
             // ctx.clearRect(oldPosX, this.posY, 3, this.image.height);
             // this.draw(ctx);

@@ -472,7 +472,7 @@ function (_GameSprite) {
     key: "goLeft",
     value: function goLeft() {
       if (this.posX > 50) {
-        this.posX -= 1;
+        this.posX -= 5;
       }
 
       this.draw(ctx); // this.game.drawFrame();
@@ -481,7 +481,7 @@ function (_GameSprite) {
     key: "goRight",
     value: function goRight() {
       if (this.posX + 75 < ctx.canvas.width - 50) {
-        this.posX += 1;
+        this.posX += 5;
       }
 
       this.draw(ctx); // this.game.drawFrame();
@@ -501,7 +501,7 @@ function (_GameSprite) {
         var oldRightSide = this.posX + this.image.width;
 
         if (this.posX > 50) {
-          this.posX -= 40;
+          this.posX -= 10;
         } // ctx.clearRect(oldRightSide, this.posY, 3, this.image.height);
         // this.draw(ctx);
         // this.game.drawFrame();
@@ -511,7 +511,7 @@ function (_GameSprite) {
         var oldPosX = this.posX;
 
         if (this.posX + 75 < ctx.canvas.width - 50) {
-          this.posX += 40;
+          this.posX += 10;
         } // ctx.clearRect(oldPosX, this.posY, 3, this.image.height);
         // this.draw(ctx);
         // this.game.drawFrame();
