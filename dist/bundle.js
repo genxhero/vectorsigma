@@ -86,6 +86,104 @@
 /************************************************************************/
 /******/ ({
 
+/***/ "./src/evil_block.js":
+/*!***************************!*\
+  !*** ./src/evil_block.js ***!
+  \***************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+var GameSprite = __webpack_require__(/*! ./game_sprite */ "./src/game_sprite.js");
+
+var HeroSprite = __webpack_require__(/*! ./hero_sprite */ "./src/hero_sprite.js");
+
+var EvilBlock =
+/*#__PURE__*/
+function (_GameSprite) {
+  _inherits(EvilBlock, _GameSprite);
+
+  function EvilBlock(params) {
+    var _this;
+
+    _classCallCheck(this, EvilBlock);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(EvilBlock).call(this, params));
+    _this.hitboxHeight = 100;
+    _this.hitboxWidth = 100;
+    var blockImage = new Image();
+    blockImage.src = "https://i.imgur.com/vlgHgAL.png";
+    blockImage.height = 100;
+    blockImage.width = 100;
+    _this.image = blockImage;
+    _this.draw = _this.draw.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+
+    _this.image.onload = function () {
+      _this.loaded = true;
+    };
+
+    return _this;
+  }
+
+  _createClass(EvilBlock, [{
+    key: "draw",
+    value: function draw(ctx) {
+      if (this.loaded) {
+        ctx.drawImage(this.image, this.posX, this.posY);
+      }
+    }
+  }, {
+    key: "handleCollision",
+    value: function handleCollision(obstacle) {
+      console.log("block hit something");
+
+      if (obstacle instanceof HeroSprite) {
+        obstacle.takeDamage();
+        this.remove();
+      }
+    }
+  }, {
+    key: "remove",
+    value: function remove() {
+      this.game.remove(this);
+    }
+  }, {
+    key: "update",
+    value: function update(ctx) {
+      if (this.posY + 100 < 450) {
+        this.posY += 10;
+        this.draw(ctx);
+      } else if (this.posY === 450) {
+        this.ctx.fillStyle = "brown";
+        this.fillRect(this.posX, 550, 100, 50);
+      }
+    }
+  }]);
+
+  return EvilBlock;
+}(GameSprite);
+
+module.exports = EvilBlock;
+
+/***/ }),
+
 /***/ "./src/game.js":
 /*!*********************!*\
   !*** ./src/game.js ***!
@@ -99,8 +197,9 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-// const EvilBlock = require('./evil_block');
-//const KiOrb = require('./ki_orb');
+var EvilBlock = __webpack_require__(/*! ./evil_block */ "./src/evil_block.js"); //const KiOrb = require('./ki_orb');
+
+
 var HeroSprite = __webpack_require__(/*! ./hero_sprite */ "./src/hero_sprite.js");
 
 var Game =
@@ -110,10 +209,11 @@ function () {
     _classCallCheck(this, Game);
 
     this.blocks = [];
+    this.addBlock = this.addBlock.bind(this);
     this.kiOrbs = [];
     this.ctx = ctx;
-    this.Key = Key;
-    alert(this.Key);
+    this.Key = Key; // alert(this.Key);
+
     this.drawField();
     this.grassLoaded = false;
     this.skyLoaded = false;
@@ -122,6 +222,32 @@ function () {
   }
 
   _createClass(Game, [{
+    key: "allSprites",
+    value: function allSprites() {
+      return [].concat([this.hero], this.blocks);
+    }
+  }, {
+    key: "detectCollision",
+    value: function detectCollision() {
+      var sprites = this.allSprites();
+
+      for (var idx1 = 0; idx1 < sprites.length; idx1++) {
+        for (var idx2 = 0; idx2 < sprites.length; idx2++) {
+          var striker = sprites[idx1];
+          var strikee = sprites[idx2];
+
+          if (striker instanceof EvilBlock && strikee instanceof EvilBlock) {
+            continue;
+          }
+
+          if (striker.hitDetected(strikee)) {
+            var hit = striker.handleCollision(strikee);
+            if (hit) return;
+          }
+        }
+      }
+    }
+  }, {
     key: "addHero",
     value: function addHero() {
       var hero = new HeroSprite({
@@ -134,8 +260,16 @@ function () {
       hero.draw(this.ctx);
     }
   }, {
-    key: "addBlocks",
-    value: function addBlocks() {}
+    key: "addBlock",
+    value: function addBlock() {
+      var newBlock = new EvilBlock({
+        game: this,
+        posY: -50,
+        posX: Math.floor(Math.random() * 600) + 50
+      });
+      this.blocks.push(newBlock);
+      newBlock.draw(this.ctx);
+    }
   }, {
     key: "addKiOrbs",
     value: function addKiOrbs() {}
@@ -202,28 +336,32 @@ function () {
       };
     }
   }, {
-    key: "dummyBlocks",
-    value: function dummyBlocks() {
-      for (var squares = 0; squares < 5; squares++) {
-        var x = squares * 110 + Math.random() * 800;
-        var y = 100;
-        this.ctx.fillStyle = "gray";
-        this.ctx.fillRect(x, y, 100, 100);
+    key: "moveBlocks",
+    value: function moveBlocks() {
+      for (i in this.blocks) {
+        this.blocks[i].update(this.ctx);
       }
     }
   }, {
     key: "drawField",
     value: function drawField() {
+      var _this4 = this;
+
       this.grassLoad();
       this.skyLoad();
-      this.loadPillars();
-      this.dummyBlocks();
+      this.loadPillars(); // this.addBlock();
+
+      setInterval(function () {
+        return _this4.addBlock();
+      }, 500);
       this.addHero();
+      alert("The evil Hedronites are making a desperate attack! Fight, Kam! For great justice!");
     }
   }, {
     key: "drawFrame",
     value: function drawFrame() {
       requestAnimationFrame(this.drawFrame.bind(this));
+      this.detectCollision();
       this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
       var pattern = this.ctx.createPattern(this.grass, 'repeat');
       this.ctx.fillStyle = pattern;
@@ -231,8 +369,16 @@ function () {
       this.ctx.drawImage(this.sky, 0, -50);
       this.ctx.drawImage(this.leftPillar, 0, 0);
       this.ctx.drawImage(this.rightPillar, 750, 0);
+      this.moveBlocks();
       this.hero.update(this.Key);
       this.hero.draw(this.ctx);
+    }
+  }, {
+    key: "remove",
+    value: function remove(sprite) {
+      if (sprite instanceof EvilBlock) {
+        this.blocks.splice(this.blocks.indexOf(sprite), 1);
+      }
     }
   }]);
 
@@ -340,14 +486,16 @@ function () {
   }, {
     key: "hitDetected",
     value: function hitDetected(obstacle) {
-      if (this.posY + this.hitboxHeight / 2 >= obstacle.hitboxHeight && obstacle.posX === this.posx) {} else {
+      if (this === obstacle) {
         return false;
       }
-    }
-  }, {
-    key: "distance",
-    value: function distance(pos1, pos2) {
-      return Math.sqrt(Math.pow(pos1[0] - pos2[0], 2) + Math.pow(pos1[1] - pos2[1], 2));
+
+      if (this.posX >= obstacle.hitboxWidth && this.posX < obstacle.posX + obstacle.hitboxWidth && // this.posX + this.hitboxWidth <= (obstacle.posX + obstacle.hitboxWidth) && 
+      this.posX + this.hitboxWidth > obstacle.posX && this.posY + this.hitboxHeight - 30 === obstacle.posY) {
+        return true;
+      } else {
+        return false;
+      }
     }
   }]);
 
@@ -391,17 +539,11 @@ window.addEventListener('keydown', function (event) {
   Key.onKeydown(event);
 }, false);
 document.addEventListener("DOMContentLoaded", function () {
-  //   window.Key = Key;
-  console.log("Key:", Key);
   var canvas = document.getElementById("canvas");
   var ctx = canvas.getContext("2d");
   var game = new Game(ctx, Key); // game.drawField();
 
-  window.ctx = ctx; // document.onkeydown = (e) => {
-  //     if (game.hero) {
-  //         game.hero.move(e, ctx);
-  //     }
-  // };
+  window.ctx = ctx;
 });
 
 /***/ }),
@@ -445,12 +587,13 @@ function (_GameSprite) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(HeroSprite).call(this, options));
     _this.speed = 0;
+    _this.hp = 100;
     var image = new Image();
-    image.src = "https://i.imgur.com/JsuhqcT.png"; //i.imgur.com/JsuhqcT.png
-
-    https: image.height = 150;
-
+    image.src = "https://i.imgur.com/JsuhqcT.png";
+    image.height = 150;
     image.width = 75;
+    _this.hitboxHeight = 150;
+    _this.hitboxWidth = 75;
     _this.image = image;
     _this.draw = _this.draw.bind(_assertThisInitialized(_assertThisInitialized(_this)));
 
@@ -462,6 +605,31 @@ function (_GameSprite) {
   }
 
   _createClass(HeroSprite, [{
+    key: "stillAlive",
+    value: function stillAlive() {
+      if (this.hp > 0) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  }, {
+    key: "takeDamage",
+    value: function takeDamage() {
+      console.log("Took 25 points of damage");
+      this.hp -= 20;
+
+      if (this.stillAlive()) {
+        var grunt = new Audio();
+        grunt.src = "https://s3.us-east-2.amazonaws.com/hedronattack/kam_pain.m4a";
+        grunt.play();
+      } else {
+        var deathCry = new Audio();
+        deathCry.src = "https://s3.us-east-2.amazonaws.com/hedronattack/kam_death_take_1.m4a";
+        deathCry.play();
+      }
+    }
+  }, {
     key: "draw",
     value: function draw(ctx) {
       // console.log(this.image);
@@ -474,7 +642,7 @@ function (_GameSprite) {
     key: "goLeft",
     value: function goLeft() {
       if (this.posX > 50) {
-        this.posX -= 5;
+        this.posX -= 12;
       }
 
       this.draw(ctx); // this.game.drawFrame();
@@ -483,7 +651,7 @@ function (_GameSprite) {
     key: "goRight",
     value: function goRight() {
       if (this.posX + 75 < ctx.canvas.width - 50) {
-        this.posX += 5;
+        this.posX += 12;
       }
 
       this.draw(ctx); // this.game.drawFrame();
@@ -494,6 +662,13 @@ function (_GameSprite) {
       // console.log(Key);
       if (Key.isDown(Key.LEFT)) this.goLeft();
       if (Key.isDown(Key.RIGHT)) this.goRight();
+    }
+  }, {
+    key: "remove",
+    value: function remove(object) {
+      if (object instanceof EvilBlock) {
+        this.blocks.splice(this.blocks.indexOf(object), 1);
+      }
     }
   }]);
 

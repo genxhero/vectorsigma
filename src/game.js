@@ -1,21 +1,43 @@
-// const EvilBlock = require('./evil_block');
+const EvilBlock = require('./evil_block');
 //const KiOrb = require('./ki_orb');
 const HeroSprite = require('./hero_sprite');
 
 class Game {
     constructor(ctx, Key){
         this.blocks = [];
+        this.addBlock = this.addBlock.bind(this);
         this.kiOrbs = [];
         this.ctx = ctx;
         this.Key = Key;
-        alert(this.Key);
+        // alert(this.Key);
         this.drawField();
         this.grassLoaded = false;
         this.skyLoaded = false;
         this.pillarsLoaded=false;
         this.drawFrame.bind(this)();
-       
+    }
 
+    allSprites() {
+        return [].concat([this.hero], this.blocks);
+       
+    }
+
+    detectCollision(){
+        const sprites = this.allSprites();
+        for (let idx1 = 0; idx1 < sprites.length; idx1++){
+            for (let idx2 = 0; idx2 < sprites.length; idx2++ ){
+                
+                let striker = sprites[idx1];
+                let strikee = sprites[idx2];
+                if (striker instanceof EvilBlock && strikee instanceof EvilBlock) {
+                    continue;
+                }
+                if (striker.hitDetected(strikee)){
+                    let hit = striker.handleCollision(strikee);
+                    if (hit) return ;
+        }
+      }
+     }
     }
 
     addHero(){
@@ -30,9 +52,14 @@ class Game {
 
     }
 
-    addBlocks(){
-
-      
+    addBlock(){
+       let newBlock = new EvilBlock({
+         game: this,
+         posY: -50,
+         posX: Math.floor(Math.random() * 600) + 50
+       });
+       this.blocks.push(newBlock);
+       newBlock.draw(this.ctx);
     }
 
     addKiOrbs(){
@@ -75,26 +102,27 @@ class Game {
         this.leftPillar.onload = function () {loadPillars() };
     }
 
-    
-
-    dummyBlocks() {
-        for (let squares = 0; squares < 5; squares++) {
-            let x = (squares * 110) + Math.random() * 800;
-            let y = 100;
-            this.ctx.fillStyle = "gray";
-            this.ctx.fillRect(x, y, 100, 100);
-        }
+    moveBlocks(){
+       for(i in this.blocks) {
+          this.blocks[i].update(this.ctx);
+       }
     }
+  
+
+    
    drawField(){
         this.grassLoad();
         this.skyLoad();
         this.loadPillars();
-        this.dummyBlocks();
-        this.addHero();
-  
+        // this.addBlock();
+       setInterval(() => this.addBlock(), 500);
+        this.addHero();  
+        alert("The evil Hedronites are making a desperate attack! Fight, Kam! For great justice!");
+
    }
    drawFrame(){
        requestAnimationFrame(this.drawFrame.bind(this));
+       this.detectCollision();
        this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
        let pattern = this.ctx.createPattern(this.grass, 'repeat');
        this.ctx.fillStyle = pattern;
@@ -102,9 +130,15 @@ class Game {
        this.ctx.drawImage(this.sky, 0, -50);
        this.ctx.drawImage(this.leftPillar, 0, 0);
        this.ctx.drawImage(this.rightPillar, 750, 0)
+       this.moveBlocks();
        this.hero.update(this.Key);
        this.hero.draw(this.ctx);
-       
+      
+   }
+   remove(sprite){
+       if (sprite instanceof EvilBlock){
+           this.blocks.splice(this.blocks.indexOf(sprite), 1);
+       }
    }
 }
 

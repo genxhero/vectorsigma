@@ -27,19 +27,11 @@ window.addEventListener('keydown',  (event) => {
 
 
 document.addEventListener("DOMContentLoaded", () => {
-//   window.Key = Key;
-  console.log("Key:", Key);
   const canvas = document.getElementById("canvas");
   const ctx = canvas.getContext("2d");
   const game = new Game(ctx, Key);
   // game.drawField();
    window.ctx = ctx;
   
-
-    // document.onkeydown = (e) => {
-    //     if (game.hero) {
-    //         game.hero.move(e, ctx);
-    //     }
-    // };
             
 });

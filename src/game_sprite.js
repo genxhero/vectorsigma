@@ -20,18 +20,22 @@ class GameSprite {
     };
 
     hitDetected(obstacle) {
-       if (this.posY + (this.hitboxHeight / 2)  >= obstacle.hitboxHeight && obstacle.posX === this.posx){
-
-       } else {
-           return false;
-       }
-    }
+        
+         if (this === obstacle){
+             return false;
+         }
+        if (this.posX >= obstacle.hitboxWidth && 
+            this.posX < (obstacle.posX + obstacle.hitboxWidth) &&
+            // this.posX + this.hitboxWidth <= (obstacle.posX + obstacle.hitboxWidth) && 
+           ( this.posX + this.hitboxWidth )> obstacle.posX &&
+             this.posY + this.hitboxHeight - 30 === obstacle.posY) {
+          return true;
+        } else {
+          return false;
+        }
+ }
      
-    distance(pos1, pos2) {
-        return Math.sqrt(
-            Math.pow(pos1[0] - pos2[0], 2) + Math.pow(pos1[1] - pos2[1], 2)
-        );
-    }
+  
 
 
 }
