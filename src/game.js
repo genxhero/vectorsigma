@@ -3,16 +3,19 @@
 const HeroSprite = require('./hero_sprite');
 
 class Game {
-    constructor(ctx){
+    constructor(ctx, Key){
         this.blocks = [];
         this.kiOrbs = [];
         this.ctx = ctx;
+        this.Key = Key;
+        alert(this.Key);
         this.drawField();
         this.grassLoaded = false;
         this.skyLoaded = false;
         this.pillarsLoaded=false;
+        this.drawFrame.bind(this)();
+       
 
-        requestAnimationFrame(this.drawFrame.bind(this));
     }
 
     addHero(){
@@ -21,6 +24,7 @@ class Game {
         posX: 350,
         posY: 300
       });
+    //   debugger;
       this.hero = hero;
       hero.draw(this.ctx);
 
@@ -77,7 +81,6 @@ class Game {
         for (let squares = 0; squares < 5; squares++) {
             let x = (squares * 110) + Math.random() * 800;
             let y = 100;
-            console.log(`X: ${x}, Y: ${y}`);
             this.ctx.fillStyle = "gray";
             this.ctx.fillRect(x, y, 100, 100);
         }
@@ -88,18 +91,20 @@ class Game {
         this.loadPillars();
         this.dummyBlocks();
         this.addHero();
-
   
    }
    drawFrame(){
-       this.ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+       requestAnimationFrame(this.drawFrame.bind(this));
+       this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
        let pattern = this.ctx.createPattern(this.grass, 'repeat');
        this.ctx.fillStyle = pattern;
        this.ctx.fillRect(0, 400, 800, 100);
        this.ctx.drawImage(this.sky, 0, -50);
        this.ctx.drawImage(this.leftPillar, 0, 0);
        this.ctx.drawImage(this.rightPillar, 750, 0)
+       this.hero.update(this.Key);
        this.hero.draw(this.ctx);
+       
    }
 }
 

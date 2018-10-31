@@ -106,17 +106,19 @@ var HeroSprite = __webpack_require__(/*! ./hero_sprite */ "./src/hero_sprite.js"
 var Game =
 /*#__PURE__*/
 function () {
-  function Game(ctx) {
+  function Game(ctx, Key) {
     _classCallCheck(this, Game);
 
     this.blocks = [];
     this.kiOrbs = [];
     this.ctx = ctx;
+    this.Key = Key;
+    alert(this.Key);
     this.drawField();
     this.grassLoaded = false;
     this.skyLoaded = false;
     this.pillarsLoaded = false;
-    requestAnimationFrame(this.drawFrame.bind(this));
+    this.drawFrame.bind(this)();
   }
 
   _createClass(Game, [{
@@ -126,7 +128,8 @@ function () {
         game: this,
         posX: 350,
         posY: 300
-      });
+      }); //   debugger;
+
       this.hero = hero;
       hero.draw(this.ctx);
     }
@@ -204,7 +207,6 @@ function () {
       for (var squares = 0; squares < 5; squares++) {
         var x = squares * 110 + Math.random() * 800;
         var y = 100;
-        console.log("X: ".concat(x, ", Y: ").concat(y));
         this.ctx.fillStyle = "gray";
         this.ctx.fillRect(x, y, 100, 100);
       }
@@ -221,13 +223,15 @@ function () {
   }, {
     key: "drawFrame",
     value: function drawFrame() {
-      this.ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+      requestAnimationFrame(this.drawFrame.bind(this));
+      this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
       var pattern = this.ctx.createPattern(this.grass, 'repeat');
       this.ctx.fillStyle = pattern;
       this.ctx.fillRect(0, 400, 800, 100);
       this.ctx.drawImage(this.sky, 0, -50);
       this.ctx.drawImage(this.leftPillar, 0, 0);
       this.ctx.drawImage(this.rightPillar, 750, 0);
+      this.hero.update(this.Key);
       this.hero.draw(this.ctx);
     }
   }]);
@@ -368,8 +372,8 @@ var GameField = __webpack_require__(/*! ./game_field */ "./src/game_field.js");
 var Key = {
   //Special thanks to Arthur Schreiber
   _pressed: {},
-  LEFT: 37,
-  RIGHT: 39,
+  LEFT: 65,
+  RIGHT: 68,
   isDown: function isDown(keyCode) {
     return this._pressed[keyCode];
   },
@@ -379,20 +383,25 @@ var Key = {
   onKeyup: function onKeyup(event) {
     delete this._pressed[event.keyCode];
   }
-}; //new GameField(game, ctx).start();
-
+};
+window.addEventListener('keyup', function (event) {
+  Key.onKeyup(event);
+}, false);
+window.addEventListener('keydown', function (event) {
+  Key.onKeydown(event);
+}, false);
 document.addEventListener("DOMContentLoaded", function () {
+  //   window.Key = Key;
+  console.log("Key:", Key);
   var canvas = document.getElementById("canvas");
   var ctx = canvas.getContext("2d");
-  var game = new Game(ctx);
-  game.drawField();
-  window.ctx = ctx;
+  var game = new Game(ctx, Key); // game.drawField();
 
-  document.onkeydown = function (e) {
-    if (game.hero) {
-      game.hero.move(e, ctx);
-    }
-  };
+  window.ctx = ctx; // document.onkeydown = (e) => {
+  //     if (game.hero) {
+  //         game.hero.move(e, ctx);
+  //     }
+  // };
 });
 
 /***/ }),
@@ -453,17 +462,36 @@ function (_GameSprite) {
   _createClass(HeroSprite, [{
     key: "draw",
     value: function draw(ctx) {
-      console.log(this.image);
-      console.log("X: ".concat(this.posX, ", Y: ").concat(this.posY));
-
+      // console.log(this.image);
+      // console.log(`X: ${this.posX}, Y: ${this.posY}`);
       if (this.loaded) {
         ctx.drawImage(this.image, this.posX, this.posY);
-      } // this.image.onload = () => {
-      //             
-      // };
-      // ctx.fillStyle="red";
-      // ctx.fillRect(this.posX, this.posY, 75, 150);
+      }
+    }
+  }, {
+    key: "goLeft",
+    value: function goLeft() {
+      if (this.posX > 50) {
+        this.posX -= 1;
+      }
 
+      this.draw(ctx); // this.game.drawFrame();
+    }
+  }, {
+    key: "goRight",
+    value: function goRight() {
+      if (this.posX + 75 < ctx.canvas.width - 50) {
+        this.posX += 1;
+      }
+
+      this.draw(ctx); // this.game.drawFrame();
+    }
+  }, {
+    key: "update",
+    value: function update(Key) {
+      // console.log(Key);
+      if (Key.isDown(Key.LEFT)) this.goLeft();
+      if (Key.isDown(Key.RIGHT)) this.goRight();
     }
   }, {
     key: "move",
@@ -473,23 +501,21 @@ function (_GameSprite) {
         var oldRightSide = this.posX + this.image.width;
 
         if (this.posX > 50) {
-          this.posX -= 10;
+          this.posX -= 40;
         } // ctx.clearRect(oldRightSide, this.posY, 3, this.image.height);
+        // this.draw(ctx);
+        // this.game.drawFrame();
 
-
-        this.draw(ctx);
-        this.game.drawFrame();
       } else if (event.keyCode === 68) {
         // alert("go right");
         var oldPosX = this.posX;
 
         if (this.posX + 75 < ctx.canvas.width - 50) {
-          this.posX += 10;
+          this.posX += 40;
         } // ctx.clearRect(oldPosX, this.posY, 3, this.image.height);
+        // this.draw(ctx);
+        // this.game.drawFrame();
 
-
-        this.draw(ctx);
-        this.game.drawFrame();
       } else {
         console.log("Unbound key");
       }

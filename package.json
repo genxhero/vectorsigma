@@ -1,7 +1,7 @@
 {
   "name": "vectorsigma",
   "version": "1.0.0",
-  "description": "### Motivation for project",
+  "description": "Action game built in Javascript",
   "main": "game.js",
   "dependencies": {
     "@babel/core": "^7.1.2",

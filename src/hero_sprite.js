@@ -17,16 +17,34 @@ class HeroSprite extends GameSprite {
     }
 
     draw(ctx){
-        console.log(this.image);
-        console.log(`X: ${this.posX}, Y: ${this.posY}`);
+        // console.log(this.image);
+        // console.log(`X: ${this.posX}, Y: ${this.posY}`);
         if (this.loaded) {
             ctx.drawImage(this.image, this.posX, this.posY);  
         }
-        // this.image.onload = () => {
-        //             
-        // };
-        // ctx.fillStyle="red";
-        // ctx.fillRect(this.posX, this.posY, 75, 150);
+       
+    }
+
+    goLeft(){
+        if (this.posX > 50) {
+            this.posX -= 1;
+        }
+        this.draw(ctx);
+        // this.game.drawFrame();
+    }
+
+    goRight(){
+      if (this.posX + 75 < ctx.canvas.width - 50) {
+        this.posX += 1;
+      }
+        this.draw(ctx);
+        // this.game.drawFrame();
+    }
+
+    update(Key){
+        // console.log(Key);
+        if (Key.isDown(Key.LEFT)) this.goLeft();
+        if (Key.isDown(Key.RIGHT)) this.goRight();
     }
 
     move(event, ctx){
@@ -34,22 +52,22 @@ class HeroSprite extends GameSprite {
             // alert("go left");
             let oldRightSide = this.posX+this.image.width;
             if(this.posX > 50){
-                this.posX -= 10;
+                this.posX -= 40;
             }
 
             // ctx.clearRect(oldRightSide, this.posY, 3, this.image.height);
-            this.draw(ctx);
-            this.game.drawFrame();
+            // this.draw(ctx);
+            // this.game.drawFrame();
 
         } else if (event.keyCode === 68 ){
             // alert("go right");
             let oldPosX = this.posX;
            if (this.posX+75 < ctx.canvas.width-50){
-            this.posX += 10;
+            this.posX += 40;
            }
             // ctx.clearRect(oldPosX, this.posY, 3, this.image.height);
-            this.draw(ctx);
-            this.game.drawFrame();
+            // this.draw(ctx);
+            // this.game.drawFrame();
         } else {
             console.log("Unbound key");
         }
