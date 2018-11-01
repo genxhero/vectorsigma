@@ -36,9 +36,9 @@ class EvilBlock extends GameSprite {
         }
     }
 
-    detectCollision(obstacle) {
+    hitDetected(obstacle) {
         if (this === obstacle) {
-            return false;
+            return {hit: false};
         }
 
         if (this.posX >= obstacle.hitboxWidth &&
@@ -48,6 +48,8 @@ class EvilBlock extends GameSprite {
             this.posY + this.hitboxHeight === obstacle.posY) {
 
             return { hit: true, type: "overhead" };
+            } else {
+                return {hit: false};
             }
     }
 

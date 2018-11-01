@@ -161,10 +161,12 @@ function (_GameSprite) {
       }
     }
   }, {
-    key: "detectCollision",
-    value: function detectCollision(obstacle) {
+    key: "hitDetected",
+    value: function hitDetected(obstacle) {
       if (this === obstacle) {
-        return false;
+        return {
+          hit: false
+        };
       }
 
       if (this.posX >= obstacle.hitboxWidth && this.posX < obstacle.posX + obstacle.hitboxWidth && // this.posX + this.hitboxWidth <= (obstacle.posX + obstacle.hitboxWidth) && 
@@ -172,6 +174,10 @@ function (_GameSprite) {
         return {
           hit: true,
           type: "overhead"
+        };
+      } else {
+        return {
+          hit: false
         };
       }
     }
