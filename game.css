@@ -5,12 +5,40 @@
  top: 75px;
 }
 
+#status-bar {
+  position: absolute;
+    width: 800px;
+    height: 80px;
+    top: 0px;
+    background: gray;
+    z-index: 900;
+    display: flex;
+    align-items: center;
+}
+
+.stat-label{
+  font-size: 26px;
+  /* position: absolute; */
+  z-index: 900;
+  margin-left: 20px;
+}
+
 #hero-hp {
   color: white;
   text-shadow: 2px 2px black;
   font-size: 26px;
-  position: absolute;
+  /* position: absolute; */
   z-index: 900;
+  margin-left: 10px;
+}
+
+  #hero-kp {
+  color: white;
+  text-shadow: 2px 2px black;
+  font-size: 26px;
+  /* position: absolute; */
+  z-index: 900;
+  margin-left: 10px;
 }
 
 body {
@@ -21,6 +49,15 @@ body {
     height: 100%;
     background-image: url("https://i.pinimg.com/originals/b5/f4/76/b5f476003b95683ed591c73c2292319a.png");
     background-repeat: repeat-x;
+}
+
+.ki-blast{
+  position: absolute;
+  background: cyan;
+  box-shadow: 3px 3px 10px, -3px -3px 10px;
+  border-radius: 50%;
+  padding: 10px;
+  z-index: 900;
 }
 
 /* 

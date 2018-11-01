@@ -24,16 +24,40 @@ class GameSprite {
          if (this === obstacle){
              return false;
          }
+         
         if (this.posX >= obstacle.hitboxWidth && 
             this.posX < (obstacle.posX + obstacle.hitboxWidth) &&
             // this.posX + this.hitboxWidth <= (obstacle.posX + obstacle.hitboxWidth) && 
-           ( this.posX + this.hitboxWidth )> obstacle.posX &&
-             this.posY + this.hitboxHeight - 20 === obstacle.posY) {
+           ( this.posX + this.hitboxWidth ) > obstacle.posX &&
+             this.posY + this.hitboxHeight === obstacle.posY) {
              
           return {hit: true, type: "overhead"};
-        } else {
-          return {hit: false};
-        }
+
+
+        } else if ( 
+        //     (obstacle.posY + obstacle.hitboxHeight) >= this.posY &&
+        //  (   this.posx < (obstacle.posX + obstacle.hitboxWidth) ||
+        //   (  this.posX + this.hitboxWidth ) > obstacle.posX ) &&
+        //     this.posX > obstacle.posX
+            this.posX >= obstacle.hitboxWidth &&
+            this.posX < (obstacle.posX + obstacle.hitboxWidth) &&
+            (this.posX + this.hitboxWidth) > obstacle.posX &&
+            this.posY < obstacle.posY + obstacle.hitboxHeight &&
+             this.posX + (this.hitboxWidth / 2 ) > obstacle.posX
+             )
+            {
+            return {hit: true, type: "sidestrike", striker: this.type, strikee: obstacle.type, direction: "left"};
+            
+        } else if (
+            (obstacle.posY + obstacle.hitboxHeight) > this.posY &&
+         (   this.posx < (obstacle.posX + obstacle.hitboxWidth) ||
+         (this.posX + this.hitboxWidth ) > obstacle.posX ) && 
+            this.posX < obstacle.posX
+                 ) {
+                 return { hit: true, type: "sidestrike", striker: this.type, strikee: obstacle.type, direction: "right" };
+               } else {
+                 return { hit: false };
+               }
  }
      
   

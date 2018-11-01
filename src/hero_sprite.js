@@ -1,10 +1,14 @@
 const GameSprite = require('./game_sprite');
+const EvilBlock = require('./evil_block');
+const KiBlast = require('./ki_blash');
 
 class HeroSprite extends GameSprite {
     constructor(options){
         super(options);
+        this.type = "hero";
         this.speed = 0;
         this.hp = 120;
+        this.kp = 100;
         const image = new Image();
         image.src = "https://i.imgur.com/JsuhqcT.png";
         image.height = 150;
@@ -12,7 +16,9 @@ class HeroSprite extends GameSprite {
         this.hitboxHeight = 150;
         this.hitboxWidth = 75;
         this.image = image;
+        this.touchingBlock = false;
         this.draw = this.draw.bind(this);
+        this.facing = "right";
         this.image.onload = () => {
              this.loaded = true;
         };
@@ -27,11 +33,42 @@ class HeroSprite extends GameSprite {
         }
      }
 
+     handleCollision(obstacle, hitPojo){
+         console.log("Hero hit something.");
+        //  debugger;
+         if (obstacle.isagoddamnblock && hitPojo.type === "sidestrike" && hitPojo.direction === "right"){
+             const tink = new Audio();
+             tink.src = "https://s3.us-east-2.amazonaws.com/hedronattack/baseball_short.m4a";
+            if (tink.currentTime <= 0 && tink.paused ) {
+                tink.play();
+            } else {
+                tink.pause();
+            }
+//document.createElement
+             this.posX -= 12;
+             obstacle.posX += 2;
+             this.draw(ctx);
+
+         } else if (obstacle.isagoddamnblock && hitPojo.type === "sidestrike" && hitPojo.direction === "left"){
+             const tink = new Audio();
+             tink.src = "https://s3.us-east-2.amazonaws.com/hedronattack/baseball_short.m4a";
+
+             if (tink.currentTime <= 0 && tink.paused) {
+                 tink.play();
+             }  else {
+                 tink.pause();
+             }
+
+             this.posX += 12;
+             obstacle.posX -= 2;
+              this.draw(ctx);
+         }
+     }
+
   
 
     takeDamage(){
-        console.log("Took 20 points of damage");
-        this.hp -= 20;
+        this.hp -= 10;
         if (this.stillAlive()){
             const grunt = new Audio();
             grunt.src = "https://s3.us-east-2.amazonaws.com/hedronattack/kam_pain.m4a";
@@ -55,6 +92,7 @@ class HeroSprite extends GameSprite {
     }
 
     goLeft(){
+        this.facing = "left";
         if (this.posX > 50) {
             this.posX -= 12;
         }
@@ -63,6 +101,7 @@ class HeroSprite extends GameSprite {
     }
 
     goRight(){
+        this.facing = "right";
       if (this.posX + 75 < ctx.canvas.width - 52) {
         this.posX += 12;
       }
@@ -75,6 +114,27 @@ class HeroSprite extends GameSprite {
         
         if (Key.isDown(Key.LEFT)) this.goLeft();
         if (Key.isDown(Key.RIGHT)) this.goRight();
+        if (Key.isDown(Key.KI)) this.kiBlast();
+    }
+    
+
+    kiBlast(){
+
+        if (this.kp > 0 ){
+            if (this.facing === "left"){
+                this.kp -= 1;
+                const blast = new KiBlast({speed: -10, posX: this.posX - 5, game: this.game});
+                this.game.kiBlasts.push(blast);
+                
+            } else {
+                this.kp -= 1;
+                const blast = new KiBlast({ speed: 10, posX: this.posX + 80, game:this.game});
+                this.game.kiBlasts.push(blast);
+
+            }
+     }
+        this.draw(ctx);
+
     }
 
     remove(object) {

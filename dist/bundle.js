@@ -126,8 +126,11 @@ function (_GameSprite) {
     _classCallCheck(this, EvilBlock);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(EvilBlock).call(this, params));
+    _this.type = "Evil Block";
+    _this.speed = 5;
     _this.hitboxHeight = 100;
     _this.hitboxWidth = 100;
+    _this.isagoddamnblock = true;
     var blockImage = new Image();
     blockImage.src = "https://i.imgur.com/vlgHgAL.png";
     blockImage.height = 100;
@@ -151,29 +154,57 @@ function (_GameSprite) {
     }
   }, {
     key: "handleCollision",
-    value: function handleCollision(obstacle, type) {
-      console.log("block hit something");
-
-      if (obstacle instanceof HeroSprite && type === "overhead") {
+    value: function handleCollision(obstacle, hitPojo) {
+      if (obstacle instanceof HeroSprite && hitPojo.type === "overhead") {
         obstacle.takeDamage();
         this.remove();
       }
     }
   }, {
+    key: "detectCollision",
+    value: function detectCollision(obstacle) {
+      if (this === obstacle) {
+        return false;
+      }
+
+      if (this.posX >= obstacle.hitboxWidth && this.posX < obstacle.posX + obstacle.hitboxWidth && // this.posX + this.hitboxWidth <= (obstacle.posX + obstacle.hitboxWidth) && 
+      this.posX + this.hitboxWidth > obstacle.posX && this.posY + this.hitboxHeight === obstacle.posY) {
+        return {
+          hit: true,
+          type: "overhead"
+        };
+      }
+    }
+  }, {
     key: "remove",
     value: function remove() {
+      this.game.hero.touchingBlock = false;
       this.game.remove(this);
     }
   }, {
     key: "update",
     value: function update(ctx) {
-      if (this.posY + 100 < 450) {
-        this.posY += 10;
+      if (this.posY < 350) {
+        this.posY += this.speed;
         this.draw(ctx);
-      } else if (this.posY === 450) {
-        this.ctx.fillStyle = "brown";
-        this.fillRect(this.posX, 550, 100, 50);
+      } else if (this.posY >= 350) {
+        var smack = new Audio();
+        smack.src = "https://www.freesfx.co.uk/rx2/mp3s/6/18365_1464637302.mp3";
+        smack.play();
+        this.game.remove(this);
       }
+    }
+  }, {
+    key: "explody",
+    value: function explody() {
+      this.game.ctx.strokeStyle = "orange";
+      this.speed = 0;
+      var centerX = this.posX + 50;
+      var centerY = this.posY + 50;
+      var startRad = 10;
+      var endRad = 100;
+      var currentRad = startRad;
+      this.game.remove(this);
     }
   }]);
 
@@ -202,6 +233,8 @@ var EvilBlock = __webpack_require__(/*! ./evil_block */ "./src/evil_block.js"); 
 
 var HeroSprite = __webpack_require__(/*! ./hero_sprite */ "./src/hero_sprite.js");
 
+var KiBlast = __webpack_require__(/*! ./ki_blash */ "./src/ki_blash.js");
+
 var Game =
 /*#__PURE__*/
 function () {
@@ -213,6 +246,7 @@ function () {
     this.blocks = [];
     this.addBlock = this.addBlock.bind(this);
     this.kiOrbs = [];
+    this.kiBlasts = [];
     this.ctx = ctx;
     this.Key = Key; // alert(this.Key);
 
@@ -247,7 +281,7 @@ function () {
           if (hitPojo.hit) {
             console.log(hitPojo);
             var type = hitPojo.type;
-            var hit = striker.handleCollision(strikee, type);
+            var hit = striker.handleCollision(strikee, hitPojo);
             if (hit) return;
           }
         }
@@ -349,43 +383,75 @@ function () {
       }
     }
   }, {
+    key: "moveBlasts",
+    value: function moveBlasts() {
+      for (i in this.kiBlasts) {
+        this.kiBlasts[i].update(this.ctx);
+      }
+    }
+  }, {
     key: "drawField",
     value: function drawField() {
       var _this4 = this;
 
+      var bgm = new Audio("https://s3.us-east-2.amazonaws.com/hedronattack/brahms_bgm_short.m4a");
+      bgm.play();
       this.grassLoad();
       this.skyLoad();
-      this.loadPillars(); // this.addBlock();
+      this.loadPillars(); // back to 500 after testing.
 
       setInterval(function () {
         return _this4.addBlock();
-      }, 500);
+      }, 1000);
       this.addHero();
       alert("The evil Hedronites are making a desperate attack! Fight, Kam! For great justice!");
+    }
+  }, {
+    key: "styleHp",
+    value: function styleHp(hp) {
+      if (this.hero.hp >= 80) {
+        hp.style.color = "chartreuse";
+      } else if (this.hero.hp < 80 && this.hero.hp > 30) {
+        hp.style.color = "yellow";
+      } else {
+        hp.style.color = "red";
+      }
+    }
+  }, {
+    key: "styleKp",
+    value: function styleKp(kp) {
+      kp.style.color = "cyan";
     }
   }, {
     key: "drawFrame",
     value: function drawFrame() {
       requestAnimationFrame(this.drawFrame.bind(this));
-      this.detectCollision();
+      this.detectCollision(); //detect collsion at beginning before last change
 
       if (this.over) {
         console.log("You died.");
         this.over = false;
         return;
       } else {
+        this.hero.touchingBlock = false;
         this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
         var pattern = this.ctx.createPattern(this.grass, 'repeat');
         this.ctx.fillStyle = pattern;
         this.ctx.fillRect(0, 400, 800, 100);
         var hp = document.getElementById('hero-hp');
-        hp.innerText = "Current HP: ".concat(this.hero.hp);
+        hp.innerText = "".concat(this.hero.hp);
+        this.styleHp(hp);
+        var kp = document.getElementById('hero-kp');
+        kp.innerText = "".concat(this.hero.kp);
+        this.styleKp(kp); //    debugger;
+
         this.ctx.drawImage(this.sky, 0, -50);
         this.ctx.drawImage(this.leftPillar, 0, 0);
         this.ctx.drawImage(this.rightPillar, 750, 0);
         this.moveBlocks();
         this.hero.update(this.Key);
         this.hero.draw(this.ctx);
+        this.moveBlasts();
       }
     }
   }, {
@@ -393,6 +459,10 @@ function () {
     value: function remove(sprite) {
       if (sprite instanceof EvilBlock) {
         this.blocks.splice(this.blocks.indexOf(sprite), 1);
+      }
+
+      if (sprite instanceof KiBlast) {
+        this.kiBlasts.splice(this.kiBlasts.indexOf(sprite), 1);
       }
     }
   }]);
@@ -506,10 +576,30 @@ function () {
       }
 
       if (this.posX >= obstacle.hitboxWidth && this.posX < obstacle.posX + obstacle.hitboxWidth && // this.posX + this.hitboxWidth <= (obstacle.posX + obstacle.hitboxWidth) && 
-      this.posX + this.hitboxWidth > obstacle.posX && this.posY + this.hitboxHeight - 20 === obstacle.posY) {
+      this.posX + this.hitboxWidth > obstacle.posX && this.posY + this.hitboxHeight === obstacle.posY) {
         return {
           hit: true,
           type: "overhead"
+        };
+      } else if ( //     (obstacle.posY + obstacle.hitboxHeight) >= this.posY &&
+      //  (   this.posx < (obstacle.posX + obstacle.hitboxWidth) ||
+      //   (  this.posX + this.hitboxWidth ) > obstacle.posX ) &&
+      //     this.posX > obstacle.posX
+      this.posX >= obstacle.hitboxWidth && this.posX < obstacle.posX + obstacle.hitboxWidth && this.posX + this.hitboxWidth > obstacle.posX && this.posY < obstacle.posY + obstacle.hitboxHeight && this.posX + this.hitboxWidth / 2 > obstacle.posX) {
+        return {
+          hit: true,
+          type: "sidestrike",
+          striker: this.type,
+          strikee: obstacle.type,
+          direction: "left"
+        };
+      } else if (obstacle.posY + obstacle.hitboxHeight > this.posY && (this.posx < obstacle.posX + obstacle.hitboxWidth || this.posX + this.hitboxWidth > obstacle.posX) && this.posX < obstacle.posX) {
+        return {
+          hit: true,
+          type: "sidestrike",
+          striker: this.type,
+          strikee: obstacle.type,
+          direction: "right"
         };
       } else {
         return {
@@ -542,6 +632,8 @@ var Key = {
   _pressed: {},
   LEFT: 65,
   RIGHT: 68,
+  // KI: 75,
+  PUNCH: 80,
   isDown: function isDown(keyCode) {
     return this._pressed[keyCode];
   },
@@ -595,6 +687,10 @@ function _assertThisInitialized(self) { if (self === void 0) { throw new Referen
 
 var GameSprite = __webpack_require__(/*! ./game_sprite */ "./src/game_sprite.js");
 
+var EvilBlock = __webpack_require__(/*! ./evil_block */ "./src/evil_block.js");
+
+var KiBlast = __webpack_require__(/*! ./ki_blash */ "./src/ki_blash.js");
+
 var HeroSprite =
 /*#__PURE__*/
 function (_GameSprite) {
@@ -606,8 +702,10 @@ function (_GameSprite) {
     _classCallCheck(this, HeroSprite);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(HeroSprite).call(this, options));
+    _this.type = "hero";
     _this.speed = 0;
     _this.hp = 120;
+    _this.kp = 100;
     var image = new Image();
     image.src = "https://i.imgur.com/JsuhqcT.png";
     image.height = 150;
@@ -615,7 +713,9 @@ function (_GameSprite) {
     _this.hitboxHeight = 150;
     _this.hitboxWidth = 75;
     _this.image = image;
+    _this.touchingBlock = false;
     _this.draw = _this.draw.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+    _this.facing = "right";
 
     _this.image.onload = function () {
       _this.loaded = true;
@@ -634,10 +734,44 @@ function (_GameSprite) {
       }
     }
   }, {
+    key: "handleCollision",
+    value: function handleCollision(obstacle, hitPojo) {
+      console.log("Hero hit something."); //  debugger;
+
+      if (obstacle.isagoddamnblock && hitPojo.type === "sidestrike" && hitPojo.direction === "right") {
+        var tink = new Audio();
+        tink.src = "https://s3.us-east-2.amazonaws.com/hedronattack/baseball_short.m4a";
+
+        if (tink.currentTime <= 0 && tink.paused) {
+          tink.play();
+        } else {
+          tink.pause();
+        } //document.createElement
+
+
+        this.posX -= 12;
+        obstacle.posX += 2;
+        this.draw(ctx);
+      } else if (obstacle.isagoddamnblock && hitPojo.type === "sidestrike" && hitPojo.direction === "left") {
+        var _tink = new Audio();
+
+        _tink.src = "https://s3.us-east-2.amazonaws.com/hedronattack/baseball_short.m4a";
+
+        if (_tink.currentTime <= 0 && _tink.paused) {
+          _tink.play();
+        } else {
+          _tink.pause();
+        }
+
+        this.posX += 12;
+        obstacle.posX -= 2;
+        this.draw(ctx);
+      }
+    }
+  }, {
     key: "takeDamage",
     value: function takeDamage() {
-      console.log("Took 20 points of damage");
-      this.hp -= 20;
+      this.hp -= 10;
 
       if (this.stillAlive()) {
         var grunt = new Audio();
@@ -662,6 +796,8 @@ function (_GameSprite) {
   }, {
     key: "goLeft",
     value: function goLeft() {
+      this.facing = "left";
+
       if (this.posX > 50) {
         this.posX -= 12;
       }
@@ -671,6 +807,8 @@ function (_GameSprite) {
   }, {
     key: "goRight",
     value: function goRight() {
+      this.facing = "right";
+
       if (this.posX + 75 < ctx.canvas.width - 52) {
         this.posX += 12;
       }
@@ -683,6 +821,34 @@ function (_GameSprite) {
       // console.log(Key);
       if (Key.isDown(Key.LEFT)) this.goLeft();
       if (Key.isDown(Key.RIGHT)) this.goRight();
+      if (Key.isDown(Key.KI)) this.kiBlast();
+    }
+  }, {
+    key: "kiBlast",
+    value: function kiBlast() {
+      if (this.kp > 0) {
+        if (this.facing === "left") {
+          this.kp -= 1;
+          var blast = new KiBlast({
+            speed: -10,
+            posX: this.posX - 5,
+            game: this.game
+          });
+          this.game.kiBlasts.push(blast);
+        } else {
+          this.kp -= 1;
+
+          var _blast = new KiBlast({
+            speed: 10,
+            posX: this.posX + 80,
+            game: this.game
+          });
+
+          this.game.kiBlasts.push(_blast);
+        }
+      }
+
+      this.draw(ctx);
     }
   }, {
     key: "remove",
@@ -697,6 +863,103 @@ function (_GameSprite) {
 }(GameSprite);
 
 module.exports = HeroSprite;
+
+/***/ }),
+
+/***/ "./src/ki_blash.js":
+/*!*************************!*\
+  !*** ./src/ki_blash.js ***!
+  \*************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+var GameSprite = __webpack_require__(/*! ./game_sprite */ "./src/game_sprite.js");
+
+var EvilBlock = __webpack_require__(/*! ./evil_block */ "./src/evil_block.js");
+
+var KiBlast =
+/*#__PURE__*/
+function (_GameSprite) {
+  _inherits(KiBlast, _GameSprite);
+
+  function KiBlast(params) {
+    var _this;
+
+    _classCallCheck(this, KiBlast);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(KiBlast).call(this, params));
+    _this.type = "Evil Block";
+    _this.hitboxHeight = 10;
+    _this.hitboxWidth = 10;
+    var blastImage = new Image();
+    blastImage.src = "https://i.imgur.com/wx7qhXC.png"; //10x10 too small
+
+    blastImage.height = 10;
+    blastImage.width = 10;
+    _this.posY = _this.game.hero.posY + 70;
+    _this.image = blastImage;
+    _this.draw = _this.draw.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+
+    _this.image.onload = function () {
+      _this.loaded = true;
+    };
+
+    return _this;
+  }
+
+  _createClass(KiBlast, [{
+    key: "update",
+    value: function update(ctx) {
+      this.posX += this.speed;
+      this.draw(ctx);
+
+      if (this.posX > ctx.canvas.width || this.posX <= 0) {
+        this.remove();
+      }
+    }
+  }, {
+    key: "draw",
+    value: function draw(ctx) {
+      if (this.loaded) {
+        ctx.drawImage(this.image, this.posX, this.posY);
+      }
+    }
+  }, {
+    key: "handleCollision",
+    value: function handleCollision(obstacle) {
+      if (obstacle instanceof EvilBlock) {
+        console.log("Hit the block");
+      }
+    }
+  }, {
+    key: "remove",
+    value: function remove() {
+      this.game.remove(this);
+    }
+  }]);
+
+  return KiBlast;
+}(GameSprite);
+
+module.exports = KiBlast;
 
 /***/ })
 

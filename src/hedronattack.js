@@ -6,6 +6,8 @@ const Key = {
   _pressed: {},
   LEFT: 65,
   RIGHT: 68,
+  // KI: 75,
+  PUNCH: 80,
   isDown: function(keyCode) {
     return this._pressed[keyCode];
   },

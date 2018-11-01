@@ -1,6 +1,7 @@
 const EvilBlock = require('./evil_block');
 //const KiOrb = require('./ki_orb');
 const HeroSprite = require('./hero_sprite');
+const KiBlast = require('./ki_blash');
 
 class Game {
     constructor(ctx, Key){
@@ -9,6 +10,7 @@ class Game {
         this.blocks = [];
         this.addBlock = this.addBlock.bind(this);
         this.kiOrbs = [];
+        this.kiBlasts = [];
         this.ctx = ctx;
         this.Key = Key;
         // alert(this.Key);
@@ -39,7 +41,7 @@ class Game {
                     console.log(hitPojo);
                     let type = hitPojo.type;
                     
-                    let hit = striker.handleCollision(strikee, type);
+                    let hit = striker.handleCollision(strikee, hitPojo);
                     if (hit) return ;
         }
       }
@@ -71,6 +73,8 @@ class Game {
     addKiOrbs(){
       
     }
+
+    
 
 
 
@@ -115,41 +119,75 @@ class Game {
           this.blocks[i].update(this.ctx);
        }
     }
+
+    moveBlasts(){
+        for(i in this.kiBlasts) {
+            this.kiBlasts[i].update(this.ctx);
+        }
+    }
   
+   
 
     
    drawField(){
+       const bgm = new Audio("https://s3.us-east-2.amazonaws.com/hedronattack/brahms_bgm_short.m4a");
+       bgm.play();
         this.grassLoad();
         this.skyLoad();
         this.loadPillars();
-        // this.addBlock();
-       setInterval(() => this.addBlock(), 500);
+        
+        // back to 500 after testing.
+       setInterval(() => this.addBlock(), 1000);
         this.addHero();  
         alert("The evil Hedronites are making a desperate attack! Fight, Kam! For great justice!");
+    
 
+   }
+
+   styleHp(hp){
+       if (this.hero.hp >= 80){
+           hp.style.color = "chartreuse";
+       } else if (this.hero.hp < 80 && this.hero.hp > 30) {
+           hp.style.color = "yellow";
+       } else {
+           hp.style.color = "red";
+       }
+   }
+
+   styleKp(kp){
+       kp.style.color = "cyan";
    }
 
    
    drawFrame(){
        requestAnimationFrame(this.drawFrame.bind(this));
        this.detectCollision();
+      //detect collsion at beginning before last change
        if (this.over) {
            console.log("You died.");
            this.over = false;
            return;
        } else {
+           this.hero.touchingBlock = false;
            this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
            let pattern = this.ctx.createPattern(this.grass, 'repeat');
            this.ctx.fillStyle = pattern;
            this.ctx.fillRect(0, 400, 800, 100);
            let hp = document.getElementById('hero-hp')
-           hp.innerText = `Current HP: ${this.hero.hp}`;
+           hp.innerText = `${this.hero.hp}`;
+           this.styleHp(hp);
+           
+           let kp = document.getElementById('hero-kp')
+           kp.innerText = `${this.hero.kp}`;
+           this.styleKp(kp);
+        //    debugger;
            this.ctx.drawImage(this.sky, 0, -50);
            this.ctx.drawImage(this.leftPillar, 0, 0);
            this.ctx.drawImage(this.rightPillar, 750, 0)
            this.moveBlocks();
            this.hero.update(this.Key);
            this.hero.draw(this.ctx);
+           this.moveBlasts();
        }
   
       
@@ -157,6 +195,9 @@ class Game {
    remove(sprite){
        if (sprite instanceof EvilBlock){
            this.blocks.splice(this.blocks.indexOf(sprite), 1);
+       }
+       if (sprite instanceof KiBlast){
+           this.kiBlasts.splice(this.kiBlasts.indexOf(sprite), 1);
        }
    }
 }
