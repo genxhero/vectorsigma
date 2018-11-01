@@ -26,9 +26,9 @@ class EvilBlock extends GameSprite {
      }
   }
 
-    handleCollision(obstacle){
+    handleCollision(obstacle, type){
         console.log("block hit something");
-        if (obstacle instanceof HeroSprite) {
+        if (obstacle instanceof HeroSprite && type === "overhead") {
             obstacle.takeDamage();
             this.remove();
         }

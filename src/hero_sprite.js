@@ -4,7 +4,7 @@ class HeroSprite extends GameSprite {
     constructor(options){
         super(options);
         this.speed = 0;
-        this.hp = 100;
+        this.hp = 120;
         const image = new Image();
         image.src = "https://i.imgur.com/JsuhqcT.png";
         image.height = 150;
@@ -26,8 +26,11 @@ class HeroSprite extends GameSprite {
             return false;
         }
      }
+
+  
+
     takeDamage(){
-        console.log("Took 25 points of damage");
+        console.log("Took 20 points of damage");
         this.hp -= 20;
         if (this.stillAlive()){
             const grunt = new Audio();
@@ -37,6 +40,7 @@ class HeroSprite extends GameSprite {
             const deathCry = new Audio();
             deathCry.src = "https://s3.us-east-2.amazonaws.com/hedronattack/kam_death_take_1.m4a";
             deathCry.play();
+            this.game.over = true;
         }
       
     }
@@ -44,7 +48,8 @@ class HeroSprite extends GameSprite {
         // console.log(this.image);
         // console.log(`X: ${this.posX}, Y: ${this.posY}`);
         if (this.loaded) {
-            ctx.drawImage(this.image, this.posX, this.posY);  
+            ctx.drawImage(this.image, this.posX, this.posY);
+    
         }
        
     }
@@ -58,7 +63,7 @@ class HeroSprite extends GameSprite {
     }
 
     goRight(){
-      if (this.posX + 75 < ctx.canvas.width - 50) {
+      if (this.posX + 75 < ctx.canvas.width - 52) {
         this.posX += 12;
       }
         this.draw(ctx);
@@ -67,6 +72,7 @@ class HeroSprite extends GameSprite {
 
     update(Key){
         // console.log(Key);
+        
         if (Key.isDown(Key.LEFT)) this.goLeft();
         if (Key.isDown(Key.RIGHT)) this.goRight();
     }

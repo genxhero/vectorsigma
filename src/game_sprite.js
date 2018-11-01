@@ -28,10 +28,11 @@ class GameSprite {
             this.posX < (obstacle.posX + obstacle.hitboxWidth) &&
             // this.posX + this.hitboxWidth <= (obstacle.posX + obstacle.hitboxWidth) && 
            ( this.posX + this.hitboxWidth )> obstacle.posX &&
-             this.posY + this.hitboxHeight - 30 === obstacle.posY) {
-          return true;
+             this.posY + this.hitboxHeight - 20 === obstacle.posY) {
+             
+          return {hit: true, type: "overhead"};
         } else {
-          return false;
+          return {hit: false};
         }
  }
      

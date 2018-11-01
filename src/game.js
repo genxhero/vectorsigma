@@ -4,6 +4,8 @@ const HeroSprite = require('./hero_sprite');
 
 class Game {
     constructor(ctx, Key){
+        this.over = false;
+        this.lastBlockX = 300;
         this.blocks = [];
         this.addBlock = this.addBlock.bind(this);
         this.kiOrbs = [];
@@ -32,8 +34,12 @@ class Game {
                 if (striker instanceof EvilBlock && strikee instanceof EvilBlock) {
                     continue;
                 }
-                if (striker.hitDetected(strikee)){
-                    let hit = striker.handleCollision(strikee);
+                let hitPojo = striker.hitDetected(strikee);
+                if (hitPojo.hit){
+                    console.log(hitPojo);
+                    let type = hitPojo.type;
+                    
+                    let hit = striker.handleCollision(strikee, type);
                     if (hit) return ;
         }
       }
@@ -65,6 +71,8 @@ class Game {
     addKiOrbs(){
       
     }
+
+
 
     grassLoad(){
 
@@ -120,19 +128,30 @@ class Game {
         alert("The evil Hedronites are making a desperate attack! Fight, Kam! For great justice!");
 
    }
+
+   
    drawFrame(){
        requestAnimationFrame(this.drawFrame.bind(this));
        this.detectCollision();
-       this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-       let pattern = this.ctx.createPattern(this.grass, 'repeat');
-       this.ctx.fillStyle = pattern;
-       this.ctx.fillRect(0, 400, 800, 100);
-       this.ctx.drawImage(this.sky, 0, -50);
-       this.ctx.drawImage(this.leftPillar, 0, 0);
-       this.ctx.drawImage(this.rightPillar, 750, 0)
-       this.moveBlocks();
-       this.hero.update(this.Key);
-       this.hero.draw(this.ctx);
+       if (this.over) {
+           console.log("You died.");
+           this.over = false;
+           return;
+       } else {
+           this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+           let pattern = this.ctx.createPattern(this.grass, 'repeat');
+           this.ctx.fillStyle = pattern;
+           this.ctx.fillRect(0, 400, 800, 100);
+           let hp = document.getElementById('hero-hp')
+           hp.innerText = `Current HP: ${this.hero.hp}`;
+           this.ctx.drawImage(this.sky, 0, -50);
+           this.ctx.drawImage(this.leftPillar, 0, 0);
+           this.ctx.drawImage(this.rightPillar, 750, 0)
+           this.moveBlocks();
+           this.hero.update(this.Key);
+           this.hero.draw(this.ctx);
+       }
+  
       
    }
    remove(sprite){

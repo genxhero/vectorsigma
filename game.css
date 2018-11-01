@@ -4,11 +4,21 @@
  position: relative;
  top: 75px;
 }
+
+#hero-hp {
+  color: white;
+  text-shadow: 2px 2px black;
+  font-size: 26px;
+  position: absolute;
+  z-index: 900;
+}
+
 body {
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100%;
+    height: 100%;
     background-image: url("https://i.pinimg.com/originals/b5/f4/76/b5f476003b95683ed591c73c2292319a.png");
     background-repeat: repeat-x;
 }

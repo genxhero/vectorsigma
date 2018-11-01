@@ -151,10 +151,10 @@ function (_GameSprite) {
     }
   }, {
     key: "handleCollision",
-    value: function handleCollision(obstacle) {
+    value: function handleCollision(obstacle, type) {
       console.log("block hit something");
 
-      if (obstacle instanceof HeroSprite) {
+      if (obstacle instanceof HeroSprite && type === "overhead") {
         obstacle.takeDamage();
         this.remove();
       }
@@ -208,6 +208,8 @@ function () {
   function Game(ctx, Key) {
     _classCallCheck(this, Game);
 
+    this.over = false;
+    this.lastBlockX = 300;
     this.blocks = [];
     this.addBlock = this.addBlock.bind(this);
     this.kiOrbs = [];
@@ -240,8 +242,12 @@ function () {
             continue;
           }
 
-          if (striker.hitDetected(strikee)) {
-            var hit = striker.handleCollision(strikee);
+          var hitPojo = striker.hitDetected(strikee);
+
+          if (hitPojo.hit) {
+            console.log(hitPojo);
+            var type = hitPojo.type;
+            var hit = striker.handleCollision(strikee, type);
             if (hit) return;
           }
         }
@@ -362,16 +368,25 @@ function () {
     value: function drawFrame() {
       requestAnimationFrame(this.drawFrame.bind(this));
       this.detectCollision();
-      this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-      var pattern = this.ctx.createPattern(this.grass, 'repeat');
-      this.ctx.fillStyle = pattern;
-      this.ctx.fillRect(0, 400, 800, 100);
-      this.ctx.drawImage(this.sky, 0, -50);
-      this.ctx.drawImage(this.leftPillar, 0, 0);
-      this.ctx.drawImage(this.rightPillar, 750, 0);
-      this.moveBlocks();
-      this.hero.update(this.Key);
-      this.hero.draw(this.ctx);
+
+      if (this.over) {
+        console.log("You died.");
+        this.over = false;
+        return;
+      } else {
+        this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        var pattern = this.ctx.createPattern(this.grass, 'repeat');
+        this.ctx.fillStyle = pattern;
+        this.ctx.fillRect(0, 400, 800, 100);
+        var hp = document.getElementById('hero-hp');
+        hp.innerText = "Current HP: ".concat(this.hero.hp);
+        this.ctx.drawImage(this.sky, 0, -50);
+        this.ctx.drawImage(this.leftPillar, 0, 0);
+        this.ctx.drawImage(this.rightPillar, 750, 0);
+        this.moveBlocks();
+        this.hero.update(this.Key);
+        this.hero.draw(this.ctx);
+      }
     }
   }, {
     key: "remove",
@@ -491,10 +506,15 @@ function () {
       }
 
       if (this.posX >= obstacle.hitboxWidth && this.posX < obstacle.posX + obstacle.hitboxWidth && // this.posX + this.hitboxWidth <= (obstacle.posX + obstacle.hitboxWidth) && 
-      this.posX + this.hitboxWidth > obstacle.posX && this.posY + this.hitboxHeight - 30 === obstacle.posY) {
-        return true;
+      this.posX + this.hitboxWidth > obstacle.posX && this.posY + this.hitboxHeight - 20 === obstacle.posY) {
+        return {
+          hit: true,
+          type: "overhead"
+        };
       } else {
-        return false;
+        return {
+          hit: false
+        };
       }
     }
   }]);
@@ -587,7 +607,7 @@ function (_GameSprite) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(HeroSprite).call(this, options));
     _this.speed = 0;
-    _this.hp = 100;
+    _this.hp = 120;
     var image = new Image();
     image.src = "https://i.imgur.com/JsuhqcT.png";
     image.height = 150;
@@ -616,7 +636,7 @@ function (_GameSprite) {
   }, {
     key: "takeDamage",
     value: function takeDamage() {
-      console.log("Took 25 points of damage");
+      console.log("Took 20 points of damage");
       this.hp -= 20;
 
       if (this.stillAlive()) {
@@ -627,6 +647,7 @@ function (_GameSprite) {
         var deathCry = new Audio();
         deathCry.src = "https://s3.us-east-2.amazonaws.com/hedronattack/kam_death_take_1.m4a";
         deathCry.play();
+        this.game.over = true;
       }
     }
   }, {
@@ -650,7 +671,7 @@ function (_GameSprite) {
   }, {
     key: "goRight",
     value: function goRight() {
-      if (this.posX + 75 < ctx.canvas.width - 50) {
+      if (this.posX + 75 < ctx.canvas.width - 52) {
         this.posX += 12;
       }
 
