@@ -22,12 +22,13 @@ class Game {
     }
 
     allSprites() {
-        return [].concat([this.hero], this.blocks);
+        return [].concat([this.hero], this.blocks, this.kiBlasts);
        
     }
 
     detectCollision(){
         const sprites = this.allSprites();
+        // debugger;
         for (let idx1 = 0; idx1 < sprites.length; idx1++){
             for (let idx2 = 0; idx2 < sprites.length; idx2++ ){
                 
@@ -36,9 +37,19 @@ class Game {
                 if (striker instanceof EvilBlock && strikee instanceof EvilBlock) {
                     continue;
                 }
+
+                if (striker instanceof KiBlast && strikee instanceof KiBlast) {
+                    continue;
+                }
+
+                if (striker instanceof HeroSprite && strikee instanceof HeroSprite) {
+                    continue;
+                }
                 let hitPojo = striker.hitDetected(strikee);
                 if (hitPojo.hit){
+                  if (hitPojo.type )
                     console.log(hitPojo);
+                    
                     let type = hitPojo.type;
                     
                     let hit = striker.handleCollision(strikee, hitPojo);
@@ -176,8 +187,12 @@ class Game {
            let hp = document.getElementById('hero-hp')
            hp.innerText = `${this.hero.hp}`;
            this.styleHp(hp);
-           
-           let kp = document.getElementById('hero-kp')
+
+           let kills = document.getElementById('hero-kills');
+           kills.innerText = `${this.hero.killScore}`
+           let score = document.getElementById('hero-orbs');
+           score.innerText = `${this.hero.collected}`;
+           let kp = document.getElementById('hero-kp');
            kp.innerText = `${this.hero.kp}`;
            this.styleKp(kp);
         //    debugger;

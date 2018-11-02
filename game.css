@@ -41,6 +41,24 @@
   margin-left: 10px;
 }
 
+#hero-kills  {
+  color: white;
+  text-shadow: 2px 2px black;
+  font-size: 26px;
+  /* position: absolute; */
+  z-index: 900;
+  margin-left: 10px;
+}
+
+#hero-orbs  {
+  color: white;
+  text-shadow: 2px 2px black;
+  font-size: 26px;
+  /* position: absolute; */
+  z-index: 900;
+  margin-left: 10px;
+}
+
 body {
     display: flex;
     justify-content: center;

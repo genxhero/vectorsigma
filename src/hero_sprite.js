@@ -1,6 +1,7 @@
 const GameSprite = require('./game_sprite');
 const EvilBlock = require('./evil_block');
 const KiBlast = require('./ki_blash');
+const Punch = require('./punch');
 
 class HeroSprite extends GameSprite {
     constructor(options){
@@ -19,6 +20,8 @@ class HeroSprite extends GameSprite {
         this.touchingBlock = false;
         this.draw = this.draw.bind(this);
         this.facing = "right";
+        this.killScore = 0;
+        this.collected = 0;
         this.image.onload = () => {
              this.loaded = true;
         };
@@ -114,27 +117,57 @@ class HeroSprite extends GameSprite {
         
         if (Key.isDown(Key.LEFT)) this.goLeft();
         if (Key.isDown(Key.RIGHT)) this.goRight();
-        if (Key.isDown(Key.KI)) this.kiBlast();
+        if (Key.isDown(Key.KI)) {
+            Key._pressed[75] = false;
+            this.kiBlast();
+        }
+        if (Key.isDOwn(Key.PUNCH)) {
+            key._pressed[] = false;
+            this.punch();
+        }
     }
     
 
+   
     kiBlast(){
 
         if (this.kp > 0 ){
             if (this.facing === "left"){
-                this.kp -= 1;
+                this.kp -= 10;
                 const blast = new KiBlast({speed: -10, posX: this.posX - 5, game: this.game});
                 this.game.kiBlasts.push(blast);
                 
             } else {
-                this.kp -= 1;
+                this.kp -= 10;
                 const blast = new KiBlast({ speed: 10, posX: this.posX + 80, game:this.game});
                 this.game.kiBlasts.push(blast);
 
             }
+     }  else {
+         const oom = new Audio();
+            oom.src = "https://s3.us-east-2.amazonaws.com/hedronattack/ki_sapped_take_1.m4a";
+            oom.play();
      }
         this.draw(ctx);
 
+    }
+
+
+    punch(){
+        if (this.game.punches <= 0) {
+            if (this.facing === "left") {
+                this.kp -= 10;
+                const punch = new Punch({ speed: -10, posX: this.posX - 5, game: this.game });
+                this.game.punches.push(punch);
+
+            } else {
+                this.kp -= 10;
+                const punch = new Punch({ speed: 10, posX: this.posX + 80, game: this.game });
+                this.game.punches.push(punch);
+
+            }
+        } 
+        this.draw(ctx);
     }
 
     remove(object) {

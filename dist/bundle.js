@@ -210,7 +210,9 @@ function (_GameSprite) {
       var startRad = 10;
       var endRad = 100;
       var currentRad = startRad;
-      this.game.remove(this);
+      var kaboosh = new Audio();
+      kaboosh.src = "https://www.freesfx.co.uk/rx2/mp3s/6/17955_1464205617.mp3";
+      kaboosh.play().then(this.game.remove(this)); // this.game.remove(this);
     }
   }]);
 
@@ -266,12 +268,12 @@ function () {
   _createClass(Game, [{
     key: "allSprites",
     value: function allSprites() {
-      return [].concat([this.hero], this.blocks);
+      return [].concat([this.hero], this.blocks, this.kiBlasts);
     }
   }, {
     key: "detectCollision",
     value: function detectCollision() {
-      var sprites = this.allSprites();
+      var sprites = this.allSprites(); // debugger;
 
       for (var idx1 = 0; idx1 < sprites.length; idx1++) {
         for (var idx2 = 0; idx2 < sprites.length; idx2++) {
@@ -282,10 +284,18 @@ function () {
             continue;
           }
 
+          if (striker instanceof KiBlast && strikee instanceof KiBlast) {
+            continue;
+          }
+
+          if (striker instanceof HeroSprite && strikee instanceof HeroSprite) {
+            continue;
+          }
+
           var hitPojo = striker.hitDetected(strikee);
 
           if (hitPojo.hit) {
-            console.log(hitPojo);
+            if (hitPojo.type) console.log(hitPojo);
             var type = hitPojo.type;
             var hit = striker.handleCollision(strikee, hitPojo);
             if (hit) return;
@@ -447,6 +457,10 @@ function () {
         var hp = document.getElementById('hero-hp');
         hp.innerText = "".concat(this.hero.hp);
         this.styleHp(hp);
+        var kills = document.getElementById('hero-kills');
+        kills.innerText = "".concat(this.hero.killScore);
+        var score = document.getElementById('hero-orbs');
+        score.innerText = "".concat(this.hero.collected);
         var kp = document.getElementById('hero-kp');
         kp.innerText = "".concat(this.hero.kp);
         this.styleKp(kp); //    debugger;
@@ -577,8 +591,16 @@ function () {
   }, {
     key: "hitDetected",
     value: function hitDetected(obstacle) {
+      if (obstacle === undefined) {
+        return {
+          hit: false
+        };
+      }
+
       if (this === obstacle) {
-        return false;
+        return {
+          hit: false
+        };
       }
 
       if (this.posX >= obstacle.hitboxWidth && this.posX < obstacle.posX + obstacle.hitboxWidth && // this.posX + this.hitboxWidth <= (obstacle.posX + obstacle.hitboxWidth) && 
@@ -638,7 +660,7 @@ var Key = {
   _pressed: {},
   LEFT: 65,
   RIGHT: 68,
-  // KI: 75,
+  KI: 75,
   PUNCH: 80,
   isDown: function isDown(keyCode) {
     return this._pressed[keyCode];
@@ -671,204 +693,9 @@ document.addEventListener("DOMContentLoaded", function () {
   !*** ./src/hero_sprite.js ***!
   \****************************/
 /*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-var GameSprite = __webpack_require__(/*! ./game_sprite */ "./src/game_sprite.js");
-
-var EvilBlock = __webpack_require__(/*! ./evil_block */ "./src/evil_block.js");
-
-var KiBlast = __webpack_require__(/*! ./ki_blash */ "./src/ki_blash.js");
-
-var HeroSprite =
-/*#__PURE__*/
-function (_GameSprite) {
-  _inherits(HeroSprite, _GameSprite);
-
-  function HeroSprite(options) {
-    var _this;
-
-    _classCallCheck(this, HeroSprite);
-
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(HeroSprite).call(this, options));
-    _this.type = "hero";
-    _this.speed = 0;
-    _this.hp = 120;
-    _this.kp = 100;
-    var image = new Image();
-    image.src = "https://i.imgur.com/JsuhqcT.png";
-    image.height = 150;
-    image.width = 75;
-    _this.hitboxHeight = 150;
-    _this.hitboxWidth = 75;
-    _this.image = image;
-    _this.touchingBlock = false;
-    _this.draw = _this.draw.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-    _this.facing = "right";
-
-    _this.image.onload = function () {
-      _this.loaded = true;
-    };
-
-    return _this;
-  }
-
-  _createClass(HeroSprite, [{
-    key: "stillAlive",
-    value: function stillAlive() {
-      if (this.hp > 0) {
-        return true;
-      } else {
-        return false;
-      }
-    }
-  }, {
-    key: "handleCollision",
-    value: function handleCollision(obstacle, hitPojo) {
-      console.log("Hero hit something."); //  debugger;
-
-      if (obstacle.isagoddamnblock && hitPojo.type === "sidestrike" && hitPojo.direction === "right") {
-        var tink = new Audio();
-        tink.src = "https://s3.us-east-2.amazonaws.com/hedronattack/baseball_short.m4a";
-
-        if (tink.currentTime <= 0 && tink.paused) {
-          tink.play();
-        } else {
-          tink.pause();
-        } //document.createElement
-
-
-        this.posX -= 12;
-        obstacle.posX += 2;
-        this.draw(ctx);
-      } else if (obstacle.isagoddamnblock && hitPojo.type === "sidestrike" && hitPojo.direction === "left") {
-        var _tink = new Audio();
-
-        _tink.src = "https://s3.us-east-2.amazonaws.com/hedronattack/baseball_short.m4a";
-
-        if (_tink.currentTime <= 0 && _tink.paused) {
-          _tink.play();
-        } else {
-          _tink.pause();
-        }
-
-        this.posX += 12;
-        obstacle.posX -= 2;
-        this.draw(ctx);
-      }
-    }
-  }, {
-    key: "takeDamage",
-    value: function takeDamage() {
-      this.hp -= 10;
-
-      if (this.stillAlive()) {
-        var grunt = new Audio();
-        grunt.src = "https://s3.us-east-2.amazonaws.com/hedronattack/kam_pain.m4a";
-        grunt.play();
-      } else {
-        var deathCry = new Audio();
-        deathCry.src = "https://s3.us-east-2.amazonaws.com/hedronattack/kam_death_take_1.m4a";
-        deathCry.play();
-        this.game.over = true;
-      }
-    }
-  }, {
-    key: "draw",
-    value: function draw(ctx) {
-      // console.log(this.image);
-      // console.log(`X: ${this.posX}, Y: ${this.posY}`);
-      if (this.loaded) {
-        ctx.drawImage(this.image, this.posX, this.posY);
-      }
-    }
-  }, {
-    key: "goLeft",
-    value: function goLeft() {
-      this.facing = "left";
-
-      if (this.posX > 50) {
-        this.posX -= 12;
-      }
-
-      this.draw(ctx); // this.game.drawFrame();
-    }
-  }, {
-    key: "goRight",
-    value: function goRight() {
-      this.facing = "right";
-
-      if (this.posX + 75 < ctx.canvas.width - 52) {
-        this.posX += 12;
-      }
-
-      this.draw(ctx); // this.game.drawFrame();
-    }
-  }, {
-    key: "update",
-    value: function update(Key) {
-      // console.log(Key);
-      if (Key.isDown(Key.LEFT)) this.goLeft();
-      if (Key.isDown(Key.RIGHT)) this.goRight();
-      if (Key.isDown(Key.KI)) this.kiBlast();
-    }
-  }, {
-    key: "kiBlast",
-    value: function kiBlast() {
-      if (this.kp > 0) {
-        if (this.facing === "left") {
-          this.kp -= 1;
-          var blast = new KiBlast({
-            speed: -10,
-            posX: this.posX - 5,
-            game: this.game
-          });
-          this.game.kiBlasts.push(blast);
-        } else {
-          this.kp -= 1;
-
-          var _blast = new KiBlast({
-            speed: 10,
-            posX: this.posX + 80,
-            game: this.game
-          });
-
-          this.game.kiBlasts.push(_blast);
-        }
-      }
-
-      this.draw(ctx);
-    }
-  }, {
-    key: "remove",
-    value: function remove(object) {
-      if (object instanceof EvilBlock) {
-        this.blocks.splice(this.blocks.indexOf(object), 1);
-      }
-    }
-  }]);
-
-  return HeroSprite;
-}(GameSprite);
-
-module.exports = HeroSprite;
+throw new Error("Module build failed (from ./node_modules/babel-loader/lib/index.js):\nSyntaxError: /Users/aarongoddard/Documents/Coding/vectorsigma/src/hero_sprite.js: Unexpected token (125:25)\n\n\u001b[0m \u001b[90m 123 | \u001b[39m        }\u001b[0m\n\u001b[0m \u001b[90m 124 | \u001b[39m        \u001b[36mif\u001b[39m (\u001b[33mKey\u001b[39m\u001b[33m.\u001b[39misDOwn(\u001b[33mKey\u001b[39m\u001b[33m.\u001b[39m\u001b[33mPUNCH\u001b[39m)) {\u001b[0m\n\u001b[0m\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 125 | \u001b[39m            key\u001b[33m.\u001b[39m_pressed[] \u001b[33m=\u001b[39m \u001b[36mfalse\u001b[39m\u001b[33m;\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m     | \u001b[39m                         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 126 | \u001b[39m            \u001b[36mthis\u001b[39m\u001b[33m.\u001b[39mpunch()\u001b[33m;\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 127 | \u001b[39m        }\u001b[0m\n\u001b[0m \u001b[90m 128 | \u001b[39m    }\u001b[0m\n    at _class.raise (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:3939:15)\n    at _class.unexpected (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:5248:16)\n    at _class.parseExprAtom (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:6328:20)\n    at _class.parseExprAtom (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:3635:52)\n    at _class.parseExprSubscripts (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:5924:21)\n    at _class.parseMaybeUnary (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:5903:21)\n    at _class.parseExprOps (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:5812:21)\n    at _class.parseMaybeConditional (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:5784:21)\n    at _class.parseMaybeAssign (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:5731:21)\n    at _class.parseExpression (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:5684:21)\n    at _class.parseSubscript (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:6008:31)\n    at _class.parseSubscripts (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:5944:19)\n    at _class.parseExprSubscripts (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:5934:17)\n    at _class.parseMaybeUnary (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:5903:21)\n    at _class.parseExprOps (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:5812:21)\n    at _class.parseMaybeConditional (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:5784:21)\n    at _class.parseMaybeAssign (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:5731:21)\n    at _class.parseExpression (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:5684:21)\n    at _class.parseStatementContent (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:7267:21)\n    at _class.parseStatement (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:7153:17)\n    at _class.parseBlockOrModuleBlockBody (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:7707:23)\n    at _class.parseBlockBody (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:7694:10)\n    at _class.parseBlock (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:7683:10)\n    at _class.parseStatementContent (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:7212:21)\n    at _class.parseStatement (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:7153:17)\n    at _class.parseIfStatement (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:7493:28)\n    at _class.parseStatementContent (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:7184:21)\n    at _class.parseStatement (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:7153:17)\n    at _class.parseBlockOrModuleBlockBody (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:7707:23)\n    at _class.parseBlockBody (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:7694:10)");
 
 /***/ }),
 
@@ -912,7 +739,7 @@ function (_GameSprite) {
     _classCallCheck(this, KiBlast);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(KiBlast).call(this, params));
-    _this.type = "Evil Block";
+    _this.type = "kiblast";
     _this.hitboxHeight = 10;
     _this.hitboxWidth = 10;
     var blastImage = new Image();
@@ -951,8 +778,11 @@ function (_GameSprite) {
   }, {
     key: "handleCollision",
     value: function handleCollision(obstacle) {
-      if (obstacle instanceof EvilBlock) {
+      if (obstacle.type === "Evil Block") {
         console.log("Hit the block");
+        this.game.hero.killScore += 1;
+        obstacle.explody();
+        this.remove();
       }
     }
   }, {

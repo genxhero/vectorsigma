@@ -1,20 +1,20 @@
 const GameSprite = require('./game_sprite');
 const EvilBlock = require('./evil_block');
 
-class KiBlast extends GameSprite {
+class Punch extends GameSprite {
 
     constructor(params) {
         super(params)
         this.type = "kiblast";
         this.hitboxHeight = 10;
         this.hitboxWidth = 10;
-        const blastImage = new Image();
-        blastImage.src = "https://i.imgur.com/wx7qhXC.png";
+        const punchImage = new Image();
+        punchImage.src = "https://i.imgur.com/wx7qhXC.png";
         //10x10 too small
-        blastImage.height = 10;
-        blastImage.width = 10;
+        punchImage.height = 10;
+        punchImage.width = 10;
         this.posY = this.game.hero.posY + 70;
-        this.image = blastImage;
+        this.image = punchImage;
         this.draw = this.draw.bind(this);
         this.image.onload = () => {
             this.loaded = true;
@@ -22,13 +22,13 @@ class KiBlast extends GameSprite {
 
     }
 
-    update(ctx){
+    update(ctx) {
         this.posX += this.speed;
-         this.draw(ctx);
-         if (this.posX > ctx.canvas.width || this.posX <= 0) {
-             this.remove();
-         }
-     }
+        this.draw(ctx);
+        if (this.posX > ctx.canvas.width || this.posX <= 0) {
+            this.remove();
+        }
+    }
 
 
 
@@ -40,17 +40,18 @@ class KiBlast extends GameSprite {
 
     handleCollision(obstacle) {
         if (obstacle.type === "Evil Block") {
-          console.log("Hit the block");
-          this.game.hero.killScore += 1;
-          obstacle.explody();
-          this.remove();
+            console.log("punched the block");
+            //add health to Evil Blocks
+            this.game.hero.killScore += 1;
+            obstacle.explody();
+            this.remove();
         }
     }
 
-    remove(){
+    remove() {
         this.game.remove(this);
     }
 
 }
 
-module.exports = KiBlast;
+module.exports = Punch;

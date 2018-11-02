@@ -21,8 +21,11 @@ class GameSprite {
 
     hitDetected(obstacle) {
         
+        if (obstacle === undefined){
+            return {hit: false};
+        }
          if (this === obstacle){
-             return false;
+             return { hit: false };
          }
          
         if (this.posX >= obstacle.hitboxWidth && 

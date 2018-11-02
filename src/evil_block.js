@@ -15,6 +15,7 @@ class EvilBlock extends GameSprite {
         blockImage.src = "https://i.imgur.com/vlgHgAL.png";
         blockImage.height = 100;
         blockImage.width = 100;
+        
         this.image = blockImage;
         this.draw = this.draw.bind(this);
         this.image.onload = () => {
@@ -81,8 +82,10 @@ class EvilBlock extends GameSprite {
         const startRad = 10;
         const endRad = 100;
         let currentRad = startRad;
-
-        this.game.remove(this);
+        const kaboosh = new Audio();
+        kaboosh.src = "https://www.freesfx.co.uk/rx2/mp3s/6/17955_1464205617.mp3";
+        kaboosh.play().then(this.game.remove(this));
+        // this.game.remove(this);
     }
 
 }
