@@ -48,7 +48,7 @@ class EvilBlock extends GameSprite {
             return {hit: false};
         }
 
-        if (this.posX >= obstacle.hitboxWidth &&
+        if (
             this.posX < (obstacle.posX + obstacle.hitboxWidth) &&
             // this.posX + this.hitboxWidth <= (obstacle.posX + obstacle.hitboxWidth) && 
             (this.posX + this.hitboxWidth) > obstacle.posX &&
@@ -76,7 +76,7 @@ class EvilBlock extends GameSprite {
             const smack = new Audio();
             smack.src = "https://www.freesfx.co.uk/rx2/mp3s/6/18365_1464637302.mp3";
             smack.play();
-            console.log("Crashed Block HP:", this.hp);
+            console.log("Block X: ", this.posX, "Block Right Edge:", this.posX + this.hitboxWidth);
             const landy = new LandBlock ({hp: this.hp, posX: this.posX, posY: this.posY, game: this.game});
             this.game.remove(this);        
             ctx.drawImage(landy.image, this.posX, this.posY);

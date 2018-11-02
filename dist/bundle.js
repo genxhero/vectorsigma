@@ -177,7 +177,7 @@ function (_GameSprite) {
         };
       }
 
-      if (this.posX >= obstacle.hitboxWidth && this.posX < obstacle.posX + obstacle.hitboxWidth && // this.posX + this.hitboxWidth <= (obstacle.posX + obstacle.hitboxWidth) && 
+      if (this.posX < obstacle.posX + obstacle.hitboxWidth && // this.posX + this.hitboxWidth <= (obstacle.posX + obstacle.hitboxWidth) && 
       this.posX + this.hitboxWidth > obstacle.posX && this.posY + this.hitboxHeight === obstacle.posY) {
         return {
           hit: true,
@@ -209,7 +209,7 @@ function (_GameSprite) {
         var smack = new Audio();
         smack.src = "https://www.freesfx.co.uk/rx2/mp3s/6/18365_1464637302.mp3";
         smack.play();
-        console.log("Crashed Block HP:", this.hp);
+        console.log("Block X: ", this.posX, "Block Right Edge:", this.posX + this.hitboxWidth);
         var landy = new LandBlock({
           hp: this.hp,
           posX: this.posX,
