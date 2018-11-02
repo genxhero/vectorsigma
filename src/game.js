@@ -2,12 +2,16 @@ const EvilBlock = require('./evil_block');
 //const KiOrb = require('./ki_orb');
 const HeroSprite = require('./hero_sprite');
 const KiBlast = require('./ki_blash');
+const Punch = require('./punch');
+const LandBlock = require('./land_block');
 
 class Game {
     constructor(ctx, Key){
         this.over = false;
+        this.punches = [];
         this.lastBlockX = 300;
         this.blocks = [];
+        this.landblocks = [];
         this.addBlock = this.addBlock.bind(this);
         this.kiOrbs = [];
         this.kiBlasts = [];
@@ -22,7 +26,7 @@ class Game {
     }
 
     allSprites() {
-        return [].concat([this.hero], this.blocks, this.kiBlasts);
+        return [].concat([this.hero], this.blocks, this.kiBlasts, this.punches, this.landblocks);
        
     }
 
@@ -34,6 +38,9 @@ class Game {
                 
                 let striker = sprites[idx1];
                 let strikee = sprites[idx2];
+                if (idx1 === idx2) {
+                    continue;
+                }
                 if (striker instanceof EvilBlock && strikee instanceof EvilBlock) {
                     continue;
                 }
@@ -45,9 +52,13 @@ class Game {
                 if (striker instanceof HeroSprite && strikee instanceof HeroSprite) {
                     continue;
                 }
+
+                if (striker instanceof Punch && strikee instanceof Punch) {
+                    continue;
+                }
                 let hitPojo = striker.hitDetected(strikee);
                 if (hitPojo.hit){
-                  if (hitPojo.type )
+                  if (hitPojo.type != "overhead")
                     console.log(hitPojo);
                     
                     let type = hitPojo.type;
@@ -148,7 +159,7 @@ class Game {
         this.loadPillars();
         
         // back to 500 after testing.
-       setInterval(() => this.addBlock(), 1000);
+       setInterval(() => this.addBlock(), 500);
         this.addHero();  
         alert("The evil Hedronites are making a desperate attack! Fight, Kam! For great justice!");
     
@@ -167,6 +178,12 @@ class Game {
 
    styleKp(kp){
        kp.style.color = "cyan";
+   }
+
+   standbyLandblocks(){
+       for (i in this.landblocks) {
+           this.landblocks[i].update(this.ctx);
+       }
    }
 
    
@@ -200,6 +217,7 @@ class Game {
            this.ctx.drawImage(this.leftPillar, 0, 0);
            this.ctx.drawImage(this.rightPillar, 750, 0)
            this.moveBlocks();
+           this.standbyLandblocks();
            this.hero.update(this.Key);
            this.hero.draw(this.ctx);
            this.moveBlasts();
@@ -213,6 +231,12 @@ class Game {
        }
        if (sprite instanceof KiBlast){
            this.kiBlasts.splice(this.kiBlasts.indexOf(sprite), 1);
+       }
+       if (sprite instanceof Punch){
+           this.punches.splice(this.punches.indexOf(sprite), 1);
+       }
+       if (sprite instanceof LandBlock){
+           this.landblocks.splice(this.landblocks.indexOf(sprite), 1);
        }
    }
 }

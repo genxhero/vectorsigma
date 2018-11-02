@@ -5,14 +5,14 @@ class Punch extends GameSprite {
 
     constructor(params) {
         super(params)
-        this.type = "kiblast";
+        this.type = "Punch";
         this.hitboxHeight = 10;
-        this.hitboxWidth = 10;
+        this.hitboxWidth = 20;
         const punchImage = new Image();
         punchImage.src = "https://i.imgur.com/wx7qhXC.png";
         //10x10 too small
         punchImage.height = 10;
-        punchImage.width = 10;
+        punchImage.width = 20;
         this.posY = this.game.hero.posY + 70;
         this.image = punchImage;
         this.draw = this.draw.bind(this);
@@ -39,13 +39,18 @@ class Punch extends GameSprite {
     }
 
     handleCollision(obstacle) {
-        if (obstacle.type === "Evil Block") {
+        if (obstacle.type === "Evil Block" || obstacle.type ==="LandBlock") {
             console.log("punched the block");
             //add health to Evil Blocks
-            this.game.hero.killScore += 1;
-            obstacle.explody();
-            this.remove();
+            obstacle.hp -= 1
+            if (obstacle.hp === 0){
+                this.game.hero.killScore += 1;
+                console.log("Killed block with fists");
+                obstacle.explody();
+            }  
+            
         }
+        this.remove();
     }
 
     remove() {

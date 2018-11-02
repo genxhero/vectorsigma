@@ -37,3 +37,7 @@ The most important thing is to the the game to work.
 *  Saturday:
 *  Sunday: Deploy to Heroku
 
+
+### Buglist
+* When standing at the extreme left side of the pla areaa, a block landing directly on top of the hero will not be treated as an overhead strike.  Instead it is treated as through the player were making a side strike against the block.
+* Falling blocks crashing on top of land blocks will some times fail to detect the collision.

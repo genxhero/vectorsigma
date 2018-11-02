@@ -115,6 +115,8 @@ var GameSprite = __webpack_require__(/*! ./game_sprite */ "./src/game_sprite.js"
 
 var HeroSprite = __webpack_require__(/*! ./hero_sprite */ "./src/hero_sprite.js");
 
+var LandBlock = __webpack_require__(/*! ./land_block */ "./src/land_block.js");
+
 var EvilBlock =
 /*#__PURE__*/
 function (_GameSprite) {
@@ -127,12 +129,13 @@ function (_GameSprite) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(EvilBlock).call(this, params));
     _this.type = "Evil Block";
-    _this.speed = 5;
+    _this.speed = 10;
+    _this.hp = 3;
     _this.hitboxHeight = 100;
     _this.hitboxWidth = 100;
     _this.isagoddamnblock = true;
     var blockImage = new Image();
-    blockImage.src = "https://i.imgur.com/vlgHgAL.png";
+    blockImage.src = "https://i.imgur.com/6M3wxOW.png";
     blockImage.height = 100;
     blockImage.width = 100;
     _this.image = blockImage;
@@ -159,6 +162,11 @@ function (_GameSprite) {
         obstacle.takeDamage();
         this.remove();
       }
+
+      if (obstacle instanceof LandBlock && hitPojo.type === "overhead") {
+        // console.log("Block destroys land block");
+        obstacle.explody();
+      }
     }
   }, {
     key: "hitDetected",
@@ -173,7 +181,11 @@ function (_GameSprite) {
       this.posX + this.hitboxWidth > obstacle.posX && this.posY + this.hitboxHeight === obstacle.posY) {
         return {
           hit: true,
-          type: "overhead"
+          type: "overhead",
+          striker: this.type,
+          strikee: obstacle.type,
+          strikerX: this.posX,
+          strikerY: this.posY
         };
       } else {
         return {
@@ -197,7 +209,16 @@ function (_GameSprite) {
         var smack = new Audio();
         smack.src = "https://www.freesfx.co.uk/rx2/mp3s/6/18365_1464637302.mp3";
         smack.play();
+        console.log("Crashed Block HP:", this.hp);
+        var landy = new LandBlock({
+          hp: this.hp,
+          posX: this.posX,
+          posY: this.posY,
+          game: this.game
+        });
         this.game.remove(this);
+        ctx.drawImage(landy.image, this.posX, this.posY);
+        this.game.landblocks.push(landy);
       }
     }
   }, {
@@ -243,6 +264,10 @@ var HeroSprite = __webpack_require__(/*! ./hero_sprite */ "./src/hero_sprite.js"
 
 var KiBlast = __webpack_require__(/*! ./ki_blash */ "./src/ki_blash.js");
 
+var Punch = __webpack_require__(/*! ./punch */ "./src/punch.js");
+
+var LandBlock = __webpack_require__(/*! ./land_block */ "./src/land_block.js");
+
 var Game =
 /*#__PURE__*/
 function () {
@@ -250,8 +275,10 @@ function () {
     _classCallCheck(this, Game);
 
     this.over = false;
+    this.punches = [];
     this.lastBlockX = 300;
     this.blocks = [];
+    this.landblocks = [];
     this.addBlock = this.addBlock.bind(this);
     this.kiOrbs = [];
     this.kiBlasts = [];
@@ -268,7 +295,7 @@ function () {
   _createClass(Game, [{
     key: "allSprites",
     value: function allSprites() {
-      return [].concat([this.hero], this.blocks, this.kiBlasts);
+      return [].concat([this.hero], this.blocks, this.kiBlasts, this.punches, this.landblocks);
     }
   }, {
     key: "detectCollision",
@@ -279,6 +306,10 @@ function () {
         for (var idx2 = 0; idx2 < sprites.length; idx2++) {
           var striker = sprites[idx1];
           var strikee = sprites[idx2];
+
+          if (idx1 === idx2) {
+            continue;
+          }
 
           if (striker instanceof EvilBlock && strikee instanceof EvilBlock) {
             continue;
@@ -292,10 +323,14 @@ function () {
             continue;
           }
 
+          if (striker instanceof Punch && strikee instanceof Punch) {
+            continue;
+          }
+
           var hitPojo = striker.hitDetected(strikee);
 
           if (hitPojo.hit) {
-            if (hitPojo.type) console.log(hitPojo);
+            if (hitPojo.type != "overhead") console.log(hitPojo);
             var type = hitPojo.type;
             var hit = striker.handleCollision(strikee, hitPojo);
             if (hit) return;
@@ -418,7 +453,7 @@ function () {
 
       setInterval(function () {
         return _this4.addBlock();
-      }, 1000);
+      }, 500);
       this.addHero();
       alert("The evil Hedronites are making a desperate attack! Fight, Kam! For great justice!");
     }
@@ -437,6 +472,13 @@ function () {
     key: "styleKp",
     value: function styleKp(kp) {
       kp.style.color = "cyan";
+    }
+  }, {
+    key: "standbyLandblocks",
+    value: function standbyLandblocks() {
+      for (i in this.landblocks) {
+        this.landblocks[i].update(this.ctx);
+      }
     }
   }, {
     key: "drawFrame",
@@ -469,6 +511,7 @@ function () {
         this.ctx.drawImage(this.leftPillar, 0, 0);
         this.ctx.drawImage(this.rightPillar, 750, 0);
         this.moveBlocks();
+        this.standbyLandblocks();
         this.hero.update(this.Key);
         this.hero.draw(this.ctx);
         this.moveBlasts();
@@ -483,6 +526,14 @@ function () {
 
       if (sprite instanceof KiBlast) {
         this.kiBlasts.splice(this.kiBlasts.indexOf(sprite), 1);
+      }
+
+      if (sprite instanceof Punch) {
+        this.punches.splice(this.punches.indexOf(sprite), 1);
+      }
+
+      if (sprite instanceof LandBlock) {
+        this.landblocks.splice(this.landblocks.indexOf(sprite), 1);
       }
     }
   }]);
@@ -607,7 +658,9 @@ function () {
       this.posX + this.hitboxWidth > obstacle.posX && this.posY + this.hitboxHeight === obstacle.posY) {
         return {
           hit: true,
-          type: "overhead"
+          type: "overhead",
+          striker: this.type,
+          strikee: obstacle.type
         };
       } else if ( //     (obstacle.posY + obstacle.hitboxHeight) >= this.posY &&
       //  (   this.posx < (obstacle.posX + obstacle.hitboxWidth) ||
@@ -619,15 +672,18 @@ function () {
           type: "sidestrike",
           striker: this.type,
           strikee: obstacle.type,
-          direction: "left"
+          direction: "left",
+          targetHP: obstacle.hp
         };
       } else if (obstacle.posY + obstacle.hitboxHeight > this.posY && (this.posx < obstacle.posX + obstacle.hitboxWidth || this.posX + this.hitboxWidth > obstacle.posX) && this.posX < obstacle.posX) {
+        console.log("TargetHP:", obstacle.hp);
         return {
           hit: true,
           type: "sidestrike",
           striker: this.type,
           strikee: obstacle.type,
-          direction: "right"
+          direction: "right",
+          targetHP: obstacle.hp
         };
       } else {
         return {
@@ -693,9 +749,256 @@ document.addEventListener("DOMContentLoaded", function () {
   !*** ./src/hero_sprite.js ***!
   \****************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-throw new Error("Module build failed (from ./node_modules/babel-loader/lib/index.js):\nSyntaxError: /Users/aarongoddard/Documents/Coding/vectorsigma/src/hero_sprite.js: Unexpected token (125:25)\n\n\u001b[0m \u001b[90m 123 | \u001b[39m        }\u001b[0m\n\u001b[0m \u001b[90m 124 | \u001b[39m        \u001b[36mif\u001b[39m (\u001b[33mKey\u001b[39m\u001b[33m.\u001b[39misDOwn(\u001b[33mKey\u001b[39m\u001b[33m.\u001b[39m\u001b[33mPUNCH\u001b[39m)) {\u001b[0m\n\u001b[0m\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 125 | \u001b[39m            key\u001b[33m.\u001b[39m_pressed[] \u001b[33m=\u001b[39m \u001b[36mfalse\u001b[39m\u001b[33m;\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m     | \u001b[39m                         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 126 | \u001b[39m            \u001b[36mthis\u001b[39m\u001b[33m.\u001b[39mpunch()\u001b[33m;\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 127 | \u001b[39m        }\u001b[0m\n\u001b[0m \u001b[90m 128 | \u001b[39m    }\u001b[0m\n    at _class.raise (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:3939:15)\n    at _class.unexpected (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:5248:16)\n    at _class.parseExprAtom (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:6328:20)\n    at _class.parseExprAtom (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:3635:52)\n    at _class.parseExprSubscripts (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:5924:21)\n    at _class.parseMaybeUnary (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:5903:21)\n    at _class.parseExprOps (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:5812:21)\n    at _class.parseMaybeConditional (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:5784:21)\n    at _class.parseMaybeAssign (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:5731:21)\n    at _class.parseExpression (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:5684:21)\n    at _class.parseSubscript (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:6008:31)\n    at _class.parseSubscripts (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:5944:19)\n    at _class.parseExprSubscripts (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:5934:17)\n    at _class.parseMaybeUnary (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:5903:21)\n    at _class.parseExprOps (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:5812:21)\n    at _class.parseMaybeConditional (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:5784:21)\n    at _class.parseMaybeAssign (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:5731:21)\n    at _class.parseExpression (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:5684:21)\n    at _class.parseStatementContent (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:7267:21)\n    at _class.parseStatement (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:7153:17)\n    at _class.parseBlockOrModuleBlockBody (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:7707:23)\n    at _class.parseBlockBody (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:7694:10)\n    at _class.parseBlock (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:7683:10)\n    at _class.parseStatementContent (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:7212:21)\n    at _class.parseStatement (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:7153:17)\n    at _class.parseIfStatement (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:7493:28)\n    at _class.parseStatementContent (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:7184:21)\n    at _class.parseStatement (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:7153:17)\n    at _class.parseBlockOrModuleBlockBody (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:7707:23)\n    at _class.parseBlockBody (/Users/aarongoddard/Documents/Coding/vectorsigma/node_modules/@babel/parser/lib/index.js:7694:10)");
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+var GameSprite = __webpack_require__(/*! ./game_sprite */ "./src/game_sprite.js");
+
+var EvilBlock = __webpack_require__(/*! ./evil_block */ "./src/evil_block.js");
+
+var KiBlast = __webpack_require__(/*! ./ki_blash */ "./src/ki_blash.js");
+
+var Punch = __webpack_require__(/*! ./punch */ "./src/punch.js");
+
+var HeroSprite =
+/*#__PURE__*/
+function (_GameSprite) {
+  _inherits(HeroSprite, _GameSprite);
+
+  function HeroSprite(options) {
+    var _this;
+
+    _classCallCheck(this, HeroSprite);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(HeroSprite).call(this, options));
+    _this.type = "hero";
+    _this.speed = 0;
+    _this.hp = 120;
+    _this.kp = 100;
+    var image = new Image();
+    image.src = "https://i.imgur.com/JsuhqcT.png";
+    image.height = 150;
+    image.width = 75;
+    _this.hitboxHeight = 150;
+    _this.hitboxWidth = 75;
+    _this.image = image;
+    _this.touchingBlock = false;
+    _this.draw = _this.draw.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+    _this.facing = "right";
+    _this.killScore = 0;
+    _this.collected = 0;
+
+    _this.image.onload = function () {
+      _this.loaded = true;
+    };
+
+    return _this;
+  }
+
+  _createClass(HeroSprite, [{
+    key: "stillAlive",
+    value: function stillAlive() {
+      if (this.hp > 0) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  }, {
+    key: "handleCollision",
+    value: function handleCollision(obstacle, hitPojo) {
+      console.log("Hero hit something."); //  debugger;
+
+      if (obstacle.isagoddamnblock && hitPojo.type === "sidestrike" && hitPojo.direction === "right") {
+        var tink = new Audio();
+        tink.src = "https://s3.us-east-2.amazonaws.com/hedronattack/baseball_short.m4a";
+
+        if (tink.currentTime <= 0 && tink.paused) {
+          tink.play();
+        } else {
+          tink.pause();
+        } //document.createElement
+
+
+        this.posX -= 12;
+
+        if (obstacle.type === "Evil Block") {
+          obstacle.posX += 2;
+        }
+
+        this.draw(ctx);
+      } else if (obstacle.isagoddamnblock && hitPojo.type === "sidestrike" && hitPojo.direction === "left") {
+        var _tink = new Audio();
+
+        _tink.src = "https://s3.us-east-2.amazonaws.com/hedronattack/baseball_short.m4a";
+
+        if (_tink.currentTime <= 0 && _tink.paused) {
+          _tink.play();
+        } else {
+          _tink.pause();
+        }
+
+        this.posX += 12;
+
+        if (obstacle.type === "Evil Block") {
+          obstacle.posX += 2;
+        }
+
+        this.draw(ctx);
+      }
+    }
+  }, {
+    key: "takeDamage",
+    value: function takeDamage() {
+      this.hp -= 10;
+
+      if (this.stillAlive()) {
+        var grunt = new Audio();
+        grunt.src = "https://s3.us-east-2.amazonaws.com/hedronattack/kam_pain.m4a";
+        grunt.play();
+      } else {
+        var deathCry = new Audio();
+        deathCry.src = "https://s3.us-east-2.amazonaws.com/hedronattack/kam_death_take_1.m4a";
+        deathCry.play();
+        this.game.over = true;
+      }
+    }
+  }, {
+    key: "draw",
+    value: function draw(ctx) {
+      // console.log(this.image);
+      // console.log(`X: ${this.posX}, Y: ${this.posY}`);
+      if (this.loaded) {
+        ctx.drawImage(this.image, this.posX, this.posY);
+      }
+    }
+  }, {
+    key: "goLeft",
+    value: function goLeft() {
+      this.facing = "left";
+
+      if (this.posX > 50) {
+        this.posX -= 12;
+      }
+
+      this.draw(ctx); // this.game.drawFrame();
+    }
+  }, {
+    key: "goRight",
+    value: function goRight() {
+      this.facing = "right";
+
+      if (this.posX + 75 < ctx.canvas.width - 52) {
+        this.posX += 12;
+      }
+
+      this.draw(ctx); // this.game.drawFrame();
+    }
+  }, {
+    key: "update",
+    value: function update(Key) {
+      // console.log(Key);
+      if (Key.isDown(Key.LEFT)) this.goLeft();
+      if (Key.isDown(Key.RIGHT)) this.goRight();
+
+      if (Key.isDown(Key.KI)) {
+        Key._pressed[75] = false;
+        this.kiBlast();
+      }
+
+      if (Key.isDown(Key.PUNCH)) {
+        Key._pressed[80] = false;
+        this.punch();
+      }
+    }
+  }, {
+    key: "kiBlast",
+    value: function kiBlast() {
+      if (this.kp > 0) {
+        if (this.facing === "left") {
+          this.kp -= 10;
+          var blast = new KiBlast({
+            speed: -10,
+            posX: this.posX - 5,
+            game: this.game
+          });
+          this.game.kiBlasts.push(blast);
+        } else {
+          this.kp -= 10;
+
+          var _blast = new KiBlast({
+            speed: 10,
+            posX: this.posX + 80,
+            game: this.game
+          });
+
+          this.game.kiBlasts.push(_blast);
+        }
+      } else {
+        var oom = new Audio();
+        oom.src = "https://s3.us-east-2.amazonaws.com/hedronattack/ki_sapped_take_1.m4a";
+        oom.play();
+      }
+
+      this.draw(ctx);
+    }
+  }, {
+    key: "punch",
+    value: function punch() {
+      console.log("Punching");
+      var kiai = new Audio();
+      kiai.src = "https://s3.us-east-2.amazonaws.com/hedronattack/kiat_takeone.m4a";
+      kiai.play();
+
+      if (this.facing === "left") {
+        var punch = new Punch({
+          speed: -10,
+          posX: this.posX - 20,
+          game: this.game
+        });
+        this.game.punches.push(punch);
+      } else {
+        var _punch = new Punch({
+          speed: 10,
+          posX: this.posX + 75,
+          game: this.game
+        });
+
+        this.game.punches.push(_punch);
+      }
+
+      this.draw(ctx);
+    }
+  }, {
+    key: "remove",
+    value: function remove(object) {
+      if (object instanceof EvilBlock) {
+        this.blocks.splice(this.blocks.indexOf(object), 1);
+      }
+    }
+  }]);
+
+  return HeroSprite;
+}(GameSprite);
+
+module.exports = HeroSprite;
 
 /***/ }),
 
@@ -764,7 +1067,7 @@ function (_GameSprite) {
       this.posX += this.speed;
       this.draw(ctx);
 
-      if (this.posX > ctx.canvas.width || this.posX <= 0) {
+      if (this.posX >= ctx.canvas.width || this.posX <= 0) {
         this.remove();
       }
     }
@@ -778,7 +1081,7 @@ function (_GameSprite) {
   }, {
     key: "handleCollision",
     value: function handleCollision(obstacle) {
-      if (obstacle.type === "Evil Block") {
+      if (obstacle.type === "Evil Block" || obstacle.type === "LandBlock") {
         console.log("Hit the block");
         this.game.hero.killScore += 1;
         obstacle.explody();
@@ -796,6 +1099,223 @@ function (_GameSprite) {
 }(GameSprite);
 
 module.exports = KiBlast;
+
+/***/ }),
+
+/***/ "./src/land_block.js":
+/*!***************************!*\
+  !*** ./src/land_block.js ***!
+  \***************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+var GameSprite = __webpack_require__(/*! ./game_sprite */ "./src/game_sprite.js");
+
+var HeroSprite = __webpack_require__(/*! ./hero_sprite */ "./src/hero_sprite.js");
+
+var LandBlock =
+/*#__PURE__*/
+function (_GameSprite) {
+  _inherits(LandBlock, _GameSprite);
+
+  function LandBlock(params) {
+    var _this;
+
+    _classCallCheck(this, LandBlock);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(LandBlock).call(this, params));
+    _this.type = "LandBlock";
+    _this.hitboxHeight = 100;
+    _this.hitboxWidth = 100;
+    _this.isagoddamnblock = true;
+    var blockImage = new Image();
+    blockImage.src = "https://i.imgur.com/fq7m14C.png";
+    blockImage.height = 100;
+    blockImage.width = 100;
+    _this.hp = params.hp;
+    _this.image = blockImage;
+    _this.draw = _this.draw.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+
+    _this.image.onload = function () {
+      _this.loaded = true;
+    };
+
+    return _this;
+  }
+
+  _createClass(LandBlock, [{
+    key: "draw",
+    value: function draw(ctx) {
+      if (this.loaded) {
+        ctx.drawImage(this.image, this.posX, this.posY);
+      }
+    }
+  }, {
+    key: "handleCollision",
+    value: function handleCollision(obstacle, hitPojo) {}
+  }, {
+    key: "hitDetected",
+    value: function hitDetected(obstacle) {
+      return {
+        hit: false
+      };
+    }
+  }, {
+    key: "remove",
+    value: function remove() {
+      // this.game.hero.touchingBlock = false;
+      this.game.remove(this);
+    }
+  }, {
+    key: "update",
+    value: function update(ctx) {
+      this.draw(ctx);
+    }
+  }, {
+    key: "explody",
+    value: function explody() {
+      // this.game.ctx.strokeStyle = "orange";
+      this.speed = 0;
+      var centerX = this.posX + 50;
+      var centerY = this.posY + 50;
+      var startRad = 10;
+      var endRad = 100;
+      var currentRad = startRad;
+      var kaboosh = new Audio();
+      kaboosh.src = "https://www.freesfx.co.uk/rx2/mp3s/6/17955_1464205617.mp3";
+      kaboosh.play().then(this.game.remove(this)); // this.game.remove(this);
+    }
+  }]);
+
+  return LandBlock;
+}(GameSprite);
+
+module.exports = LandBlock;
+
+/***/ }),
+
+/***/ "./src/punch.js":
+/*!**********************!*\
+  !*** ./src/punch.js ***!
+  \**********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+var GameSprite = __webpack_require__(/*! ./game_sprite */ "./src/game_sprite.js");
+
+var EvilBlock = __webpack_require__(/*! ./evil_block */ "./src/evil_block.js");
+
+var Punch =
+/*#__PURE__*/
+function (_GameSprite) {
+  _inherits(Punch, _GameSprite);
+
+  function Punch(params) {
+    var _this;
+
+    _classCallCheck(this, Punch);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Punch).call(this, params));
+    _this.type = "Punch";
+    _this.hitboxHeight = 10;
+    _this.hitboxWidth = 20;
+    var punchImage = new Image();
+    punchImage.src = "https://i.imgur.com/wx7qhXC.png"; //10x10 too small
+
+    punchImage.height = 10;
+    punchImage.width = 20;
+    _this.posY = _this.game.hero.posY + 70;
+    _this.image = punchImage;
+    _this.draw = _this.draw.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+
+    _this.image.onload = function () {
+      _this.loaded = true;
+    };
+
+    return _this;
+  }
+
+  _createClass(Punch, [{
+    key: "update",
+    value: function update(ctx) {
+      this.posX += this.speed;
+      this.draw(ctx);
+
+      if (this.posX > ctx.canvas.width || this.posX <= 0) {
+        this.remove();
+      }
+    }
+  }, {
+    key: "draw",
+    value: function draw(ctx) {
+      if (this.loaded) {
+        ctx.drawImage(this.image, this.posX, this.posY);
+      }
+    }
+  }, {
+    key: "handleCollision",
+    value: function handleCollision(obstacle) {
+      if (obstacle.type === "Evil Block" || obstacle.type === "LandBlock") {
+        console.log("punched the block"); //add health to Evil Blocks
+
+        obstacle.hp -= 1;
+
+        if (obstacle.hp === 0) {
+          this.game.hero.killScore += 1;
+          console.log("Killed block with fists");
+          obstacle.explody();
+        }
+      }
+
+      this.remove();
+    }
+  }, {
+    key: "remove",
+    value: function remove() {
+      this.game.remove(this);
+    }
+  }]);
+
+  return Punch;
+}(GameSprite);
+
+module.exports = Punch;
 
 /***/ })
 

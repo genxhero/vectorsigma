@@ -49,7 +49,9 @@ class HeroSprite extends GameSprite {
             }
 //document.createElement
              this.posX -= 12;
-             obstacle.posX += 2;
+             if (obstacle.type === "Evil Block") {
+                 obstacle.posX += 2;
+             }
              this.draw(ctx);
 
          } else if (obstacle.isagoddamnblock && hitPojo.type === "sidestrike" && hitPojo.direction === "left"){
@@ -63,7 +65,9 @@ class HeroSprite extends GameSprite {
              }
 
              this.posX += 12;
-             obstacle.posX -= 2;
+             if (obstacle.type === "Evil Block") {
+                 obstacle.posX += 2;
+             }
               this.draw(ctx);
          }
      }
@@ -121,8 +125,8 @@ class HeroSprite extends GameSprite {
             Key._pressed[75] = false;
             this.kiBlast();
         }
-        if (Key.isDOwn(Key.PUNCH)) {
-            key._pressed[] = false;
+        if (Key.isDown(Key.PUNCH)) {
+            Key._pressed[80] = false;
             this.punch();
         }
     }
@@ -154,19 +158,21 @@ class HeroSprite extends GameSprite {
 
 
     punch(){
-        if (this.game.punches <= 0) {
+            console.log("Punching");
+            const kiai = new Audio();
+            kiai.src = "https://s3.us-east-2.amazonaws.com/hedronattack/kiat_takeone.m4a";
+            kiai.play();
             if (this.facing === "left") {
-                this.kp -= 10;
-                const punch = new Punch({ speed: -10, posX: this.posX - 5, game: this.game });
+               
+                const punch = new Punch({ speed: -10, posX: this.posX -20, game: this.game });
                 this.game.punches.push(punch);
-
             } else {
-                this.kp -= 10;
-                const punch = new Punch({ speed: 10, posX: this.posX + 80, game: this.game });
+                
+                const punch = new Punch({ speed: 10, posX: this.posX + 75, game: this.game });
                 this.game.punches.push(punch);
 
             }
-        } 
+    
         this.draw(ctx);
     }
 

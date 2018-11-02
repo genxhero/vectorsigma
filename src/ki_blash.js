@@ -25,7 +25,7 @@ class KiBlast extends GameSprite {
     update(ctx){
         this.posX += this.speed;
          this.draw(ctx);
-         if (this.posX > ctx.canvas.width || this.posX <= 0) {
+         if (this.posX >= ctx.canvas.width || this.posX <= 0) {
              this.remove();
          }
      }
@@ -39,7 +39,7 @@ class KiBlast extends GameSprite {
     }
 
     handleCollision(obstacle) {
-        if (obstacle.type === "Evil Block") {
+        if (obstacle.type === "Evil Block" || obstacle.type === "LandBlock") {
           console.log("Hit the block");
           this.game.hero.killScore += 1;
           obstacle.explody();

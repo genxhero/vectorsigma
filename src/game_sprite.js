@@ -34,7 +34,7 @@ class GameSprite {
            ( this.posX + this.hitboxWidth ) > obstacle.posX &&
              this.posY + this.hitboxHeight === obstacle.posY) {
              
-          return {hit: true, type: "overhead"};
+          return {hit: true, type: "overhead", striker: this.type, strikee: obstacle.type};
 
 
         } else if ( 
@@ -49,7 +49,7 @@ class GameSprite {
              this.posX + (this.hitboxWidth / 2 ) > obstacle.posX
              )
             {
-            return {hit: true, type: "sidestrike", striker: this.type, strikee: obstacle.type, direction: "left"};
+            return {hit: true, type: "sidestrike", striker: this.type, strikee: obstacle.type, direction: "left", targetHP: obstacle.hp};
             
         } else if (
             (obstacle.posY + obstacle.hitboxHeight) > this.posY &&
@@ -57,7 +57,8 @@ class GameSprite {
          (this.posX + this.hitboxWidth ) > obstacle.posX ) && 
             this.posX < obstacle.posX
                  ) {
-                 return { hit: true, type: "sidestrike", striker: this.type, strikee: obstacle.type, direction: "right" };
+            console.log("TargetHP:", obstacle.hp);
+            return { hit: true, type: "sidestrike", striker: this.type, strikee: obstacle.type, direction: "right", targetHP: obstacle.hp };
                } else {
                  return { hit: false };
                }

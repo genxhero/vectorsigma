@@ -1,5 +1,6 @@
 const GameSprite = require('./game_sprite');
 const HeroSprite = require('./hero_sprite');
+const LandBlock = require('./land_block');
 
 
 
@@ -7,15 +8,15 @@ class EvilBlock extends GameSprite {
     constructor(params){
         super(params)
         this.type = "Evil Block";
-        this.speed = 5;
+        this.speed = 10;
+        this.hp = 3;
         this.hitboxHeight = 100;
         this.hitboxWidth = 100;
         this.isagoddamnblock = true;
         const blockImage = new Image();
-        blockImage.src = "https://i.imgur.com/vlgHgAL.png";
+        blockImage.src = "https://i.imgur.com/6M3wxOW.png";
         blockImage.height = 100;
         blockImage.width = 100;
-        
         this.image = blockImage;
         this.draw = this.draw.bind(this);
         this.image.onload = () => {
@@ -35,6 +36,11 @@ class EvilBlock extends GameSprite {
             obstacle.takeDamage();
             this.remove();
         }
+
+        if (obstacle instanceof LandBlock && hitPojo.type === "overhead") {
+            // console.log("Block destroys land block");
+            obstacle.explody();
+        }
     }
 
     hitDetected(obstacle) {
@@ -48,7 +54,7 @@ class EvilBlock extends GameSprite {
             (this.posX + this.hitboxWidth) > obstacle.posX &&
             this.posY + this.hitboxHeight === obstacle.posY) {
 
-            return { hit: true, type: "overhead" };
+            return { hit: true, type: "overhead", striker: this.type, strikee: obstacle.type, strikerX: this.posX, strikerY: this.posY};
             } else {
                 return {hit: false};
             }
@@ -70,7 +76,11 @@ class EvilBlock extends GameSprite {
             const smack = new Audio();
             smack.src = "https://www.freesfx.co.uk/rx2/mp3s/6/18365_1464637302.mp3";
             smack.play();
-            this.game.remove(this);
+            console.log("Crashed Block HP:", this.hp);
+            const landy = new LandBlock ({hp: this.hp, posX: this.posX, posY: this.posY, game: this.game});
+            this.game.remove(this);        
+            ctx.drawImage(landy.image, this.posX, this.posY);
+            this.game.landblocks.push(landy);
         }
     }
 
