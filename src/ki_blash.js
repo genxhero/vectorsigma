@@ -6,13 +6,18 @@ class KiBlast extends GameSprite {
     constructor(params) {
         super(params)
         this.type = "kiblast";
+        this.direction = params.direction
         this.hitboxHeight = 10;
-        this.hitboxWidth = 10;
+        this.hitboxWidth = 40;
         const blastImage = new Image();
-        blastImage.src = "https://i.imgur.com/wx7qhXC.png";
+        if (this.direction === "left") {
+            blastImage.src = 'https://i.imgur.com/RNkWMo2.png';
+        } else {
+            blastImage.src =  'https://i.imgur.com/y6kA502.png';
+        }
         //10x10 too small
-        blastImage.height = 10;
-        blastImage.width = 10;
+        blastImage.height = 20;
+        blastImage.width = 40;
         this.posY = this.game.hero.posY + 70;
         this.image = blastImage;
         this.draw = this.draw.bind(this);

@@ -42,6 +42,9 @@ class Punch extends GameSprite {
         if (obstacle.type === "Evil Block" || obstacle.type ==="LandBlock") {
             console.log("punched the block");
             //add health to Evil Blocks
+            const strike = new Audio();
+            strike.src = "https://www.freesfx.co.uk/rx2/mp3s/6/18111_1464287325.mp3";
+            strike.play();
             obstacle.hp -= 1
             if (obstacle.hp === 0){
                 this.game.hero.killScore += 1;
@@ -55,6 +58,10 @@ class Punch extends GameSprite {
 
     remove() {
         this.game.remove(this);
+    }
+
+    grabOrb(){
+        this.kiOrbs += 1;
     }
 
 }

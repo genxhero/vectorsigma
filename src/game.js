@@ -239,6 +239,10 @@ class Game {
            this.landblocks.splice(this.landblocks.indexOf(sprite), 1);
        }
    }
+
+    grabOrb() {
+        this.kiOrbs += 1;
+    }
 }
 
 module.exports = Game;

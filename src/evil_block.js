@@ -76,7 +76,6 @@ class EvilBlock extends GameSprite {
             const smack = new Audio();
             smack.src = "https://www.freesfx.co.uk/rx2/mp3s/6/18365_1464637302.mp3";
             smack.play();
-            console.log("Block X: ", this.posX, "Block Right Edge:", this.posX + this.hitboxWidth);
             const landy = new LandBlock ({hp: this.hp, posX: this.posX, posY: this.posY, game: this.game});
             this.game.remove(this);        
             ctx.drawImage(landy.image, this.posX, this.posY);
@@ -85,13 +84,8 @@ class EvilBlock extends GameSprite {
     }
 
     explody(){
-        this.game.ctx.strokeStyle = "orange";
         this.speed = 0;
-        const centerX = this.posX + 50;
-        const centerY = this.posY + 50;
-        const startRad = 10;
-        const endRad = 100;
-        let currentRad = startRad;
+        
         const kaboosh = new Audio();
         kaboosh.src = "https://www.freesfx.co.uk/rx2/mp3s/6/17955_1464205617.mp3";
         kaboosh.play().then(this.game.remove(this));

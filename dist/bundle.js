@@ -209,7 +209,6 @@ function (_GameSprite) {
         var smack = new Audio();
         smack.src = "https://www.freesfx.co.uk/rx2/mp3s/6/18365_1464637302.mp3";
         smack.play();
-        console.log("Block X: ", this.posX, "Block Right Edge:", this.posX + this.hitboxWidth);
         var landy = new LandBlock({
           hp: this.hp,
           posX: this.posX,
@@ -224,13 +223,7 @@ function (_GameSprite) {
   }, {
     key: "explody",
     value: function explody() {
-      this.game.ctx.strokeStyle = "orange";
       this.speed = 0;
-      var centerX = this.posX + 50;
-      var centerY = this.posY + 50;
-      var startRad = 10;
-      var endRad = 100;
-      var currentRad = startRad;
       var kaboosh = new Audio();
       kaboosh.src = "https://www.freesfx.co.uk/rx2/mp3s/6/17955_1464205617.mp3";
       kaboosh.play().then(this.game.remove(this)); // this.game.remove(this);
@@ -536,6 +529,11 @@ function () {
         this.landblocks.splice(this.landblocks.indexOf(sprite), 1);
       }
     }
+  }, {
+    key: "grabOrb",
+    value: function grabOrb() {
+      this.kiOrbs += 1;
+    }
   }]);
 
   return Game;
@@ -830,7 +828,7 @@ function (_GameSprite) {
         var tink = new Audio();
         tink.src = "https://s3.us-east-2.amazonaws.com/hedronattack/baseball_short.m4a";
 
-        if (tink.currentTime <= 0 && tink.paused) {
+        if (tink.currentTime <= 0 && tink.paused && obstacle.type === "Evil Block") {
           tink.play();
         } else {
           tink.pause();
@@ -849,7 +847,7 @@ function (_GameSprite) {
 
         _tink.src = "https://s3.us-east-2.amazonaws.com/hedronattack/baseball_short.m4a";
 
-        if (_tink.currentTime <= 0 && _tink.paused) {
+        if (_tink.currentTime <= 0 && _tink.paused && obstacle.type === "Evil Block") {
           _tink.play();
         } else {
           _tink.pause();
@@ -933,20 +931,22 @@ function (_GameSprite) {
     value: function kiBlast() {
       if (this.kp > 0) {
         if (this.facing === "left") {
-          this.kp -= 10;
+          this.kp -= 1;
           var blast = new KiBlast({
             speed: -10,
             posX: this.posX - 5,
-            game: this.game
+            game: this.game,
+            direction: "left"
           });
           this.game.kiBlasts.push(blast);
         } else {
-          this.kp -= 10;
+          this.kp -= 1;
 
           var _blast = new KiBlast({
             speed: 10,
             posX: this.posX + 80,
-            game: this.game
+            game: this.game,
+            direction: "right"
           });
 
           this.game.kiBlasts.push(_blast);
@@ -1043,13 +1043,20 @@ function (_GameSprite) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(KiBlast).call(this, params));
     _this.type = "kiblast";
+    _this.direction = params.direction;
     _this.hitboxHeight = 10;
-    _this.hitboxWidth = 10;
+    _this.hitboxWidth = 40;
     var blastImage = new Image();
-    blastImage.src = "https://i.imgur.com/wx7qhXC.png"; //10x10 too small
 
-    blastImage.height = 10;
-    blastImage.width = 10;
+    if (_this.direction === "left") {
+      blastImage.src = 'https://i.imgur.com/RNkWMo2.png';
+    } else {
+      blastImage.src = 'https://i.imgur.com/y6kA502.png';
+    } //10x10 too small
+
+
+    blastImage.height = 20;
+    blastImage.width = 40;
     _this.posY = _this.game.hero.posY + 70;
     _this.image = blastImage;
     _this.draw = _this.draw.bind(_assertThisInitialized(_assertThisInitialized(_this)));
@@ -1192,13 +1199,19 @@ function (_GameSprite) {
   }, {
     key: "explody",
     value: function explody() {
+      var _this2 = this;
+
       // this.game.ctx.strokeStyle = "orange";
       this.speed = 0;
-      var centerX = this.posX + 50;
-      var centerY = this.posY + 50;
-      var startRad = 10;
-      var endRad = 100;
-      var currentRad = startRad;
+      var butt = new Image();
+      butt.src = "http://www.onlygfx.com/wp-content/uploads/2018/02/starburst-explosion-2-1-1024x850.png";
+      butt.width = 100;
+      butt.height = 100;
+
+      butt.onload = function () {
+        _this2.game.ctx.drawImage(butt, _this2.posX, _this2.posY, 100, 100);
+      };
+
       var kaboosh = new Audio();
       kaboosh.src = "https://www.freesfx.co.uk/rx2/mp3s/6/17955_1464205617.mp3";
       kaboosh.play().then(this.game.remove(this)); // this.game.remove(this);
@@ -1294,6 +1307,9 @@ function (_GameSprite) {
       if (obstacle.type === "Evil Block" || obstacle.type === "LandBlock") {
         console.log("punched the block"); //add health to Evil Blocks
 
+        var strike = new Audio();
+        strike.src = "https://www.freesfx.co.uk/rx2/mp3s/6/18111_1464287325.mp3";
+        strike.play();
         obstacle.hp -= 1;
 
         if (obstacle.hp === 0) {
@@ -1309,6 +1325,11 @@ function (_GameSprite) {
     key: "remove",
     value: function remove() {
       this.game.remove(this);
+    }
+  }, {
+    key: "grabOrb",
+    value: function grabOrb() {
+      this.kiOrbs += 1;
     }
   }]);
 

@@ -53,11 +53,15 @@ class LandBlock extends GameSprite {
     explody() {
         // this.game.ctx.strokeStyle = "orange";
         this.speed = 0;
-        const centerX = this.posX + 50;
-        const centerY = this.posY + 50;
-        const startRad = 10;
-        const endRad = 100;
-        let currentRad = startRad;
+        const butt = new Image();
+        butt.src = "http://www.onlygfx.com/wp-content/uploads/2018/02/starburst-explosion-2-1-1024x850.png";
+        butt.width = 100;
+        butt.height = 100;
+      
+        butt.onload = () => {
+            this.game.ctx.drawImage(butt, this.posX, this.posY, 100, 100);
+        };
+      
         const kaboosh = new Audio();
         kaboosh.src = "https://www.freesfx.co.uk/rx2/mp3s/6/17955_1464205617.mp3";
         kaboosh.play().then(this.game.remove(this));

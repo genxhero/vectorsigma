@@ -42,7 +42,7 @@ class HeroSprite extends GameSprite {
          if (obstacle.isagoddamnblock && hitPojo.type === "sidestrike" && hitPojo.direction === "right"){
              const tink = new Audio();
              tink.src = "https://s3.us-east-2.amazonaws.com/hedronattack/baseball_short.m4a";
-            if (tink.currentTime <= 0 && tink.paused ) {
+             if (tink.currentTime <= 0 && tink.paused && obstacle.type === "Evil Block") {
                 tink.play();
             } else {
                 tink.pause();
@@ -58,7 +58,7 @@ class HeroSprite extends GameSprite {
              const tink = new Audio();
              tink.src = "https://s3.us-east-2.amazonaws.com/hedronattack/baseball_short.m4a";
 
-             if (tink.currentTime <= 0 && tink.paused) {
+             if (tink.currentTime <= 0 && tink.paused && obstacle.type === "Evil Block") {
                  tink.play();
              }  else {
                  tink.pause();
@@ -137,13 +137,13 @@ class HeroSprite extends GameSprite {
 
         if (this.kp > 0 ){
             if (this.facing === "left"){
-                this.kp -= 10;
-                const blast = new KiBlast({speed: -10, posX: this.posX - 5, game: this.game});
+                this.kp -= 1;
+                const blast = new KiBlast({speed: -10, posX: this.posX - 5, game: this.game, direction: "left"});
                 this.game.kiBlasts.push(blast);
                 
             } else {
-                this.kp -= 10;
-                const blast = new KiBlast({ speed: 10, posX: this.posX + 80, game:this.game});
+                this.kp -= 1;
+                const blast = new KiBlast({ speed: 10, posX: this.posX + 80, game:this.game, direction: "right"});
                 this.game.kiBlasts.push(blast);
 
             }
