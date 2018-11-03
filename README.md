@@ -19,9 +19,8 @@ Hedron Attack is an online arcade-style game starring martial artist Kam Zelfari
 ## Architecture and Technologies
 * Canvas
     *  My primary method for rendering graphics
-* React
-     * The game play area will be a series of divs upon which the canvas objects will load.  
-     * A React component is needed to store the number of orbs, lives, and levels in state.  
+* Node
+* Vanilla Javascript 
     
 ## Implementation Timeline
 ### Most important category
@@ -37,6 +36,25 @@ The most important thing is to the the game to work.
 *  Saturday:
 *  Sunday: Deploy to Heroku
 
+### Ganeplay
+
+*  Hedronites will divebomb our plucky hero and attempt to flatten him.  In addition, power orbs will fall from the sky
+
+*  In order to destroy the Hedron King, Kam must collect a number of Power Orbs; grab 10 Power Orbs and you win (harder than you might think as they are quite elusive).  
+
+*  Kam begins the game with a certain number of hit points (HP).  If his hit points fall to zero, he's a goner.  
+
+*  Power Orbs restore a little bit of Kam's health.
+
+*  Kam also has a limited amount of ki (spirit energy) available to him which he can use to produce a projectile known as a ki blast.  
+
+*  A Hedronite takes 3 hits to kill with a punch, and a ki blast will destroy the evil block instantly.
+
+A: Move left
+D: Move right
+P: Throw a punch; Kam must be adjacent to his opponent for a punch to hit.
+K: Throw a ki blast.
+
 
 ### Buglist
-* Power Orbs still spawn on top of blocks
+* Power Orbs still spawn on top of blocks occasionally
