@@ -60,9 +60,7 @@ class Punch extends GameSprite {
         this.game.remove(this);
     }
 
-    grabOrb(){
-        this.kiOrbs += 1;
-    }
+    
 
 }
 

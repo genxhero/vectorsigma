@@ -250,8 +250,9 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var EvilBlock = __webpack_require__(/*! ./evil_block */ "./src/evil_block.js"); //const KiOrb = require('./ki_orb');
+var EvilBlock = __webpack_require__(/*! ./evil_block */ "./src/evil_block.js");
 
+var PowerOrb = __webpack_require__(/*! ./ki_orb */ "./src/ki_orb.js");
 
 var HeroSprite = __webpack_require__(/*! ./hero_sprite */ "./src/hero_sprite.js");
 
@@ -268,12 +269,13 @@ function () {
     _classCallCheck(this, Game);
 
     this.over = false;
+    this.collected = 0;
     this.punches = [];
     this.lastBlockX = 300;
     this.blocks = [];
     this.landblocks = [];
     this.addBlock = this.addBlock.bind(this);
-    this.kiOrbs = [];
+    this.powerOrbs = [];
     this.kiBlasts = [];
     this.ctx = ctx;
     this.Key = Key; // alert(this.Key);
@@ -288,7 +290,7 @@ function () {
   _createClass(Game, [{
     key: "allSprites",
     value: function allSprites() {
-      return [].concat([this.hero], this.blocks, this.kiBlasts, this.punches, this.landblocks);
+      return [].concat([this.hero], this.blocks, this.kiBlasts, this.punches, this.landblocks, this.powerOrbs);
     }
   }, {
     key: "detectCollision",
@@ -317,6 +319,10 @@ function () {
           }
 
           if (striker instanceof Punch && strikee instanceof Punch) {
+            continue;
+          }
+
+          if (striker instanceof PowerOrb && strikee instanceof PowerOrb) {
             continue;
           }
 
@@ -355,8 +361,16 @@ function () {
       newBlock.draw(this.ctx);
     }
   }, {
-    key: "addKiOrbs",
-    value: function addKiOrbs() {}
+    key: "addPowerOrbs",
+    value: function addPowerOrbs() {
+      var newOrb = new PowerOrb({
+        game: this,
+        posY: -50,
+        posX: Math.floor(Math.random() * 600) + 50
+      });
+      this.powerOrbs.push(newOrb);
+      newOrb.draw(this.ctx);
+    }
   }, {
     key: "grassLoad",
     value: function grassLoad() {
@@ -445,6 +459,9 @@ function () {
       this.loadPillars(); // back to 500 after testing.
 
       setInterval(function () {
+        return _this4.addPowerOrbs();
+      }, 2000);
+      setInterval(function () {
         return _this4.addBlock();
       }, 500);
       this.addHero();
@@ -474,6 +491,13 @@ function () {
       }
     }
   }, {
+    key: "moveOrbs",
+    value: function moveOrbs() {
+      for (i in this.powerOrbs) {
+        this.powerOrbs[i].update(this.ctx);
+      }
+    }
+  }, {
     key: "drawFrame",
     value: function drawFrame() {
       requestAnimationFrame(this.drawFrame.bind(this));
@@ -495,7 +519,7 @@ function () {
         var kills = document.getElementById('hero-kills');
         kills.innerText = "".concat(this.hero.killScore);
         var score = document.getElementById('hero-orbs');
-        score.innerText = "".concat(this.hero.collected);
+        score.innerText = "".concat(this.collected);
         var kp = document.getElementById('hero-kp');
         kp.innerText = "".concat(this.hero.kp);
         this.styleKp(kp); //    debugger;
@@ -505,6 +529,7 @@ function () {
         this.ctx.drawImage(this.rightPillar, 750, 0);
         this.moveBlocks();
         this.standbyLandblocks();
+        this.moveOrbs();
         this.hero.update(this.Key);
         this.hero.draw(this.ctx);
         this.moveBlasts();
@@ -528,11 +553,20 @@ function () {
       if (sprite instanceof LandBlock) {
         this.landblocks.splice(this.landblocks.indexOf(sprite), 1);
       }
+
+      if (sprite instanceof PowerOrb) {
+        this.powerOrbs.splice(this.powerOrbs.indexOf(sprite), 1);
+      }
     }
   }, {
     key: "grabOrb",
     value: function grabOrb() {
-      this.kiOrbs += 1;
+      this.collected += 1;
+
+      if (this.collected === 10) {
+        var info = document.getElementById('game-message');
+        info.innerHTML = "A WINNER IS YOU!";
+      }
     }
   }]);
 
@@ -857,6 +891,9 @@ function (_GameSprite) {
 
         if (obstacle.type === "Evil Block") {
           obstacle.posX += 2;
+        } else if (obstacle.type === "orb" && hitPojo.type === "sidestrike") {
+          this.game.collected += 1;
+          obstacle.remove();
         }
 
         this.draw(ctx);
@@ -1109,6 +1146,134 @@ module.exports = KiBlast;
 
 /***/ }),
 
+/***/ "./src/ki_orb.js":
+/*!***********************!*\
+  !*** ./src/ki_orb.js ***!
+  \***********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+var GameSprite = __webpack_require__(/*! ./game_sprite */ "./src/game_sprite.js");
+
+var HeroSprite = __webpack_require__(/*! ./hero_sprite */ "./src/hero_sprite.js");
+
+var PowerOrb =
+/*#__PURE__*/
+function (_GameSprite) {
+  _inherits(PowerOrb, _GameSprite);
+
+  function PowerOrb(params) {
+    var _this;
+
+    _classCallCheck(this, PowerOrb);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(PowerOrb).call(this, params));
+    _this.type = "orb";
+    _this.speed = 10;
+    _this.hitboxHeight = 20;
+    _this.hitboxWidth = 20;
+    _this.isagoddamnblock = true;
+    var image = new Image();
+    image.src = "https://i.imgur.com/0qRGch3.png";
+    image.height = 20;
+    image.width = 20;
+    _this.image = image;
+    _this.draw = _this.draw.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+
+    _this.image.onload = function () {
+      _this.loaded = true;
+    };
+
+    return _this;
+  }
+
+  _createClass(PowerOrb, [{
+    key: "draw",
+    value: function draw(ctx) {
+      if (this.loaded) {
+        ctx.drawImage(this.image, this.posX, this.posY);
+      }
+    }
+  }, {
+    key: "handleCollision",
+    value: function handleCollision(obstacle, hitPojo) {
+      if (obstacle instanceof HeroSprite && hitPojo.type === "overhead") {
+        this.game.grabOrb();
+        this.remove();
+      }
+    }
+  }, {
+    key: "hitDetected",
+    value: function hitDetected(obstacle) {
+      if (this === obstacle) {
+        return {
+          hit: false
+        };
+      }
+
+      if (this.posX < obstacle.posX + obstacle.hitboxWidth && this.posX + this.hitboxWidth > obstacle.posX && this.posY + this.hitboxHeight === obstacle.posY) {
+        return {
+          hit: true,
+          type: "overhead",
+          striker: this.type,
+          strikee: obstacle.type,
+          strikerX: this.posX,
+          strikerY: this.posY
+        };
+      } else if (obstacle.type === "Evil Block" && this.posX >= obstacle.posX && this.posX < obstacle.posX + obstacle.hitboxWidth && this.posY === obstacle.posY) {
+        this.posX += 110;
+        return {
+          hit: false
+        };
+      } else {
+        return {
+          hit: false
+        };
+      }
+    }
+  }, {
+    key: "remove",
+    value: function remove() {
+      this.game.remove(this);
+    }
+  }, {
+    key: "update",
+    value: function update(ctx) {
+      if (this.posY < 350) {
+        this.posY += this.speed;
+        this.draw(ctx);
+      } else if (this.posY >= 350) {
+        this.game.remove(this);
+      }
+    } //
+
+  }]);
+
+  return PowerOrb;
+}(GameSprite);
+
+module.exports = PowerOrb;
+
+/***/ }),
+
 /***/ "./src/land_block.js":
 /*!***************************!*\
   !*** ./src/land_block.js ***!
@@ -1199,19 +1364,8 @@ function (_GameSprite) {
   }, {
     key: "explody",
     value: function explody() {
-      var _this2 = this;
-
       // this.game.ctx.strokeStyle = "orange";
       this.speed = 0;
-      var butt = new Image();
-      butt.src = "http://www.onlygfx.com/wp-content/uploads/2018/02/starburst-explosion-2-1-1024x850.png";
-      butt.width = 100;
-      butt.height = 100;
-
-      butt.onload = function () {
-        _this2.game.ctx.drawImage(butt, _this2.posX, _this2.posY, 100, 100);
-      };
-
       var kaboosh = new Audio();
       kaboosh.src = "https://www.freesfx.co.uk/rx2/mp3s/6/17955_1464205617.mp3";
       kaboosh.play().then(this.game.remove(this)); // this.game.remove(this);
@@ -1325,11 +1479,6 @@ function (_GameSprite) {
     key: "remove",
     value: function remove() {
       this.game.remove(this);
-    }
-  }, {
-    key: "grabOrb",
-    value: function grabOrb() {
-      this.kiOrbs += 1;
     }
   }]);
 

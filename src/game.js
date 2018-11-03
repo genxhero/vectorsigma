@@ -1,5 +1,5 @@
 const EvilBlock = require('./evil_block');
-//const KiOrb = require('./ki_orb');
+const PowerOrb = require('./ki_orb');
 const HeroSprite = require('./hero_sprite');
 const KiBlast = require('./ki_blash');
 const Punch = require('./punch');
@@ -8,12 +8,14 @@ const LandBlock = require('./land_block');
 class Game {
     constructor(ctx, Key){
         this.over = false;
+
+        this.collected = 0;
         this.punches = [];
         this.lastBlockX = 300;
         this.blocks = [];
         this.landblocks = [];
         this.addBlock = this.addBlock.bind(this);
-        this.kiOrbs = [];
+        this.powerOrbs = [];
         this.kiBlasts = [];
         this.ctx = ctx;
         this.Key = Key;
@@ -26,7 +28,7 @@ class Game {
     }
 
     allSprites() {
-        return [].concat([this.hero], this.blocks, this.kiBlasts, this.punches, this.landblocks);
+        return [].concat([this.hero], this.blocks, this.kiBlasts, this.punches, this.landblocks, this.powerOrbs);
        
     }
 
@@ -54,6 +56,9 @@ class Game {
                 }
 
                 if (striker instanceof Punch && strikee instanceof Punch) {
+                    continue;
+                }
+                if (striker instanceof PowerOrb && strikee instanceof PowerOrb) {
                     continue;
                 }
                 let hitPojo = striker.hitDetected(strikee);
@@ -92,8 +97,14 @@ class Game {
        newBlock.draw(this.ctx);
     }
 
-    addKiOrbs(){
-      
+    addPowerOrbs(){
+        let newOrb = new PowerOrb({
+            game: this,
+            posY: -50,
+            posX: Math.floor(Math.random() * 600) + 50
+        });
+        this.powerOrbs.push(newOrb);
+        newOrb.draw(this.ctx);
     }
 
     
@@ -159,6 +170,7 @@ class Game {
         this.loadPillars();
         
         // back to 500 after testing.
+       setInterval(() => this.addPowerOrbs(), 2000);
        setInterval(() => this.addBlock(), 500);
         this.addHero();  
         alert("The evil Hedronites are making a desperate attack! Fight, Kam! For great justice!");
@@ -186,6 +198,12 @@ class Game {
        }
    }
 
+   moveOrbs(){
+       for (i in this.powerOrbs) {
+           this.powerOrbs[i].update(this.ctx);
+       }
+   }
+
    
    drawFrame(){
        requestAnimationFrame(this.drawFrame.bind(this));
@@ -208,7 +226,7 @@ class Game {
            let kills = document.getElementById('hero-kills');
            kills.innerText = `${this.hero.killScore}`
            let score = document.getElementById('hero-orbs');
-           score.innerText = `${this.hero.collected}`;
+           score.innerText = `${this.collected}`;
            let kp = document.getElementById('hero-kp');
            kp.innerText = `${this.hero.kp}`;
            this.styleKp(kp);
@@ -218,6 +236,7 @@ class Game {
            this.ctx.drawImage(this.rightPillar, 750, 0)
            this.moveBlocks();
            this.standbyLandblocks();
+           this.moveOrbs();
            this.hero.update(this.Key);
            this.hero.draw(this.ctx);
            this.moveBlasts();
@@ -238,10 +257,18 @@ class Game {
        if (sprite instanceof LandBlock){
            this.landblocks.splice(this.landblocks.indexOf(sprite), 1);
        }
+       if (sprite instanceof PowerOrb ){
+           this.powerOrbs.splice(this.powerOrbs.indexOf(sprite), 1);
+       }
    }
 
     grabOrb() {
-        this.kiOrbs += 1;
+        this.collected += 1;
+        if (this.collected === 10) {
+            let info = document.getElementById('game-message');
+            info.innerHTML = "A WINNER IS YOU!";
+
+        }
     }
 }
 
