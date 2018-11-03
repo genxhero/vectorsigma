@@ -39,5 +39,4 @@ The most important thing is to the the game to work.
 
 
 ### Buglist
-* When standing at the extreme left side of the pla areaa, a block landing directly on top of the hero will not be treated as an overhead strike.  Instead it is treated as through the player were making a side strike against the block.
-* Falling blocks crashing on top of land blocks will some times fail to detect the collision and will cause overlapping land blocks to spawn.  It appears to proc only when the X Coordinate of the block is less than 100
+* Power Orbs still spawn on top of blocks
