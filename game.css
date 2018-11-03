@@ -1,3 +1,11 @@
+#game-message {
+      position: absolute;
+    z-index: 900;
+    font-size: 72px;
+    color: green;
+    text-shadow: 2px 3px 3px black;
+}
+
 #canvas {
  box-shadow: 3px 2px 2px;
  border: 2px solid black;

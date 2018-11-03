@@ -264,6 +264,7 @@ class Game {
 
     grabOrb() {
         this.collected += 1;
+        this.hero.hp += 10;
         if (this.collected === 10) {
             let info = document.getElementById('game-message');
             info.innerHTML = "A WINNER IS YOU!";

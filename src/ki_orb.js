@@ -69,10 +69,10 @@ remove() {
 }
 
 update(ctx){
-    if ((this.posY) < 350) {
+    if ((this.posY) < 400) {
         this.posY += this.speed;
         this.draw(ctx);
-    } else if (this.posY >= 350) {
+    } else if (this.posY >= 400) {
         this.game.remove(this);
         
     }

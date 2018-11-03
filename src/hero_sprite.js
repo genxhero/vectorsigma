@@ -68,7 +68,7 @@ class HeroSprite extends GameSprite {
              if (obstacle.type === "Evil Block") {
                  obstacle.posX += 2;
              } else if (obstacle.type === "orb" && hitPojo.type === "sidestrike"){
-                 this.game.collected += 1
+                 this.game.grabOrb();
                  obstacle.remove();
              } 
               this.draw(ctx);

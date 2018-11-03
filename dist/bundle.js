@@ -562,6 +562,7 @@ function () {
     key: "grabOrb",
     value: function grabOrb() {
       this.collected += 1;
+      this.hero.hp += 10;
 
       if (this.collected === 10) {
         var info = document.getElementById('game-message');
@@ -892,7 +893,7 @@ function (_GameSprite) {
         if (obstacle.type === "Evil Block") {
           obstacle.posX += 2;
         } else if (obstacle.type === "orb" && hitPojo.type === "sidestrike") {
-          this.game.collected += 1;
+          this.game.grabOrb();
           obstacle.remove();
         }
 
@@ -1257,10 +1258,10 @@ function (_GameSprite) {
   }, {
     key: "update",
     value: function update(ctx) {
-      if (this.posY < 350) {
+      if (this.posY < 400) {
         this.posY += this.speed;
         this.draw(ctx);
-      } else if (this.posY >= 350) {
+      } else if (this.posY >= 400) {
         this.game.remove(this);
       }
     } //
