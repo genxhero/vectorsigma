@@ -179,7 +179,7 @@ class Game {
         
         // back to 500 after testing.
        setInterval(() => this.addPowerOrbs(), 2000);
-       setInterval(() => this.addBlock(), 650);
+       setInterval(() => this.addBlock(), 500);
         this.addHero();  
         alert("The evil Hedronites are making a desperate attack! Fight, Kam! For great justice!");
     
@@ -219,6 +219,8 @@ class Game {
    }
 
    lose(){
+       this.ctx.fillStyle = "black";
+       this.ctx.fillRect(0, 0, 800, 800);
        alert("GAME OVER");
        document.location.reload();
        return;
@@ -283,14 +285,26 @@ class Game {
    }
 
     grabOrb() {
+        const gotone = new Audio();
+        gotone.src = "https://s3.us-east-2.amazonaws.com/hedronattack/gotone.wav";
+        gotone.play();
         this.collected += 1;
         this.hero.hp += 10;
         if (this.collected === 10) {
-            let info = document.getElementById('game-message');
-            info.innerHTML = "A WINNER IS YOU!";
-
+           setTimeout(this.win, 500);
         }
     }
+
+        win(){
+            let info = document.getElementById('game-message');
+            info.innerHTML = "A WINNER IS YOU!";
+            this.ctx.fillStyle = "black";
+            this.ctx.fillRect(0, 0, 800, 800);
+            alert("Victory is yours!  Kam has defeated the Hedronites.  The ambassador, Llyua of Syline, is safe (though to be fair, Kam had no idea she existed so this rescue is purely coincidental) Press OK to play again!  After escorting the elf back to her homeland, Kam is named elf-friend and rewarded with a sweet cloak and what passes for pocky.");
+            document.location.reload();
+            return;
+        }
+    
 }
 
 module.exports = Game;

@@ -39,12 +39,19 @@ class Punch extends GameSprite {
         }
     }
 
+    
+
     handleCollision(obstacle) {
         if (obstacle.type === "Evil Block" || obstacle.type ==="LandBlock") {
+            this.draw(this.game.ctx);
             console.log("punched the block");
             //add health to Evil Blocks
             const strike = new Audio();
             strike.src = "https://www.freesfx.co.uk/rx2/mp3s/6/18111_1464287325.mp3";
+            const bam = new Image();
+            bam.src = "https://i.imgur.com/sSxgW60.png";
+            this.game.ctx.drawImage(bam, obstacle.posX, obstacle.posY / 2);
+            // setTimeout( funcy => {}, 50)
             strike.play();
             obstacle.hp -= 1
             if (obstacle.hp === 0){

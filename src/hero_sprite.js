@@ -67,12 +67,13 @@ class HeroSprite extends GameSprite {
              this.posX += 12;
              if (obstacle.type === "Evil Block") {
                  obstacle.posX += 2;
-             } else if (obstacle.type === "orb" && hitPojo.type === "sidestrike"){
+             } 
+              
+         } else if (obstacle.type === "orb" && hitPojo.type === "sidestrike"){
                  this.game.grabOrb();
                  obstacle.remove();
              } 
-              this.draw(ctx);
-         }
+         this.draw(ctx);
      }
 
   
@@ -169,12 +170,13 @@ class HeroSprite extends GameSprite {
             kiai.play();
             if (this.facing === "left") {
                
-                const punch = new Punch({ speed: -8, posX: this.posX, game: this.game, direction: "left"});
+                const punch = new Punch({ speed: -8, posX: this.posX - 20, game: this.game, direction: "left"});
                 this.game.punches.push(punch);
             } else {
                 
                 const punch = new Punch({ speed: 8, posX: this.posX + 70, game: this.game, direction: "right" });
                 this.game.punches.push(punch);
+                punch.draw(this.game.ctx);
 
             }
     

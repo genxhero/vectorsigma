@@ -471,7 +471,7 @@ function () {
       }, 2000);
       setInterval(function () {
         return _this4.addBlock();
-      }, 650);
+      }, 500);
       this.addHero();
       alert("The evil Hedronites are making a desperate attack! Fight, Kam! For great justice!");
     }
@@ -515,6 +515,8 @@ function () {
   }, {
     key: "lose",
     value: function lose() {
+      this.ctx.fillStyle = "black";
+      this.ctx.fillRect(0, 0, 800, 800);
       alert("GAME OVER");
       document.location.reload();
       return;
@@ -584,13 +586,26 @@ function () {
   }, {
     key: "grabOrb",
     value: function grabOrb() {
+      var gotone = new Audio();
+      gotone.src = "https://s3.us-east-2.amazonaws.com/hedronattack/gotone.wav";
+      gotone.play();
       this.collected += 1;
       this.hero.hp += 10;
 
       if (this.collected === 10) {
-        var info = document.getElementById('game-message');
-        info.innerHTML = "A WINNER IS YOU!";
+        setTimeout(this.win, 500);
       }
+    }
+  }, {
+    key: "win",
+    value: function win() {
+      var info = document.getElementById('game-message');
+      info.innerHTML = "A WINNER IS YOU!";
+      this.ctx.fillStyle = "black";
+      this.ctx.fillRect(0, 0, 800, 800);
+      alert("Victory is yours!  Kam has defeated the Hedronites.  The ambassador, Llyua of Syline, is safe (though to be fair, Kam had no idea she existed so this rescue is purely coincidental) Press OK to play again!  After escorting the elf back to her homeland, Kam is named elf-friend and rewarded with a sweet cloak and what passes for pocky.");
+      document.location.reload();
+      return;
     }
   }]);
 
@@ -915,13 +930,13 @@ function (_GameSprite) {
 
         if (obstacle.type === "Evil Block") {
           obstacle.posX += 2;
-        } else if (obstacle.type === "orb" && hitPojo.type === "sidestrike") {
-          this.game.grabOrb();
-          obstacle.remove();
         }
-
-        this.draw(ctx);
+      } else if (obstacle.type === "orb" && hitPojo.type === "sidestrike") {
+        this.game.grabOrb();
+        obstacle.remove();
       }
+
+      this.draw(ctx);
     }
   }, {
     key: "takeDamage",
@@ -1032,7 +1047,7 @@ function (_GameSprite) {
       if (this.facing === "left") {
         var punch = new Punch({
           speed: -8,
-          posX: this.posX,
+          posX: this.posX - 20,
           game: this.game,
           direction: "left"
         });
@@ -1046,6 +1061,8 @@ function (_GameSprite) {
         });
 
         this.game.punches.push(_punch);
+
+        _punch.draw(this.game.ctx);
       }
 
       this.draw(ctx);
@@ -1215,12 +1232,12 @@ function (_GameSprite) {
     _this = _possibleConstructorReturn(this, _getPrototypeOf(PowerOrb).call(this, params));
     _this.type = "orb";
     _this.speed = 8;
-    _this.hitboxHeight = 20;
-    _this.hitboxWidth = 20;
+    _this.hitboxHeight = 50;
+    _this.hitboxWidth = 50;
     var image = new Image();
-    image.src = "https://i.imgur.com/wRZu6CE.png";
-    image.height = 20;
-    image.width = 20;
+    image.src = "https://i.imgur.com/FjPOoV2.png";
+    image.height = 50;
+    image.width = 50;
     _this.image = image;
     _this.draw = _this.draw.bind(_assertThisInitialized(_assertThisInitialized(_this)));
 
@@ -1241,7 +1258,7 @@ function (_GameSprite) {
   }, {
     key: "handleCollision",
     value: function handleCollision(obstacle, hitPojo) {
-      if (obstacle instanceof HeroSprite && hitPojo.type === "overhead") {
+      if (obstacle instanceof HeroSprite) {
         this.game.grabOrb();
         this.remove();
       }
@@ -1487,10 +1504,15 @@ function (_GameSprite) {
     key: "handleCollision",
     value: function handleCollision(obstacle) {
       if (obstacle.type === "Evil Block" || obstacle.type === "LandBlock") {
+        this.draw(this.game.ctx);
         console.log("punched the block"); //add health to Evil Blocks
 
         var strike = new Audio();
         strike.src = "https://www.freesfx.co.uk/rx2/mp3s/6/18111_1464287325.mp3";
+        var bam = new Image();
+        bam.src = "https://i.imgur.com/sSxgW60.png";
+        this.game.ctx.drawImage(bam, obstacle.posX, obstacle.posY / 2); // setTimeout( funcy => {}, 50)
+
         strike.play();
         obstacle.hp -= 1;
 

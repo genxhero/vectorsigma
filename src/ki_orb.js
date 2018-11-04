@@ -7,12 +7,12 @@ class PowerOrb extends GameSprite {
     super(params)
         this.type = "orb";
 this.speed = 8;
-this.hitboxHeight = 20;
-this.hitboxWidth = 20;
+this.hitboxHeight = 50;
+this.hitboxWidth = 50;
 const image = new Image();
-     image.src = "https://i.imgur.com/wRZu6CE.png";
-image.height = 20;
-image.width = 20;
+     image.src = "https://i.imgur.com/FjPOoV2.png";
+image.height = 50;
+image.width = 50;
 this.image = image;
 this.draw = this.draw.bind(this);
 this.image.onload = () => {
@@ -28,7 +28,7 @@ draw(ctx) {
 }
 
 handleCollision(obstacle, hitPojo){
-    if (obstacle instanceof HeroSprite && hitPojo.type === "overhead") {
+    if (obstacle instanceof HeroSprite) {
         this.game.grabOrb();
         this.remove();
     }

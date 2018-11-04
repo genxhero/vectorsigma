@@ -57,4 +57,16 @@ K: Throw a ki blast.
 
 
 ### Buglist
-* Power Orbs still spawn on top of blocks occasionally
+* Power Orbs still spawn on top of blocks occasionally, though rarely
+* Punch  is still problematic; doesn't linger long enough to appear anything but ghostly and does not draw over blocks.
+* Hero still doesn't turn left; image refusing to change.
+* Impact images (wham bursts and the like) either not loading, or not lingering for enough frames to be visible.
+*  Music doesn't play! It's supposed to be Brahms' Hungarian Dance No. 5!
+
+### Future Features 
+*  React components featuring:
+  *  Instructions
+  *  Story
+  *  Pause Game
+  *  Mute Game
+  *  Restart Game 
