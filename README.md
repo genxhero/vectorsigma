@@ -44,8 +44,6 @@ The most important thing is to the the game to work.
 
 *  Kam begins the game with a certain number of hit points (HP).  If his hit points fall to zero, he's a goner.  
 
-*  Power Orbs restore a little bit of Kam's health.
-
 *  Kam also has a limited amount of ki (spirit energy) available to him which he can use to produce a projectile known as a ki blast.  
 
 *  A Hedronite takes 3 hits to kill with a punch, and a ki blast will destroy the evil block instantly.
@@ -70,3 +68,5 @@ K: Throw a ki blast.
   *  Pause Game
   *  Mute Game
   *  Restart Game 
+* Some kind of healing item.
+*  Resizing all obstacles for more variety.

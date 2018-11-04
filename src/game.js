@@ -134,7 +134,8 @@ class Game {
 
     skyLoad(){
         this.sky = new Image();
-        this.sky.src = 'https://i.imgur.com/MbBpcOx.png';
+        // this.sky.src = 'https://i.imgur.com/MbBpcOx.png';
+        this.sky.src = "https://i.imgur.com/qwm8SZo.png";
         const skyLoad = () => {
         this.ctx.drawImage(this.sky, 0, -50);
         };
@@ -289,8 +290,8 @@ class Game {
         gotone.src = "https://s3.us-east-2.amazonaws.com/hedronattack/gotone.wav";
         gotone.play();
         this.collected += 1;
-        this.hero.hp += 10;
-        if (this.collected === 10) {
+       
+        if (this.collected === 20) {
            setTimeout(this.win, 500);
         }
     }

@@ -135,7 +135,7 @@ function (_GameSprite) {
     _this.hitboxWidth = 100;
     _this.isagoddamnblock = true;
     var blockImage = new Image();
-    blockImage.src = "https://i.imgur.com/6M3wxOW.png";
+    blockImage.src = "https://i.imgur.com/JPnUwpN.png";
     blockImage.height = 100;
     blockImage.width = 100;
     _this.image = blockImage;
@@ -406,8 +406,9 @@ function () {
     value: function skyLoad() {
       var _this2 = this;
 
-      this.sky = new Image();
-      this.sky.src = 'https://i.imgur.com/MbBpcOx.png';
+      this.sky = new Image(); // this.sky.src = 'https://i.imgur.com/MbBpcOx.png';
+
+      this.sky.src = "https://i.imgur.com/qwm8SZo.png";
 
       var skyLoad = function skyLoad() {
         _this2.ctx.drawImage(_this2.sky, 0, -50);
@@ -590,9 +591,8 @@ function () {
       gotone.src = "https://s3.us-east-2.amazonaws.com/hedronattack/gotone.wav";
       gotone.play();
       this.collected += 1;
-      this.hero.hp += 10;
 
-      if (this.collected === 10) {
+      if (this.collected === 20) {
         setTimeout(this.win, 500);
       }
     }
@@ -1362,7 +1362,7 @@ function (_GameSprite) {
     _this.hitboxWidth = 100;
     _this.isagoddamnblock = true;
     var blockImage = new Image();
-    blockImage.src = "https://i.imgur.com/fq7m14C.png";
+    blockImage.src = "https://i.imgur.com/sQp9o0z.png";
     blockImage.height = 100;
     blockImage.width = 100;
     _this.hp = params.hp;

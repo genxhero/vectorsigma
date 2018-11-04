@@ -14,7 +14,7 @@ class EvilBlock extends GameSprite {
         this.hitboxWidth = 100;
         this.isagoddamnblock = true;
         const blockImage = new Image();
-        blockImage.src = "https://i.imgur.com/6M3wxOW.png";
+        blockImage.src = "https://i.imgur.com/JPnUwpN.png";
         blockImage.height = 100;
         blockImage.width = 100;
         this.image = blockImage;
