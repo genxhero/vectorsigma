@@ -8,8 +8,8 @@ class HeroSprite extends GameSprite {
         super(options);
         this.type = "hero";
         this.speed = 0;
-        this.hp = 120;
-        this.kp = 100;
+        this.hp = 100;
+        this.kp = 50;
         const image = new Image();
         image.src = "https://i.imgur.com/JsuhqcT.png";
         image.height = 150;

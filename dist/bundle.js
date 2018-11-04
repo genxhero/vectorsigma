@@ -165,7 +165,10 @@ function (_GameSprite) {
 
       if (obstacle instanceof LandBlock && hitPojo.type === "overhead") {
         // console.log("Block destroys land block");
-        obstacle.explody();
+        var smack = new Audio();
+        smack.src = "https://www.freesfx.co.uk/rx2/mp3s/6/18365_1464637302.mp3";
+        smack.play();
+        obstacle.remove();
       }
     }
   }, {
@@ -385,7 +388,7 @@ function () {
       var _this = this;
 
       this.grass = new Image();
-      this.grass.src = 'https://cmkt-image-prd.global.ssl.fastly.net/0.1.0/ps/2824633/300/200/m1/fpnw/wm0/1601.m10.i311.n029.s.c10.164511620-seamles-.jpg?1497007612&s=843a14180b1390bf4585dd7e668e1683';
+      this.grass.src = "https://i.imgur.com/HsQzaSO.png"; // this.grass.src = 'https://cmkt-image-prd.global.ssl.fastly.net/0.1.0/ps/2824633/300/200/m1/fpnw/wm0/1601.m10.i311.n029.s.c10.164511620-seamles-.jpg?1497007612&s=843a14180b1390bf4585dd7e668e1683';
 
       var grassLoad = function grassLoad() {
         console.log("LINE 32: We are in the grass load function");
@@ -861,8 +864,8 @@ function (_GameSprite) {
     _this = _possibleConstructorReturn(this, _getPrototypeOf(HeroSprite).call(this, options));
     _this.type = "hero";
     _this.speed = 0;
-    _this.hp = 120;
-    _this.kp = 100;
+    _this.hp = 100;
+    _this.kp = 50;
     var image = new Image();
     image.src = "https://i.imgur.com/JsuhqcT.png";
     image.height = 150;
