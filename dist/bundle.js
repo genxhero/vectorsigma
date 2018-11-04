@@ -1324,7 +1324,8 @@ function (_GameSprite) {
         this.posY += this.speed;
         this.draw(ctx);
       } else if (this.posY >= 400) {
-        this.game.remove(this);
+        this.speed = 0;
+        this.draw(ctx);
       }
     } //
 
