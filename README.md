@@ -1,4 +1,7 @@
 # Hedron Attack
+
+[Live](https://genxhero.github.io/vectorsigma/)
+
 ## Background and Overview
 
 ### Motivation for project
@@ -70,3 +73,8 @@ K: Throw a ki blast.
   *  Restart Game 
 * Some kind of healing item.
 *  Resizing all obstacles for more variety.
+* Comissioned static graphics and sprites
+
+## Credits
+*  original graphics courtesy of open sourced rpg rtp by Enterbrain,  then edited in Photoshop
+*  See comments for code attributions
