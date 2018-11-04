@@ -292,7 +292,7 @@ class Game {
         gotone.play();
         this.collected += 1;
        
-        if (this.collected === 20) {
+        if (this.collected === 15) {
            setTimeout(this.win, 500);
         }
     }
