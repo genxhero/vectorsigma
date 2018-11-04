@@ -61,6 +61,14 @@ class Game {
                 if (striker instanceof PowerOrb && strikee instanceof PowerOrb) {
                     continue;
                 }
+
+                if (striker instanceof HeroSprite && strikee instanceof Punch) {
+                    continue;
+                }
+
+                if (striker instanceof Punch && strikee instanceof HeroSprite) {
+                    continue;
+                }
                 let hitPojo = striker.hitDetected(strikee);
                 if (hitPojo.hit){
                   if (hitPojo.type != "overhead")
@@ -171,7 +179,7 @@ class Game {
         
         // back to 500 after testing.
        setInterval(() => this.addPowerOrbs(), 2000);
-       setInterval(() => this.addBlock(), 500);
+       setInterval(() => this.addBlock(), 650);
         this.addHero();  
         alert("The evil Hedronites are making a desperate attack! Fight, Kam! For great justice!");
     
@@ -201,6 +209,12 @@ class Game {
    moveOrbs(){
        for (i in this.powerOrbs) {
            this.powerOrbs[i].update(this.ctx);
+       }
+   }
+
+   doPunches(){
+       for (i in this.punches) {
+         this.punches[i].update(this.ctx);
        }
    }
 
@@ -242,6 +256,7 @@ class Game {
            this.moveBlocks();
            this.standbyLandblocks();
            this.moveOrbs();
+           this.doPunches();
            this.hero.update(this.Key);
            this.hero.draw(this.ctx);
            this.moveBlasts();

@@ -326,6 +326,14 @@ function () {
             continue;
           }
 
+          if (striker instanceof HeroSprite && strikee instanceof Punch) {
+            continue;
+          }
+
+          if (striker instanceof Punch && strikee instanceof HeroSprite) {
+            continue;
+          }
+
           var hitPojo = striker.hitDetected(strikee);
 
           if (hitPojo.hit) {
@@ -463,7 +471,7 @@ function () {
       }, 2000);
       setInterval(function () {
         return _this4.addBlock();
-      }, 500);
+      }, 650);
       this.addHero();
       alert("The evil Hedronites are making a desperate attack! Fight, Kam! For great justice!");
     }
@@ -495,6 +503,13 @@ function () {
     value: function moveOrbs() {
       for (i in this.powerOrbs) {
         this.powerOrbs[i].update(this.ctx);
+      }
+    }
+  }, {
+    key: "doPunches",
+    value: function doPunches() {
+      for (i in this.punches) {
+        this.punches[i].update(this.ctx);
       }
     }
   }, {
@@ -537,6 +552,7 @@ function () {
         this.moveBlocks();
         this.standbyLandblocks();
         this.moveOrbs();
+        this.doPunches();
         this.hero.update(this.Key);
         this.hero.draw(this.ctx);
         this.moveBlasts();
@@ -1015,16 +1031,18 @@ function (_GameSprite) {
 
       if (this.facing === "left") {
         var punch = new Punch({
-          speed: -10,
-          posX: this.posX - 20,
-          game: this.game
+          speed: -8,
+          posX: this.posX,
+          game: this.game,
+          direction: "left"
         });
         this.game.punches.push(punch);
       } else {
         var _punch = new Punch({
-          speed: 10,
-          posX: this.posX + 75,
-          game: this.game
+          speed: 8,
+          posX: this.posX + 70,
+          game: this.game,
+          direction: "right"
         });
 
         this.game.punches.push(_punch);
@@ -1196,12 +1214,11 @@ function (_GameSprite) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(PowerOrb).call(this, params));
     _this.type = "orb";
-    _this.speed = 10;
+    _this.speed = 8;
     _this.hitboxHeight = 20;
     _this.hitboxWidth = 20;
-    _this.isagoddamnblock = true;
     var image = new Image();
-    image.src = "https://i.imgur.com/0qRGch3.png";
+    image.src = "https://i.imgur.com/wRZu6CE.png";
     image.height = 20;
     image.width = 20;
     _this.image = image;
@@ -1429,13 +1446,13 @@ function (_GameSprite) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Punch).call(this, params));
     _this.type = "Punch";
-    _this.hitboxHeight = 10;
-    _this.hitboxWidth = 20;
+    _this.hitboxHeight = 16;
+    _this.hitboxWidth = 45;
+    _this.direction = params.direction;
     var punchImage = new Image();
-    punchImage.src = "https://i.imgur.com/wx7qhXC.png"; //10x10 too small
-
-    punchImage.height = 10;
-    punchImage.width = 20;
+    punchImage.src = _this.direction === "left" ? "https://i.imgur.com/OCQqgo7.png" : "https://i.imgur.com/gJJRwsC.png";
+    punchImage.height = 16;
+    punchImage.width = 45;
     _this.posY = _this.game.hero.posY + 70;
     _this.image = punchImage;
     _this.draw = _this.draw.bind(_assertThisInitialized(_assertThisInitialized(_this)));
@@ -1450,8 +1467,10 @@ function (_GameSprite) {
   _createClass(Punch, [{
     key: "update",
     value: function update(ctx) {
-      this.posX += this.speed;
       this.draw(ctx);
+      this.posX += this.speed;
+      this.speed = 0;
+      this.remove();
 
       if (this.posX > ctx.canvas.width || this.posX <= 0) {
         this.remove();

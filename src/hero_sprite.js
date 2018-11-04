@@ -169,11 +169,11 @@ class HeroSprite extends GameSprite {
             kiai.play();
             if (this.facing === "left") {
                
-                const punch = new Punch({ speed: -10, posX: this.posX -20, game: this.game });
+                const punch = new Punch({ speed: -8, posX: this.posX, game: this.game, direction: "left"});
                 this.game.punches.push(punch);
             } else {
                 
-                const punch = new Punch({ speed: 10, posX: this.posX + 75, game: this.game });
+                const punch = new Punch({ speed: 8, posX: this.posX + 70, game: this.game, direction: "right" });
                 this.game.punches.push(punch);
 
             }

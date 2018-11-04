@@ -4,27 +4,28 @@ const EvilBlock = require('./evil_block');
 class Punch extends GameSprite {
 
     constructor(params) {
-        super(params)
-        this.type = "Punch";
-        this.hitboxHeight = 10;
-        this.hitboxWidth = 20;
-        const punchImage = new Image();
-        punchImage.src = "https://i.imgur.com/wx7qhXC.png";
-        //10x10 too small
-        punchImage.height = 10;
-        punchImage.width = 20;
-        this.posY = this.game.hero.posY + 70;
-        this.image = punchImage;
-        this.draw = this.draw.bind(this);
-        this.image.onload = () => {
-            this.loaded = true;
-        };
-
-    }
+                          super(params);
+                          this.type = "Punch";
+                          this.hitboxHeight = 16;
+                          this.hitboxWidth = 45;
+                          this.direction = params.direction;
+                          const punchImage = new Image();
+        punchImage.src = this.direction === "left" ? "https://i.imgur.com/OCQqgo7.png" : "https://i.imgur.com/gJJRwsC.png";
+                          punchImage.height = 16;
+                          punchImage.width = 45;
+                          this.posY = this.game.hero.posY + 70;
+                          this.image = punchImage;
+                          this.draw = this.draw.bind(this);
+                          this.image.onload = () => {
+                            this.loaded = true;
+                          };
+                        }
 
     update(ctx) {
-        this.posX += this.speed;
         this.draw(ctx);
+        this.posX += this.speed;
+        this.speed = 0
+        this.remove();
         if (this.posX > ctx.canvas.width || this.posX <= 0) {
             this.remove();
         }
@@ -50,7 +51,7 @@ class Punch extends GameSprite {
                 this.game.hero.killScore += 1;
                 console.log("Killed block with fists");
                 obstacle.explody();
-            }  
+            } 
             
         }
         this.remove();
