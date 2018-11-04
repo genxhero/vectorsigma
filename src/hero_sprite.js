@@ -10,13 +10,27 @@ class HeroSprite extends GameSprite {
         this.speed = 0;
         this.hp = 100;
         this.kp = 50;
-        const image = new Image();
-        image.src = "https://i.imgur.com/JsuhqcT.png";
-        image.height = 150;
-        image.width = 75;
+      
+        const limage = new Image();
+        //working
+        // limage.src = "https://i.imgur.com/40rrdZ4.png"; 
+        //test
+        limage.src = "https://i.imgur.com/HO2C6li.png";
+        limage.height = 150;
+        limage.width = 75;
+        this.limage = limage
+        this.limage.onload = () => {
+            this.loaded = true;
+        };
         this.hitboxHeight = 150;
         this.hitboxWidth = 75;
-        this.image = image;
+        const rimage = new Image();
+        // rimage.src = "https://i.imgur.com/JsuhqcT.png";
+        rimage.src = "https://i.imgur.com/dNyUHgK.png";
+        rimage.height = 150;
+        rimage.width = 75;
+        this.rimage = rimage;
+        this.image = rimage;
         this.touchingBlock = false;
         this.draw = this.draw.bind(this);
         this.facing = "right";
@@ -99,13 +113,14 @@ class HeroSprite extends GameSprite {
         // console.log(`X: ${this.posX}, Y: ${this.posY}`);
         if (this.loaded) {
             ctx.drawImage(this.image, this.posX, this.posY);
-    
         }
        
     }
 
     goLeft(){
         this.facing = "left";
+        this.image = this.limage;
+        // this.draw(ctx)
         if (this.posX > 50) {
             this.posX -= 12;
         }
@@ -115,6 +130,8 @@ class HeroSprite extends GameSprite {
 
     goRight(){
         this.facing = "right";
+        this.image = this.rimage;
+        // this.draw(ctx);
       if (this.posX + 75 < ctx.canvas.width - 52) {
         this.posX += 12;
       }

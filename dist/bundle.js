@@ -866,13 +866,28 @@ function (_GameSprite) {
     _this.speed = 0;
     _this.hp = 100;
     _this.kp = 50;
-    var image = new Image();
-    image.src = "https://i.imgur.com/JsuhqcT.png";
-    image.height = 150;
-    image.width = 75;
+    var limage = new Image(); //working
+    // limage.src = "https://i.imgur.com/40rrdZ4.png"; 
+    //test
+
+    limage.src = "https://i.imgur.com/HO2C6li.png";
+    limage.height = 150;
+    limage.width = 75;
+    _this.limage = limage;
+
+    _this.limage.onload = function () {
+      _this.loaded = true;
+    };
+
     _this.hitboxHeight = 150;
     _this.hitboxWidth = 75;
-    _this.image = image;
+    var rimage = new Image(); // rimage.src = "https://i.imgur.com/JsuhqcT.png";
+
+    rimage.src = "https://i.imgur.com/dNyUHgK.png";
+    rimage.height = 150;
+    rimage.width = 75;
+    _this.rimage = rimage;
+    _this.image = rimage;
     _this.touchingBlock = false;
     _this.draw = _this.draw.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.facing = "right";
@@ -971,6 +986,7 @@ function (_GameSprite) {
     key: "goLeft",
     value: function goLeft() {
       this.facing = "left";
+      this.image = this.limage; // this.draw(ctx)
 
       if (this.posX > 50) {
         this.posX -= 12;
@@ -982,6 +998,7 @@ function (_GameSprite) {
     key: "goRight",
     value: function goRight() {
       this.facing = "right";
+      this.image = this.rimage; // this.draw(ctx);
 
       if (this.posX + 75 < ctx.canvas.width - 52) {
         this.posX += 12;
