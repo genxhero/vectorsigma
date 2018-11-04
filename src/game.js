@@ -204,14 +204,19 @@ class Game {
        }
    }
 
+   lose(){
+       alert("GAME OVER");
+       document.location.reload();
+       return;
+   }
    
    drawFrame(){
        requestAnimationFrame(this.drawFrame.bind(this));
        this.detectCollision();
       //detect collsion at beginning before last change
        if (this.over) {
-           console.log("You died.");
-           this.over = false;
+           alert("GAME OVER");
+           document.location.reload();
            return;
        } else {
            this.hero.touchingBlock = false;

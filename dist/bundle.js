@@ -498,14 +498,21 @@ function () {
       }
     }
   }, {
+    key: "lose",
+    value: function lose() {
+      alert("GAME OVER");
+      document.location.reload();
+      return;
+    }
+  }, {
     key: "drawFrame",
     value: function drawFrame() {
       requestAnimationFrame(this.drawFrame.bind(this));
       this.detectCollision(); //detect collsion at beginning before last change
 
       if (this.over) {
-        console.log("You died.");
-        this.over = false;
+        alert("GAME OVER");
+        document.location.reload();
         return;
       } else {
         this.hero.touchingBlock = false;
@@ -910,10 +917,11 @@ function (_GameSprite) {
         grunt.src = "https://s3.us-east-2.amazonaws.com/hedronattack/kam_pain.m4a";
         grunt.play();
       } else {
+        this.speed = 0;
         var deathCry = new Audio();
         deathCry.src = "https://s3.us-east-2.amazonaws.com/hedronattack/kam_death_take_1.m4a";
         deathCry.play();
-        this.game.over = true;
+        setTimeout(this.game.lose, 500); //  this.game.over = true;
       }
     }
   }, {
@@ -1087,9 +1095,9 @@ function (_GameSprite) {
     var blastImage = new Image();
 
     if (_this.direction === "left") {
-      blastImage.src = 'https://i.imgur.com/RNkWMo2.png';
+      blastImage.src = "https://i.imgur.com/JTlDHcY.png";
     } else {
-      blastImage.src = 'https://i.imgur.com/y6kA502.png';
+      blastImage.src = "https://i.imgur.com/ztUamgG.png";
     } //10x10 too small
 
 

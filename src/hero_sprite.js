@@ -84,10 +84,12 @@ class HeroSprite extends GameSprite {
             grunt.src = "https://s3.us-east-2.amazonaws.com/hedronattack/kam_pain.m4a";
             grunt.play();
         } else {
+            this.speed = 0;
             const deathCry = new Audio();
-            deathCry.src = "https://s3.us-east-2.amazonaws.com/hedronattack/kam_death_take_1.m4a";
-            deathCry.play();
-            this.game.over = true;
+             deathCry.src = "https://s3.us-east-2.amazonaws.com/hedronattack/kam_death_take_1.m4a";
+             deathCry.play();
+            setTimeout(this.game.lose, 500);
+            //  this.game.over = true;
         }
       
     }

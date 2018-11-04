@@ -11,9 +11,9 @@ class KiBlast extends GameSprite {
         this.hitboxWidth = 40;
         const blastImage = new Image();
         if (this.direction === "left") {
-            blastImage.src = 'https://i.imgur.com/RNkWMo2.png';
+            blastImage.src = "https://i.imgur.com/JTlDHcY.png";
         } else {
-            blastImage.src =  'https://i.imgur.com/y6kA502.png';
+            blastImage.src = "https://i.imgur.com/ztUamgG.png";
         }
         //10x10 too small
         blastImage.height = 20;
