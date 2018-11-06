@@ -35,6 +35,5 @@ document.addEventListener("DOMContentLoaded", () => {
   const game = new Game(ctx, Key);
   // game.drawField();
    window.ctx = ctx;
-  
             
 });

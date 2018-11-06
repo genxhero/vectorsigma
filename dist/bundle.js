@@ -283,11 +283,13 @@ function () {
     this.ctx = ctx;
     this.Key = Key; // alert(this.Key);
 
-    this.drawField();
+    this.drawField = this.drawField.bind(this);
     this.grassLoaded = false;
     this.skyLoaded = false;
-    this.pillarsLoaded = false;
-    this.drawFrame.bind(this)();
+    this.pillarsLoaded = false; // this.drawFrame.bind(this)();
+    //ABOVE LINE MIGRATED TO "START"
+
+    this.start();
   }
 
   _createClass(Game, [{
@@ -460,10 +462,18 @@ function () {
       }
     }
   }, {
+    key: "start",
+    value: function start() {
+      document.getElementById("instructions-container").onclick = this.drawField;
+    }
+  }, {
     key: "drawField",
     value: function drawField() {
       var _this4 = this;
 
+      //    alert("The evil Hedronites are making a desperate attack! Fight, Kam! For great justice!");
+      document.getElementById("instructions-container").style.visibility = "hidden";
+      document.getElementById("instructions-container").style.zIndex = "1";
       var bgm = new Audio("https://s3.us-east-2.amazonaws.com/hedronattack/brahms_bgm_short.m4a");
       bgm.play();
       this.grassLoad();
@@ -476,8 +486,9 @@ function () {
       setInterval(function () {
         return _this4.addBlock();
       }, 500);
-      this.addHero();
-      alert("The evil Hedronites are making a desperate attack! Fight, Kam! For great justice!");
+      this.addHero(); //SEE if thisworks
+
+      this.drawFrame.bind(this)();
     }
   }, {
     key: "styleHp",
