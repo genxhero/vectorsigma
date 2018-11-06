@@ -74,8 +74,10 @@ class Game {
                 }
                 let hitPojo = striker.hitDetected(strikee);
                 if (hitPojo.hit){
-                  if (hitPojo.type != "overhead")
-                    console.log(hitPojo);
+                //   if (hitPojo.type != "overhead")
+                //    { 
+                //        console.log(hitPojo);
+                //     }
                     
                     let type = hitPojo.type;
                     

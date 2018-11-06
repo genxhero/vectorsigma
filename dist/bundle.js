@@ -342,7 +342,10 @@ function () {
           var hitPojo = striker.hitDetected(strikee);
 
           if (hitPojo.hit) {
-            if (hitPojo.type != "overhead") console.log(hitPojo);
+            //   if (hitPojo.type != "overhead")
+            //    { 
+            //        console.log(hitPojo);
+            //     }
             var type = hitPojo.type;
             var hit = striker.handleCollision(strikee, hitPojo);
             if (hit) return;
