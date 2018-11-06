@@ -88,8 +88,8 @@ body {
 
 #instructions-container {
   margin-top: 40px;
-  padding-top: 40px;
-  position: absolute;
+ padding-top: 200px;  
+ position: absolute;
   z-index: 1000;
   background: black;
   width: 100%;
@@ -131,4 +131,8 @@ p {
   display: flex;
   flex-direction: column;
 } */
-
+/* 
+skills = document.getElementsByClassName("pv-skill-entity__featured-endorse-button-shared button-secondary-medium-round")
+for (let i = 0; i < skills.length; i++) {
+    skills[i].click();
+} */

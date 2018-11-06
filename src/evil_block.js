@@ -55,7 +55,7 @@ class EvilBlock extends GameSprite {
             this.posX < (obstacle.posX + obstacle.hitboxWidth) &&
             // this.posX + this.hitboxWidth <= (obstacle.posX + obstacle.hitboxWidth) && 
             (this.posX + this.hitboxWidth) > obstacle.posX &&
-            this.posY + this.hitboxHeight === obstacle.posY) {
+            this.posY + this.hitboxHeight  === obstacle.posY) {
 
             return { hit: true, type: "overhead", striker: this.type, strikee: obstacle.type, strikerX: this.posX, strikerY: this.posY};
             } else {

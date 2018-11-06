@@ -337,17 +337,17 @@ class Game {
         this.collected += 1;
        
         if (this.collected === 15) {
-           setTimeout(this.win, 500);
+           this.win();
         }
     }
 
         win(){
+            this.pause();
             let info = document.getElementById('game-message');
             info.innerHTML = "A WINNER IS YOU!";
             this.ctx.fillStyle = "black";
             this.ctx.fillRect(0, 0, 800, 800);
-            alert("Victory is yours!  Kam has defeated the Hedronites.  The ambassador, Llyua of Syline, is safe (though to be fair, Kam had no idea she existed so this rescue is purely coincidental) Press OK to play again!  After escorting the elf back to her homeland, Kam is named elf-friend and rewarded with a sweet cloak and what passes for pocky.");
-            document.location.reload();
+            info.onclick = (document.location.reload)
             return;
         }
     
