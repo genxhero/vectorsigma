@@ -272,6 +272,7 @@ function () {
     _classCallCheck(this, Game);
 
     this.over = false;
+    this.paused = false;
     this.collected = 0;
     this.punches = [];
     this.lastBlockX = 300;
@@ -281,6 +282,7 @@ function () {
     this.powerOrbs = [];
     this.kiBlasts = [];
     this.ctx = ctx;
+    this.pause = this.pause.bind(this);
     this.Key = Key; // alert(this.Key);
 
     this.drawField = this.drawField.bind(this);
@@ -293,6 +295,22 @@ function () {
   }
 
   _createClass(Game, [{
+    key: "pause",
+    value: function pause() {
+      //32
+      if (this.paused) {
+        this.paused = false;
+        this.bgm.play();
+        this.drawFrame(); //  setInterval(() => this.addPowerOrbs(), 2000);
+        //  setInterval(() => this.addBlock(), 500);
+      } else {
+        console.log("Trynna pause");
+        this.paused = true;
+        this.bgm.pause(); //  clearInterval(() => this.addPowerOrbs());
+        //  clearInterval(() => this.addBlock());
+      }
+    }
+  }, {
     key: "allSprites",
     value: function allSprites() {
       return [].concat([this.hero], this.blocks, this.kiBlasts, this.punches, this.landblocks, this.powerOrbs);
@@ -368,24 +386,28 @@ function () {
   }, {
     key: "addBlock",
     value: function addBlock() {
-      var newBlock = new EvilBlock({
-        game: this,
-        posY: -50,
-        posX: Math.floor(Math.random() * 600) + 50
-      });
-      this.blocks.push(newBlock);
-      newBlock.draw(this.ctx);
+      if (!this.paused) {
+        var newBlock = new EvilBlock({
+          game: this,
+          posY: -50,
+          posX: Math.floor(Math.random() * 600) + 50
+        });
+        this.blocks.push(newBlock);
+        newBlock.draw(this.ctx);
+      }
     }
   }, {
     key: "addPowerOrbs",
     value: function addPowerOrbs() {
-      var newOrb = new PowerOrb({
-        game: this,
-        posY: -50,
-        posX: Math.floor(Math.random() * 600) + 50
-      });
-      this.powerOrbs.push(newOrb);
-      newOrb.draw(this.ctx);
+      if (!this.paused) {
+        var newOrb = new PowerOrb({
+          game: this,
+          posY: -50,
+          posX: Math.floor(Math.random() * 600) + 50
+        });
+        this.powerOrbs.push(newOrb);
+        newOrb.draw(this.ctx);
+      }
     }
   }, {
     key: "grassLoad",
@@ -467,26 +489,35 @@ function () {
   }, {
     key: "start",
     value: function start() {
+      var _this4 = this;
+
       document.getElementById("instructions-container").onclick = this.drawField;
+      window.addEventListener('keydown', function (e) {
+        var key = e.keyCode;
+
+        if (key === 32) {
+          _this4.pause();
+        }
+      });
     }
   }, {
     key: "drawField",
     value: function drawField() {
-      var _this4 = this;
+      var _this5 = this;
 
       document.getElementById("instructions-container").style.visibility = "hidden";
       document.getElementById("instructions-container").style.zIndex = "1";
-      var bgm = new Audio("https://s3.us-east-2.amazonaws.com/hedronattack/brahms_bgm_short.m4a");
-      bgm.play();
+      this.bgm = new Audio("https://s3.us-east-2.amazonaws.com/hedronattack/brahms_bgm_short.m4a");
+      this.bgm.play();
       this.grassLoad();
       this.skyLoad();
       this.loadPillars(); // back to 500 after testing.
 
       setInterval(function () {
-        return _this4.addPowerOrbs();
+        return _this5.addPowerOrbs();
       }, 2000);
       setInterval(function () {
-        return _this4.addBlock();
+        return _this5.addBlock();
       }, 500);
       this.addHero(); //SEE if thisworks
 
@@ -541,40 +572,42 @@ function () {
   }, {
     key: "drawFrame",
     value: function drawFrame() {
-      requestAnimationFrame(this.drawFrame.bind(this));
-      this.detectCollision(); //detect collsion at beginning before last change
+      if (!this.paused) {
+        requestAnimationFrame(this.drawFrame.bind(this));
+        this.detectCollision(); //detect collsion at beginning before last change
 
-      if (this.over) {
-        alert("GAME OVER");
-        document.location.reload();
-        return;
-      } else {
-        this.hero.touchingBlock = false;
-        this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-        var pattern = this.ctx.createPattern(this.grass, 'repeat');
-        this.ctx.fillStyle = pattern;
-        this.ctx.fillRect(0, 400, 800, 100);
-        var hp = document.getElementById('hero-hp');
-        hp.innerText = "".concat(this.hero.hp);
-        this.styleHp(hp);
-        var kills = document.getElementById('hero-kills');
-        kills.innerText = "".concat(this.hero.killScore);
-        var score = document.getElementById('hero-orbs');
-        score.innerText = "".concat(this.collected);
-        var kp = document.getElementById('hero-kp');
-        kp.innerText = "".concat(this.hero.kp);
-        this.styleKp(kp); //    debugger;
+        if (this.over) {
+          alert("GAME OVER");
+          document.location.reload();
+          return;
+        } else {
+          this.hero.touchingBlock = false;
+          this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+          var pattern = this.ctx.createPattern(this.grass, 'repeat');
+          this.ctx.fillStyle = pattern;
+          this.ctx.fillRect(0, 400, 800, 100);
+          var hp = document.getElementById('hero-hp');
+          hp.innerText = "".concat(this.hero.hp);
+          this.styleHp(hp);
+          var kills = document.getElementById('hero-kills');
+          kills.innerText = "".concat(this.hero.killScore);
+          var score = document.getElementById('hero-orbs');
+          score.innerText = "".concat(this.collected);
+          var kp = document.getElementById('hero-kp');
+          kp.innerText = "".concat(this.hero.kp);
+          this.styleKp(kp); //    debugger;
 
-        this.ctx.drawImage(this.sky, 0, -50);
-        this.ctx.drawImage(this.leftPillar, 0, 0);
-        this.ctx.drawImage(this.rightPillar, 750, 0);
-        this.moveBlocks();
-        this.standbyLandblocks();
-        this.moveOrbs();
-        this.doPunches();
-        this.hero.update(this.Key);
-        this.hero.draw(this.ctx);
-        this.moveBlasts();
+          this.ctx.drawImage(this.sky, 0, -50);
+          this.ctx.drawImage(this.leftPillar, 0, 0);
+          this.ctx.drawImage(this.rightPillar, 750, 0);
+          this.moveBlocks();
+          this.standbyLandblocks();
+          this.moveOrbs();
+          this.doPunches();
+          this.hero.update(this.Key);
+          this.hero.draw(this.ctx);
+          this.moveBlasts();
+        }
       }
     }
   }, {

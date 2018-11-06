@@ -8,6 +8,7 @@ const LandBlock = require('./land_block');
 class Game {
     constructor(ctx, Key){
         this.over = false;
+        this.paused = false;
 
         this.collected = 0;
         this.punches = [];
@@ -18,6 +19,7 @@ class Game {
         this.powerOrbs = [];
         this.kiBlasts = [];
         this.ctx = ctx;
+        this.pause = this.pause.bind(this);
         this.Key = Key;
         // alert(this.Key);
         this.drawField = this.drawField.bind(this);
@@ -28,6 +30,24 @@ class Game {
         // this.drawFrame.bind(this)();
         //ABOVE LINE MIGRATED TO "START"
         this.start();
+    }
+
+    pause(){
+             //32
+             if(this.paused) {
+                 this.paused = false;
+                 this.bgm.play();
+                 this.drawFrame();
+                 
+                //  setInterval(() => this.addPowerOrbs(), 2000);
+                //  setInterval(() => this.addBlock(), 500);
+             } else {
+                 console.log("Trynna pause");
+                  this.paused = true;
+                  this.bgm.pause();
+                //  clearInterval(() => this.addPowerOrbs());
+                //  clearInterval(() => this.addBlock());
+             }
     }
 
     allSprites() {
@@ -101,23 +121,25 @@ class Game {
     }
 
     addBlock(){
+        if (!this.paused){
        let newBlock = new EvilBlock({
          game: this,
          posY: -50,
          posX: Math.floor(Math.random() * 600) + 50
        });
        this.blocks.push(newBlock);
-       newBlock.draw(this.ctx);
+       newBlock.draw(this.ctx);}
     }
 
     addPowerOrbs(){
+        if (!this.paused) {
         let newOrb = new PowerOrb({
             game: this,
             posY: -50,
             posX: Math.floor(Math.random() * 600) + 50
         });
         this.powerOrbs.push(newOrb);
-        newOrb.draw(this.ctx);
+        newOrb.draw(this.ctx);}
     }
 
     
@@ -176,6 +198,13 @@ class Game {
   
    start(){
        document.getElementById("instructions-container").onclick = this.drawField;
+       window.addEventListener('keydown', (e) => {
+           var key = e.keyCode;
+           if (key === 32)
+           {
+               this.pause();
+           }
+       });
 
    }
 
@@ -183,8 +212,8 @@ class Game {
    drawField(){
        document.getElementById("instructions-container").style.visibility = "hidden";
        document.getElementById("instructions-container").style.zIndex = "1";
-       const bgm = new Audio("https://s3.us-east-2.amazonaws.com/hedronattack/brahms_bgm_short.m4a");
-       bgm.play();
+       this.bgm = new Audio("https://s3.us-east-2.amazonaws.com/hedronattack/brahms_bgm_short.m4a");
+       this.bgm.play();
         this.grassLoad();
         this.skyLoad();
         this.loadPillars();
@@ -240,7 +269,9 @@ class Game {
    }
    
    drawFrame(){
-       requestAnimationFrame(this.drawFrame.bind(this));
+       if (!this.paused) {
+           requestAnimationFrame(this.drawFrame.bind(this));
+       
        this.detectCollision();
       //detect collsion at beginning before last change
        if (this.over) {
@@ -275,7 +306,9 @@ class Game {
            this.hero.update(this.Key);
            this.hero.draw(this.ctx);
            this.moveBlasts();
+           
        }
+    }
   
       
    }
