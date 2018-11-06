@@ -75,7 +75,6 @@ class Game {
                 let hitPojo = striker.hitDetected(strikee);
                 if (hitPojo.hit){
                   if (hitPojo.type != "overhead")
-                    console.log(hitPojo);
                     
                     let type = hitPojo.type;
                     
@@ -128,7 +127,6 @@ class Game {
         this.grass.src = "https://i.imgur.com/HsQzaSO.png";
         // this.grass.src = 'https://cmkt-image-prd.global.ssl.fastly.net/0.1.0/ps/2824633/300/200/m1/fpnw/wm0/1601.m10.i311.n029.s.c10.164511620-seamles-.jpg?1497007612&s=843a14180b1390bf4585dd7e668e1683';
         const grassLoad = () => {
-            console.log("LINE 32: We are in the grass load function");
             let pattern = this.ctx.createPattern(this.grass, 'repeat');
             this.ctx.fillStyle = pattern;
             this.ctx.fillRect(0, 400, 800, 100);
