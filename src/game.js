@@ -34,7 +34,7 @@ class Game {
 
     pause(){
              //32
-             if(this.paused) {
+             if(this.paused && this.over === false) {
                  this.paused = false;
                  this.bgm.play();
                  this.drawFrame();
@@ -261,6 +261,7 @@ class Game {
    }
 
    lose(){
+       this.over = true;
        this.ctx.fillStyle = "black";
        this.ctx.fillRect(0, 0, 800, 800);
        alert("GAME OVER");
@@ -274,11 +275,7 @@ class Game {
        
        this.detectCollision();
       //detect collsion at beginning before last change
-       if (this.over) {
-           alert("GAME OVER");
-           document.location.reload();
-           return;
-       } else {
+      
            this.hero.touchingBlock = false;
            this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
            let pattern = this.ctx.createPattern(this.grass, 'repeat');
@@ -307,7 +304,7 @@ class Game {
            this.hero.draw(this.ctx);
            this.moveBlasts();
            
-       }
+       
     }
   
       
@@ -343,6 +340,7 @@ class Game {
 
         win(){
             this.pause();
+            this.over = true;
             let info = document.getElementById('game-message');
             info.innerHTML = "A WINNER IS YOU!";
             this.ctx.fillStyle = "black";

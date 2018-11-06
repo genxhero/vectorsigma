@@ -180,7 +180,8 @@ function (_GameSprite) {
         };
       }
 
-      if (this.posX < obstacle.posX + obstacle.hitboxWidth && // this.posX + this.hitboxWidth <= (obstacle.posX + obstacle.hitboxWidth) && 
+      if ( //trying or
+      this.posX < obstacle.posX + obstacle.hitboxWidth && // this.posX + this.hitboxWidth <= (obstacle.posX + obstacle.hitboxWidth) && 
       this.posX + this.hitboxWidth > obstacle.posX && this.posY + this.hitboxHeight === obstacle.posY) {
         return {
           hit: true,
@@ -298,7 +299,7 @@ function () {
     key: "pause",
     value: function pause() {
       //32
-      if (this.paused) {
+      if (this.paused && this.over === false) {
         this.paused = false;
         this.bgm.play();
         this.drawFrame(); //  setInterval(() => this.addPowerOrbs(), 2000);
@@ -563,6 +564,7 @@ function () {
   }, {
     key: "lose",
     value: function lose() {
+      this.over = true;
       this.ctx.fillStyle = "black";
       this.ctx.fillRect(0, 0, 800, 800);
       alert("GAME OVER");
@@ -576,38 +578,32 @@ function () {
         requestAnimationFrame(this.drawFrame.bind(this));
         this.detectCollision(); //detect collsion at beginning before last change
 
-        if (this.over) {
-          alert("GAME OVER");
-          document.location.reload();
-          return;
-        } else {
-          this.hero.touchingBlock = false;
-          this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-          var pattern = this.ctx.createPattern(this.grass, 'repeat');
-          this.ctx.fillStyle = pattern;
-          this.ctx.fillRect(0, 400, 800, 100);
-          var hp = document.getElementById('hero-hp');
-          hp.innerText = "".concat(this.hero.hp);
-          this.styleHp(hp);
-          var kills = document.getElementById('hero-kills');
-          kills.innerText = "".concat(this.hero.killScore);
-          var score = document.getElementById('hero-orbs');
-          score.innerText = "".concat(this.collected);
-          var kp = document.getElementById('hero-kp');
-          kp.innerText = "".concat(this.hero.kp);
-          this.styleKp(kp); //    debugger;
+        this.hero.touchingBlock = false;
+        this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        var pattern = this.ctx.createPattern(this.grass, 'repeat');
+        this.ctx.fillStyle = pattern;
+        this.ctx.fillRect(0, 400, 800, 100);
+        var hp = document.getElementById('hero-hp');
+        hp.innerText = "".concat(this.hero.hp);
+        this.styleHp(hp);
+        var kills = document.getElementById('hero-kills');
+        kills.innerText = "".concat(this.hero.killScore);
+        var score = document.getElementById('hero-orbs');
+        score.innerText = "".concat(this.collected);
+        var kp = document.getElementById('hero-kp');
+        kp.innerText = "".concat(this.hero.kp);
+        this.styleKp(kp); //    debugger;
 
-          this.ctx.drawImage(this.sky, 0, -50);
-          this.ctx.drawImage(this.leftPillar, 0, 0);
-          this.ctx.drawImage(this.rightPillar, 750, 0);
-          this.moveBlocks();
-          this.standbyLandblocks();
-          this.moveOrbs();
-          this.doPunches();
-          this.hero.update(this.Key);
-          this.hero.draw(this.ctx);
-          this.moveBlasts();
-        }
+        this.ctx.drawImage(this.sky, 0, -50);
+        this.ctx.drawImage(this.leftPillar, 0, 0);
+        this.ctx.drawImage(this.rightPillar, 750, 0);
+        this.moveBlocks();
+        this.standbyLandblocks();
+        this.moveOrbs();
+        this.doPunches();
+        this.hero.update(this.Key);
+        this.hero.draw(this.ctx);
+        this.moveBlasts();
       }
     }
   }, {
@@ -649,6 +645,7 @@ function () {
     key: "win",
     value: function win() {
       this.pause();
+      this.over = true;
       var info = document.getElementById('game-message');
       info.innerHTML = "A WINNER IS YOU!";
       this.ctx.fillStyle = "black";

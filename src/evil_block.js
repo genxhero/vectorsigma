@@ -52,6 +52,7 @@ class EvilBlock extends GameSprite {
         }
 
         if (
+            //trying or
             this.posX < (obstacle.posX + obstacle.hitboxWidth) &&
             // this.posX + this.hitboxWidth <= (obstacle.posX + obstacle.hitboxWidth) && 
             (this.posX + this.hitboxWidth) > obstacle.posX &&
