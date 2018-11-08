@@ -56,7 +56,6 @@ class Punch extends GameSprite {
             obstacle.hp -= 1
             if (obstacle.hp === 0){
                 this.game.hero.killScore += 1;
-                console.log("Killed block with fists");
                 obstacle.explody();
             } 
             

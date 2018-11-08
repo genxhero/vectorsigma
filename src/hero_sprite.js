@@ -181,7 +181,6 @@ class HeroSprite extends GameSprite {
 
 
     punch(){
-            console.log("Punching");
             const kiai = new Audio();
             kiai.src = "https://s3.us-east-2.amazonaws.com/hedronattack/kiat_takeone.m4a";
             kiai.play();

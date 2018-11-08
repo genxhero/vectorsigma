@@ -333,7 +333,7 @@ class Game {
         gotone.play();
         this.collected += 1;
        
-        if (this.collected === 15) {
+        if (this.collected === 1) {
            this.win();
         }
     }
@@ -343,9 +343,21 @@ class Game {
             this.over = true;
             let info = document.getElementById('game-message');
             info.innerHTML = "A WINNER IS YOU!";
+            let winModal = document.getElementById('victory-container');
+            winModal.style.visibility = "visible";
+            winModal.zIndex = 1000;
+            let hpScore = document.getElementById('score-hp');
+            hpScore.innerHTML = `Remaining Health: ${this.hero.hp} (${this.hero.hp * 100} pts)`
+            let kpScore = document.getElementById('score-kp');
+            kpScore.innerHTML = `Remaining Ki: ${this.hero.kp} (${this.hero.kp * 100}) pts`
+            let killScore = document.getElementById('score-kills');
+            killScore.innerHTML = `Hedronites Destroyed: ${this.hero.killScore} (${this.hero.killScore * 1000} pts)`;
+            let totalScore = document.getElementById('score-total');
+            const score = (this.hero.hp * 100) + (this.hero.kp * 100) + (this.hero.killScore * 1000)
+            totalScore.innerHTML = `Total Score: ${score} pts`;
             this.ctx.fillStyle = "black";
             this.ctx.fillRect(0, 0, 800, 800);
-            info.onclick = (document.location.reload)
+            info.onclick = (document.location.reload);
             return;
         }
     

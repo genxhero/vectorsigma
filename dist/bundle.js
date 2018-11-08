@@ -637,7 +637,7 @@ function () {
       gotone.play();
       this.collected += 1;
 
-      if (this.collected === 15) {
+      if (this.collected === 1) {
         this.win();
       }
     }
@@ -648,6 +648,18 @@ function () {
       this.over = true;
       var info = document.getElementById('game-message');
       info.innerHTML = "A WINNER IS YOU!";
+      var winModal = document.getElementById('victory-container');
+      winModal.style.visibility = "visible";
+      winModal.zIndex = 1000;
+      var hpScore = document.getElementById('score-hp');
+      hpScore.innerHTML = "Remaining Health: ".concat(this.hero.hp, " (").concat(this.hero.hp * 100, " pts)");
+      var kpScore = document.getElementById('score-kp');
+      kpScore.innerHTML = "Remaining Ki: ".concat(this.hero.kp, " (").concat(this.hero.kp * 100, ") pts");
+      var killScore = document.getElementById('score-kills');
+      killScore.innerHTML = "Hedronites Destroyed: ".concat(this.hero.killScore, " (").concat(this.hero.killScore * 1000, " pts)");
+      var totalScore = document.getElementById('score-total');
+      var score = this.hero.hp * 100 + this.hero.kp * 100 + this.hero.killScore * 1000;
+      totalScore.innerHTML = "Total Score: ".concat(score, " pts");
       this.ctx.fillStyle = "black";
       this.ctx.fillRect(0, 0, 800, 800);
       info.onclick = document.location.reload;
@@ -1102,7 +1114,6 @@ function (_GameSprite) {
   }, {
     key: "punch",
     value: function punch() {
-      console.log("Punching");
       var kiai = new Audio();
       kiai.src = "https://s3.us-east-2.amazonaws.com/hedronattack/kiat_takeone.m4a";
       kiai.play();
@@ -1582,7 +1593,6 @@ function (_GameSprite) {
 
         if (obstacle.hp === 0) {
           this.game.hero.killScore += 1;
-          console.log("Killed block with fists");
           obstacle.explody();
         }
       }
