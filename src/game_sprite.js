@@ -14,8 +14,7 @@ class GameSprite {
     }
 
     draw(ctx){
-        console.log(this.image);
-        console.log(`X: ${this.posX}, Y: ${this.posY}`);
+      
         ctx.drawImage(this.image, this.posX, this.posY);
     };
 
@@ -57,7 +56,7 @@ class GameSprite {
          (this.posX + this.hitboxWidth ) > obstacle.posX ) && 
             this.posX < obstacle.posX
                  ) {
-            console.log("TargetHP:", obstacle.hp);
+            // console.log("TargetHP:", obstacle.hp);
             return { hit: true, type: "sidestrike", striker: this.type, strikee: obstacle.type, direction: "right", targetHP: obstacle.hp };
                } else {
                  return { hit: false };

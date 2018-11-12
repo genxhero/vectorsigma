@@ -51,7 +51,6 @@ class HeroSprite extends GameSprite {
      }
 
      handleCollision(obstacle, hitPojo){
-         console.log("Hero hit something.");
         //  debugger;
          if (obstacle.isagoddamnblock && hitPojo.type === "sidestrike" && hitPojo.direction === "right"){
              const tink = new Audio();

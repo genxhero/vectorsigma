@@ -4,6 +4,7 @@ const HeroSprite = require('./hero_sprite');
 const KiBlast = require('./ki_blash');
 const Punch = require('./punch');
 const LandBlock = require('./land_block');
+const BlockFragment = require('./block_frag');
 
 class Game {
     constructor(ctx, Key){
@@ -92,6 +93,10 @@ class Game {
                 if (striker instanceof Punch && strikee instanceof HeroSprite) {
                     continue;
                 }
+
+                if (striker instanceof BlockFragment) {
+                    continue;
+                }
                 let hitPojo = striker.hitDetected(strikee);
                 if (hitPojo.hit){
                 //   if (hitPojo.type != "overhead")
@@ -152,7 +157,6 @@ class Game {
         this.grass.src = "https://i.imgur.com/HsQzaSO.png";
         // this.grass.src = 'https://cmkt-image-prd.global.ssl.fastly.net/0.1.0/ps/2824633/300/200/m1/fpnw/wm0/1601.m10.i311.n029.s.c10.164511620-seamles-.jpg?1497007612&s=843a14180b1390bf4585dd7e668e1683';
         const grassLoad = () => {
-            console.log("LINE 32: We are in the grass load function");
             let pattern = this.ctx.createPattern(this.grass, 'repeat');
             this.ctx.fillStyle = pattern;
             this.ctx.fillRect(0, 400, 800, 100);
@@ -188,6 +192,12 @@ class Game {
        for(i in this.blocks) {
           this.blocks[i].update(this.ctx);
        }
+    }
+
+    moveFrags(){
+        for (i in this.fragments) {
+            this.fragments[i].update(this.ctx);
+        }
     }
 
     moveBlasts(){
@@ -292,7 +302,6 @@ class Game {
            let kp = document.getElementById('hero-kp');
            kp.innerText = `${this.hero.kp}`;
            this.styleKp(kp);
-        //    debugger;
            this.ctx.drawImage(this.sky, 0, -50);
            this.ctx.drawImage(this.leftPillar, 0, 0);
            this.ctx.drawImage(this.rightPillar, 750, 0)
@@ -303,6 +312,7 @@ class Game {
            this.hero.update(this.Key);
            this.hero.draw(this.ctx);
            this.moveBlasts();
+           this.moveFrags();
            
        
     }
@@ -324,6 +334,10 @@ class Game {
        }
        if (sprite instanceof PowerOrb ){
            this.powerOrbs.splice(this.powerOrbs.indexOf(sprite), 1);
+       }
+
+       if (sprite instanceof BlockFragment) {
+           this.fragments.splice(this.fragments.indexOf(sprite), 1);
        }
    }
 

@@ -86,6 +86,203 @@
 /************************************************************************/
 /******/ ({
 
+/***/ "./src/block_frag.js":
+/*!***************************!*\
+  !*** ./src/block_frag.js ***!
+  \***************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var ULA = new Image();
+ULA.src = "./fragtemp.png";
+var ULB = new Image();
+ULB.src = "./fragtemp.png";
+var ULC = new Image();
+ULC.src = "./fragtemp.png";
+var ULD = new Image();
+ULD.src = "./fragtemp.png";
+var URA = new Image();
+URA.src = "./fragtemp.png";
+var URB = new Image();
+URB.src = "./fragtemp.png";
+var URC = new Image();
+URC.src = "./fragtemp.png";
+var URD = new Image();
+URD.src = "./fragtemp.png";
+var DLA = new Image();
+DLA.src = "./fragtemp.png";
+var DLB = new Image();
+DLB.src = "./fragtemp.png";
+var DLC = new Image();
+DLC.src = "./fragtemp.png";
+var DLD = new Image();
+DLD.src = "./fragtemp.png";
+var DRA = new Image();
+DRA.src = "./fragtemp.png";
+var DRB = new Image();
+DRB.src = "./fragtemp.png";
+var DRC = new Image();
+DRC.src = "./fragtemp.png";
+var DRD = new Image();
+DRD.src = "./fragtemp.png";
+var IMAGES = {
+  "ULA": ULA,
+  "URA": URA,
+  "DLA": DLA,
+  "DRA": DRA,
+  "ULB": ULB,
+  "URB": URB,
+  "DLB": DLB,
+  "DRB": DRB,
+  "ULC": ULC,
+  "URC": URC,
+  "DLC": DLC,
+  "DRC": DRC,
+  "ULD": ULD,
+  "URD": URD,
+  "DLD": DLD,
+  "DRD": DRD
+};
+
+var BlockFragment =
+/*#__PURE__*/
+function () {
+  function BlockFragment(params) {
+    var _this = this;
+
+    _classCallCheck(this, BlockFragment);
+
+    this.imgCode = params.imgCode;
+    this.image = IMAGES[params.imgCode];
+    this.setSpeed();
+    this.posX = params.posX;
+    this.posY = params.posY;
+    this.image.width = 25;
+    this.image.height = 25;
+    this.game = params.game;
+
+    this.image.onload = function () {
+      _this.loaded = true;
+    };
+
+    console.log("Block fragment created.");
+    this.game.fragments.push(this);
+  }
+
+  _createClass(BlockFragment, [{
+    key: "setSpeed",
+    value: function setSpeed() {
+      switch (this.imgCode) {
+        case "ULA":
+          this.speedX = -15;
+          this.speedY = -15;
+          break;
+
+        case "ULB":
+          this.speedX = 0;
+          this.speedY = -15;
+          break;
+
+        case "ULC":
+          this.speedX = -15;
+          this.speedY = -10;
+          break;
+
+        case "ULD":
+          this.speedX = -15;
+          this.speedY = -15;
+          break;
+
+        case "URA":
+          this.speedY = -15;
+          this.speedX = 0;
+          break;
+
+        case "URB":
+          this.speedX = 15;
+          this.speedY = -15;
+          break;
+        //center block
+        //    case URC:
+
+        case "URD":
+          this.speedX = 15;
+          this.speedY = -10;
+          break;
+        //center block
+        //    case DRA:
+
+        case "DRB":
+          this.speedX = 15;
+          this.speedY = 0;
+          break;
+
+        case "DRC":
+          this.speedY = 15;
+          this.speedX = 0;
+          break;
+
+        case "DRD":
+          this.speedX = 15;
+          this.speedY = 15;
+          break;
+
+        case "DLA":
+          this.speedX = -15;
+          this.speedY = 0;
+          break;
+        //    case DLB:
+
+        case "DLC":
+          this.speedY = 15;
+          this.speedX = -15;
+          break;
+
+        case "DLD":
+          this.speedY = 15;
+          this.speedX = 0;
+          break;
+      }
+    }
+  }, {
+    key: "update",
+    value: function update(ctx) {
+      if (this.posX < 0 || this.posY < 0 || this.posX > 800 || this.posY > 500) {
+        this.remove();
+      } else {
+        this.posX += this.speedX;
+        this.posY += this.speedY;
+        console.log("Fragment Location:", this.posX, this.posY);
+        this.draw(ctx);
+      }
+    }
+  }, {
+    key: "draw",
+    value: function draw(ctx) {
+      if (this.loaded) {
+        ctx.drawImage(this.image, this.posX, this.posY);
+      }
+    }
+  }, {
+    key: "remove",
+    value: function remove() {
+      this.game.remove(this);
+    }
+  }]);
+
+  return BlockFragment;
+}();
+
+module.exports = BlockFragment;
+
+/***/ }),
+
 /***/ "./src/evil_block.js":
 /*!***************************!*\
   !*** ./src/evil_block.js ***!
@@ -117,6 +314,8 @@ var HeroSprite = __webpack_require__(/*! ./hero_sprite */ "./src/hero_sprite.js"
 
 var LandBlock = __webpack_require__(/*! ./land_block */ "./src/land_block.js");
 
+var BlockFragment = __webpack_require__(/*! ./block_frag */ "./src/block_frag.js");
+
 var EvilBlock =
 /*#__PURE__*/
 function (_GameSprite) {
@@ -140,6 +339,8 @@ function (_GameSprite) {
     blockImage.width = 100;
     _this.image = blockImage;
     _this.draw = _this.draw.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+
+    _this.game.blockLocations.push(_this.posX);
 
     _this.image.onload = function () {
       _this.loaded = true;
@@ -228,6 +429,13 @@ function (_GameSprite) {
     key: "explody",
     value: function explody() {
       this.speed = 0;
+      var ula = new BlockFragment({
+        imgCode: "ULA",
+        posX: this.posX,
+        posY: this.posY,
+        game: this.game
+      });
+      ctx.drawImage(ula.image, this.posX, this.posY);
       var kaboosh = new Audio();
       kaboosh.src = "https://www.freesfx.co.uk/rx2/mp3s/6/17955_1464205617.mp3";
       kaboosh.play().then(this.game.remove(this)); // this.game.remove(this);
@@ -266,14 +474,18 @@ var Punch = __webpack_require__(/*! ./punch */ "./src/punch.js");
 
 var LandBlock = __webpack_require__(/*! ./land_block */ "./src/land_block.js");
 
+var BlockFragment = __webpack_require__(/*! ./block_frag */ "./src/block_frag.js");
+
 var Game =
 /*#__PURE__*/
 function () {
   function Game(ctx, Key) {
     _classCallCheck(this, Game);
 
+    this.fragments = [];
     this.over = false;
     this.paused = false;
+    this.blockLocations = [];
     this.collected = 0;
     this.punches = [];
     this.lastBlockX = 300;
@@ -305,7 +517,6 @@ function () {
         this.drawFrame(); //  setInterval(() => this.addPowerOrbs(), 2000);
         //  setInterval(() => this.addBlock(), 500);
       } else {
-        console.log("Trynna pause");
         this.paused = true;
         this.bgm.pause(); //  clearInterval(() => this.addPowerOrbs());
         //  clearInterval(() => this.addBlock());
@@ -314,7 +525,7 @@ function () {
   }, {
     key: "allSprites",
     value: function allSprites() {
-      return [].concat([this.hero], this.blocks, this.kiBlasts, this.punches, this.landblocks, this.powerOrbs);
+      return [].concat([this.hero], this.blocks, this.kiBlasts, this.punches, this.landblocks, this.powerOrbs, this.fragments);
     }
   }, {
     key: "detectCollision",
@@ -355,6 +566,10 @@ function () {
           }
 
           if (striker instanceof Punch && strikee instanceof HeroSprite) {
+            continue;
+          }
+
+          if (striker instanceof BlockFragment) {
             continue;
           }
 
@@ -419,8 +634,6 @@ function () {
       this.grass.src = "https://i.imgur.com/HsQzaSO.png"; // this.grass.src = 'https://cmkt-image-prd.global.ssl.fastly.net/0.1.0/ps/2824633/300/200/m1/fpnw/wm0/1601.m10.i311.n029.s.c10.164511620-seamles-.jpg?1497007612&s=843a14180b1390bf4585dd7e668e1683';
 
       var grassLoad = function grassLoad() {
-        console.log("LINE 32: We are in the grass load function");
-
         var pattern = _this.ctx.createPattern(_this.grass, 'repeat');
 
         _this.ctx.fillStyle = pattern;
@@ -478,6 +691,13 @@ function () {
     value: function moveBlocks() {
       for (i in this.blocks) {
         this.blocks[i].update(this.ctx);
+      }
+    }
+  }, {
+    key: "moveFrags",
+    value: function moveFrags() {
+      for (i in this.fragments) {
+        this.fragments[i].update(this.ctx);
       }
     }
   }, {
@@ -592,8 +812,7 @@ function () {
         score.innerText = "".concat(this.collected);
         var kp = document.getElementById('hero-kp');
         kp.innerText = "".concat(this.hero.kp);
-        this.styleKp(kp); //    debugger;
-
+        this.styleKp(kp);
         this.ctx.drawImage(this.sky, 0, -50);
         this.ctx.drawImage(this.leftPillar, 0, 0);
         this.ctx.drawImage(this.rightPillar, 750, 0);
@@ -604,6 +823,7 @@ function () {
         this.hero.update(this.Key);
         this.hero.draw(this.ctx);
         this.moveBlasts();
+        this.moveFrags();
       }
     }
   }, {
@@ -627,6 +847,10 @@ function () {
 
       if (sprite instanceof PowerOrb) {
         this.powerOrbs.splice(this.powerOrbs.indexOf(sprite), 1);
+      }
+
+      if (sprite instanceof BlockFragment) {
+        this.fragments.splice(this.fragments.indexOf(sprite), 1);
       }
     }
   }, {
@@ -764,8 +988,6 @@ function () {
   }, {
     key: "draw",
     value: function draw(ctx) {
-      console.log(this.image);
-      console.log("X: ".concat(this.posX, ", Y: ").concat(this.posY));
       ctx.drawImage(this.image, this.posX, this.posY);
     }
   }, {
@@ -805,7 +1027,7 @@ function () {
           targetHP: obstacle.hp
         };
       } else if (obstacle.posY + obstacle.hitboxHeight > this.posY && (this.posx < obstacle.posX + obstacle.hitboxWidth || this.posX + this.hitboxWidth > obstacle.posX) && this.posX < obstacle.posX) {
-        console.log("TargetHP:", obstacle.hp);
+        // console.log("TargetHP:", obstacle.hp);
         return {
           hit: true,
           type: "sidestrike",
@@ -968,8 +1190,7 @@ function (_GameSprite) {
   }, {
     key: "handleCollision",
     value: function handleCollision(obstacle, hitPojo) {
-      console.log("Hero hit something."); //  debugger;
-
+      //  debugger;
       if (obstacle.isagoddamnblock && hitPojo.type === "sidestrike" && hitPojo.direction === "right") {
         var tink = new Audio();
         tink.src = "https://s3.us-east-2.amazonaws.com/hedronattack/baseball_short.m4a";
@@ -1421,6 +1642,8 @@ var GameSprite = __webpack_require__(/*! ./game_sprite */ "./src/game_sprite.js"
 
 var HeroSprite = __webpack_require__(/*! ./hero_sprite */ "./src/hero_sprite.js");
 
+var BlockFragment = __webpack_require__(/*! ./block_frag */ "./src/block_frag.js");
+
 var LandBlock =
 /*#__PURE__*/
 function (_GameSprite) {
@@ -1484,6 +1707,13 @@ function (_GameSprite) {
     value: function explody() {
       // this.game.ctx.strokeStyle = "orange";
       this.speed = 0;
+      var ula = new BlockFragment({
+        imgCode: "ULA",
+        posX: this.posX,
+        posY: this.posY,
+        game: this.game
+      });
+      ctx.drawImage(ula.image, this.posX, this.posY);
       var kaboosh = new Audio();
       kaboosh.src = "https://www.freesfx.co.uk/rx2/mp3s/6/17955_1464205617.mp3";
       kaboosh.play().then(this.game.remove(this)); // this.game.remove(this);

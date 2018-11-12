@@ -91,10 +91,14 @@ class EvilBlock extends GameSprite {
 
     explody(){
         this.speed = 0;
-        
+        let ula = new BlockFragment({ imgCode: "ULA", posX: this.posX, posY: this.posY, game: this.game });
+        ctx.drawImage(ula.image, this.posX, this.posY);
         const kaboosh = new Audio();
         kaboosh.src = "https://www.freesfx.co.uk/rx2/mp3s/6/17955_1464205617.mp3";
+        
+
         kaboosh.play().then(this.game.remove(this));
+      
         // this.game.remove(this);
     }
 
