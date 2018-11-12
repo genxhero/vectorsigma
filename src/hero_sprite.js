@@ -160,12 +160,12 @@ class HeroSprite extends GameSprite {
         if (this.kp > 0 ){
             if (this.facing === "left"){
                 this.kp -= 1;
-                const blast = new KiBlast({speed: -10, posX: this.posX - 5, game: this.game, direction: "left"});
+                const blast = new KiBlast({speed: -15, posX: this.posX - 5, game: this.game, direction: "left"});
                 this.game.kiBlasts.push(blast);
                 
             } else {
                 this.kp -= 1;
-                const blast = new KiBlast({ speed: 10, posX: this.posX + 80, game:this.game, direction: "right"});
+                const blast = new KiBlast({ speed: 15, posX: this.posX + 80, game:this.game, direction: "right"});
                 this.game.kiBlasts.push(blast);
 
             }

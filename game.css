@@ -161,12 +161,36 @@ p {
 }
 
 #play-again {
+  position: relative;
+    top: 0;
+  margin-top: 0;
+  margin-bottom: 10px;
   padding: 20px;
   border-radius: 4px;
   color: white;
   background: black;
   border: 1px solid white;
+  box-shadow: 0px 4px gray;
 }
+
+#play-again:hover {
+  cursor: pointer;
+  background-color: white;
+  color: black;
+}
+
+#play-again:active {
+   box-shadow: none;
+  top: 10px;
+  margin-bottom: 0;
+  outline: 0;
+}
+
+#play-again:focus{
+  outline: 0;
+}
+
+
 
 /* 
 .game-board-main{

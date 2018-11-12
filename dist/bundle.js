@@ -1435,7 +1435,7 @@ function (_GameSprite) {
         if (this.facing === "left") {
           this.kp -= 1;
           var blast = new KiBlast({
-            speed: -10,
+            speed: -15,
             posX: this.posX - 5,
             game: this.game,
             direction: "left"
@@ -1445,7 +1445,7 @@ function (_GameSprite) {
           this.kp -= 1;
 
           var _blast = new KiBlast({
-            speed: 10,
+            speed: 15,
             posX: this.posX + 80,
             game: this.game,
             direction: "right"
