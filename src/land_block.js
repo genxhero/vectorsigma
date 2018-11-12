@@ -1,5 +1,6 @@
 const GameSprite = require('./game_sprite');
 const HeroSprite = require('./hero_sprite');
+const BlockFragment = require("./block_frag");
 
 
 

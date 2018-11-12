@@ -7,6 +7,7 @@ const LandBlock = require('./land_block');
 
 class Game {
     constructor(ctx, Key){
+        this.fragments =[];
         this.over = false;
         this.paused = false;
         this.blockLocations = [];
@@ -42,7 +43,6 @@ class Game {
                 //  setInterval(() => this.addPowerOrbs(), 2000);
                 //  setInterval(() => this.addBlock(), 500);
              } else {
-                 console.log("Trynna pause");
                   this.paused = true;
                   this.bgm.pause();
                 //  clearInterval(() => this.addPowerOrbs());
@@ -51,7 +51,7 @@ class Game {
     }
 
     allSprites() {
-        return [].concat([this.hero], this.blocks, this.kiBlasts, this.punches, this.landblocks, this.powerOrbs);
+        return [].concat([this.hero], this.blocks, this.kiBlasts, this.punches, this.landblocks, this.powerOrbs, this.fragments);
        
     }
 

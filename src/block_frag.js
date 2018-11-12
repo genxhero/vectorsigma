@@ -1,40 +1,45 @@
 const ULA = new Image();
-ULA.src = "";
+ULA.src = "../fragtemp.png";
 const ULB = new Image();
-ULB.src = "";
+ULB.src = "../fragtemp.png";
 const ULC = new Image();
-ULC.src = "";
+ULC.src = "../fragtemp.png";
 const ULD = new Image();
-ULD.src = "";
+ULD.src = "../fragtemp.png";
 
 const URA = new Image();
-URA.src = "";
+URA.src = "../fragtemp.png";
 const URB = new Image();
-URB.src = "";
+URB.src = "../fragtemp.png";
 const URC = new Image();
-URC.src = "";
+URC.src = "../fragtemp.png";
 const URD = new Image();
-URD.src = "";
+URD.src = "../fragtemp.png";
 
 const DLA = new Image();
-DLA.src = "";
+DLA.src = "../fragtemp.png";
 const DLB = new Image();
-DLB.src = "";
+DLB.src = "../fragtemp.png";
 const DLC = new Image();
-DLC.src = "";
+DLC.src = "../fragtemp.png";
 const DLD = new Image();
-DLD.src = "";
+DLD.src = "../fragtemp.png";
 
 const DRA = new Image();
-DRA.src = "";
+DRA.src = "../fragtemp.png";
 const DRB = new Image();
-DRB.src = "";
+DRB.src = "../fragtemp.png";
 const DRC = new Image();
-DRC.src = "";
+DRC.src = "../fragtemp.png";
 const DRD = new Image();
-DRD.src = "";
+DRD.src = "../fragtemp.png";
 
-const IMAGES = {"UL": UL, "UR": UR, "DL": DL, "DR": DR};
+const IMAGES = {
+    "ULA": ULA, "URA": URA, "DLA": DLA, "DRA": DRA, 
+    "ULB": ULB, "URB": URB, "DLB": DLB, "DRB": DRB,
+    "ULC": ULC, "URC": URC, "DLC": DLC, "DRC": DRC,
+    "ULD": ULD, "URD": URD, "DLD": DLD, "DRD": DRD
+};
 
 
 class BlockFragment {
@@ -69,19 +74,34 @@ class BlockFragment {
            case URB:
              this.speedX =   15;
              this.speedY = - 15;
+        //center block
         //    case URC:
            case URD: 
                this.speedX = 15;
                this.speedY = -10
-           case DRA:
+        //center block
+        //    case DRA:
+
            case DRB:
+            this.speedX = 15;
+            this.speedY = 0;
            case DRC:
+             this.speedY = 15;
+             this.speedX = 0;
            case DRD:
+             this.speedX = 15;
+             this.speedY = 15;
 
            case DLA:
-           case DLB:
+           this.speedX = -15;
+           this.speedY = 0;
+        //    case DLB:
            case DLC:
+            this.speedY = 15;
+            this.speedX = -15
            case DLD:
+             this.speedY = 15;
+             this.speedX = 0;
         }
     }
 
@@ -91,8 +111,10 @@ class BlockFragment {
         this.draw(ctx);
     }
 
-    draw(ctx){
-
+    draw(ctx) {
+        if (this.loaded) {
+            ctx.drawImage(this.image, this.posX, this.posY);
+        }
     }
 }
 
