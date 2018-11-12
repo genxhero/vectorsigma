@@ -160,6 +160,9 @@ function () {
 
     this.imgCode = params.imgCode;
     this.image = IMAGES[params.imgCode];
+    this.image.style.position = "relative";
+    this.image.style.zIndex = 9000; //  debugger;
+
     this.setSpeed();
     this.posX = params.posX;
     this.posY = params.posY;
@@ -167,12 +170,17 @@ function () {
     this.image.height = 25;
     this.game = params.game;
 
-    this.image.onload = function () {
-      _this.loaded = true;
-    };
+    if (!this.image.complete) {
+      this.image.onload = function () {
+        _this.loaded = true;
+      };
+    } else {
+      this.loaded = true;
+    }
 
     console.log("Block fragment created.");
     this.game.fragments.push(this);
+    this.draw = this.draw.bind(this);
   }
 
   _createClass(BlockFragment, [{
@@ -265,6 +273,8 @@ function () {
   }, {
     key: "draw",
     value: function draw(ctx) {
+      debugger;
+
       if (this.loaded) {
         ctx.drawImage(this.image, this.posX, this.posY);
       }
