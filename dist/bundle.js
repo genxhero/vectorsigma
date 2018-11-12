@@ -1812,7 +1812,36 @@ function (_GameSprite) {
         posY: this.posY + 50,
         game: this.game
       });
-      ctx.drawImage(drb.image, this.posX + 75, this.posY + 50);
+      ctx.drawImage(drb.image, this.posX + 75, this.posY + 50); //fourth row
+
+      var dlc = new BlockFragment({
+        imgCode: "DLC",
+        posX: this.posX,
+        posY: this.posY + 75,
+        game: this.game
+      });
+      ctx.drawImage(dlc.image, this.posX, this.posY + 75);
+      var dld = new BlockFragment({
+        imgCode: "DLD",
+        posX: this.posX + 25,
+        posY: this.posY + 75,
+        game: this.game
+      });
+      ctx.drawImage(dld.image, this.posX + 25, this.posY + 75);
+      var drc = new BlockFragment({
+        imgCode: "DRC",
+        posX: this.posX + 50,
+        posY: this.posY + 75,
+        game: this.game
+      });
+      ctx.drawImage(drc.image, this.posX + 50, this.posY + 75);
+      var drd = new BlockFragment({
+        imgCode: "DRD",
+        posX: this.posX + 75,
+        posY: this.posY + 75,
+        game: this.game
+      });
+      ctx.drawImage(drd.image, this.posX + 75, this.posY + 75);
       var kaboosh = new Audio();
       kaboosh.src = "https://www.freesfx.co.uk/rx2/mp3s/6/17955_1464205617.mp3";
       kaboosh.play().then(this.game.remove(this)); // this.game.remove(this);

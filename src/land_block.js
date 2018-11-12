@@ -81,6 +81,15 @@ class LandBlock extends GameSprite {
         ctx.drawImage(dra.image, this.posX + 50, this.posY + 50);
         let drb = new BlockFragment({ imgCode: "DRB", posX: this.posX + 75, posY: this.posY + 50, game: this.game });
         ctx.drawImage(drb.image, this.posX + 75, this.posY + 50);
+        //fourth row
+        let dlc = new BlockFragment({ imgCode: "DLC", posX: this.posX, posY: this.posY + 75, game: this.game });
+        ctx.drawImage(dlc.image, this.posX, this.posY + 75);
+        let dld = new BlockFragment({ imgCode: "DLD", posX: this.posX + 25, posY: this.posY + 75, game: this.game });
+        ctx.drawImage(dld.image, this.posX + 25, this.posY + 75);
+        let drc = new BlockFragment({ imgCode: "DRC", posX: this.posX + 50, posY: this.posY + 75, game: this.game });
+        ctx.drawImage(drc.image, this.posX + 50, this.posY + 75);
+        let drd = new BlockFragment({ imgCode: "DRD", posX: this.posX + 75, posY: this.posY + 75, game: this.game });
+        ctx.drawImage(drd.image, this.posX + 75, this.posY + 75);
 
 
         const kaboosh = new Audio();
