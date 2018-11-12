@@ -32,6 +32,7 @@ class Game {
         // this.drawFrame.bind(this)();
         //ABOVE LINE MIGRATED TO "START"
         this.start();
+        this.lose = this.lose.bind(this);
         this.pause = this.pause.bind(this);
     }
 
@@ -145,7 +146,8 @@ class Game {
             posX: Math.floor(Math.random() * 600) + 50
         });
         this.powerOrbs.push(newOrb);
-        newOrb.draw(this.ctx);}
+        newOrb.draw(this.ctx);
+      }
     }
 
     
@@ -370,7 +372,8 @@ class Game {
         }
 
     lose() {
-        // this.pause();
+        this.pause();
+        // this.paused = true;
         this.ctx.fillStyle = "black";
         this.ctx.fillRect(0, 0, 800, 800);
         this.over = true;

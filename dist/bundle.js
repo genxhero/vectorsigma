@@ -178,7 +178,6 @@ function () {
       this.loaded = true;
     }
 
-    console.log("Block fragment created.");
     this.game.fragments.push(this);
     this.draw = this.draw.bind(this);
   }
@@ -632,6 +631,7 @@ function () {
     //ABOVE LINE MIGRATED TO "START"
 
     this.start();
+    this.lose = this.lose.bind(this);
     this.pause = this.pause.bind(this);
   }
 
@@ -1010,7 +1010,8 @@ function () {
   }, {
     key: "lose",
     value: function lose() {
-      // this.pause();
+      this.pause(); // this.paused = true;
+
       this.ctx.fillStyle = "black";
       this.ctx.fillRect(0, 0, 800, 800);
       this.over = true;

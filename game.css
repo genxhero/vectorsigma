@@ -142,7 +142,8 @@ body {
   margin: 10px;
     width: 800px;
     padding: 20px;
-    box-shadow: 4px 4px 4px white;
+    box-shadow: 4px 4px 4px, 
+    -4px -4px 4px;
 }
 
 #score-sheet {
@@ -188,6 +189,10 @@ p {
 
 #play-again:focus{
   outline: 0;
+}
+
+#pwned {
+      font-size: 72px;
 }
 
 

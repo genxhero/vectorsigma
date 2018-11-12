@@ -64,7 +64,6 @@ class BlockFragment {
     } else {
         this.loaded = true;
     }
-        console.log("Block fragment created.")
         this.game.fragments.push(this);
         this.draw = this.draw.bind(this);
 
