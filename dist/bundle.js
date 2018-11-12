@@ -228,10 +228,14 @@ function () {
           this.speedY = -10;
           break;
         //center block
-        //    case DRA:
+
+        case "DRA":
+          this.speedX = 5;
+          this.speedY = 20;
+          break;
 
         case "DRB":
-          this.speedX = 15;
+          this.speedX = 20;
           this.speedY = 0;
           break;
 
@@ -246,10 +250,14 @@ function () {
           break;
 
         case "DLA":
-          this.speedX = -15;
+          this.speedX = -20;
           this.speedY = 0;
           break;
-        //    case DLB:
+
+        case "DLB":
+          this.speedX = -5;
+          this.speedY = 20;
+          break;
 
         case "DLC":
           this.speedY = 15;
@@ -270,7 +278,6 @@ function () {
       } else {
         this.posX += this.speedX;
         this.posY += this.speedY;
-        console.log("Fragment Location:", this.posX, this.posY);
         this.draw(ctx);
       }
     }
@@ -1776,7 +1783,36 @@ function (_GameSprite) {
         posY: this.posY + 25,
         game: this.game
       });
-      ctx.drawImage(urd.image, this.posX + 75, this.posY + 25);
+      ctx.drawImage(urd.image, this.posX + 75, this.posY + 25); //Third Row
+
+      var dla = new BlockFragment({
+        imgCode: "DLA",
+        posX: this.posX,
+        posY: this.posY + 50,
+        game: this.game
+      });
+      ctx.drawImage(dla.image, this.posX, this.posY + 50);
+      var dlb = new BlockFragment({
+        imgCode: "DLB",
+        posX: this.posX + 25,
+        posY: this.posY + 50,
+        game: this.game
+      });
+      ctx.drawImage(dlb.image, this.posX + 25, this.posY + 50);
+      var dra = new BlockFragment({
+        imgCode: "DRA",
+        posX: this.posX + 50,
+        posY: this.posY + 50,
+        game: this.game
+      });
+      ctx.drawImage(dra.image, this.posX + 50, this.posY + 50);
+      var drb = new BlockFragment({
+        imgCode: "DRB",
+        posX: this.posX + 75,
+        posY: this.posY + 50,
+        game: this.game
+      });
+      ctx.drawImage(drb.image, this.posX + 75, this.posY + 50);
       var kaboosh = new Audio();
       kaboosh.src = "https://www.freesfx.co.uk/rx2/mp3s/6/17955_1464205617.mp3";
       kaboosh.play().then(this.game.remove(this)); // this.game.remove(this);

@@ -109,10 +109,13 @@ class BlockFragment {
                this.speedY = -10
                 break;
         //center block
-        //    case DRA:
+           case "DRA":
+                this.speedX = 5;
+                this.speedY = 20;
+           break;
 
            case "DRB":
-            this.speedX = 15;
+            this.speedX = 20;
             this.speedY = 0;
                 break;
            case "DRC":
@@ -125,10 +128,13 @@ class BlockFragment {
                 break;
 
            case "DLA":
-           this.speedX = -15;
+           this.speedX = -20;
            this.speedY = 0;
                 break;
-        //    case DLB:
+           case "DLB":
+                this.speedX = -5;
+                this.speedY = 20;
+                break;
            case "DLC":
             this.speedY = 15;
             this.speedX = -15
@@ -148,7 +154,6 @@ class BlockFragment {
         else {
             this.posX += this.speedX;
             this.posY += this.speedY;
-            console.log("Fragment Location:", this.posX, this.posY);
             this.draw(ctx);
         }
    
