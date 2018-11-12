@@ -44,7 +44,6 @@ class Punch extends GameSprite {
     handleCollision(obstacle) {
         if (obstacle.type === "Evil Block" || obstacle.type ==="LandBlock") {
             this.draw(this.game.ctx);
-            console.log("punched the block");
             //add health to Evil Blocks
             const strike = new Audio();
             strike.src = "https://www.freesfx.co.uk/rx2/mp3s/6/18111_1464287325.mp3";

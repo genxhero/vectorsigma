@@ -54,8 +54,26 @@ class LandBlock extends GameSprite {
     explody() {
         // this.game.ctx.strokeStyle = "orange";
         this.speed = 0;
+        //TOP ROW
         let ula = new BlockFragment ({ imgCode: "ULA", posX: this.posX, posY: this.posY, game: this.game });
         ctx.drawImage(ula.image, this.posX, this.posY);
+        let ulb = new BlockFragment({ imgCode: "ULB", posX: this.posX + 25, posY: this.posY, game: this.game });
+        ctx.drawImage(ulb.image, this.posX + 25 , this.posY);
+        let ura = new BlockFragment({ imgCode: "URA", posX: this.posX + 50, posY: this.posY, game: this.game });
+        ctx.drawImage(ura.image, this.posX + 50, this.posY);
+        let urb = new BlockFragment({ imgCode: "URB", posX: this.posX + 75, posY: this.posY, game: this.game });
+        ctx.drawImage(urb.image, this.posX + 75, this.posY);
+        //SECOND ROW
+        let ulc = new BlockFragment({ imgCode: "ULC", posX: this.posX, posY: this.posY + 25, game: this.game });
+        ctx.drawImage(ulc.image, this.posX, this.posY + 25);
+        let uld = new BlockFragment({ imgCode: "ULD", posX: this.posX + 25, posY: this.posY + 25, game: this.game });
+        ctx.drawImage(uld.image, this.posX + 25, this.posY + 25);
+        let urc = new BlockFragment({ imgCode: "URC", posX: this.posX + 50, posY: this.posY + 25, game: this.game });
+        ctx.drawImage(urc.image, this.posX + 50, this.posY + 25);
+        let urd = new BlockFragment({ imgCode: "URD", posX: this.posX + 75, posY: this.posY + 25, game: this.game });
+        ctx.drawImage(urd.image, this.posX + 75, this.posY + 25);
+
+
         const kaboosh = new Audio();
         kaboosh.src = "https://www.freesfx.co.uk/rx2/mp3s/6/17955_1464205617.mp3";
         kaboosh.play().then(this.game.remove(this));

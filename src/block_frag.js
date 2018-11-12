@@ -72,12 +72,13 @@ class BlockFragment {
 
     setSpeed(){
         switch(this.imgCode){
+
            case "ULA": 
-             this.speedX = -15;
-             this.speedY = -15;
+             this.speedX = -17;
+             this.speedY = -17;
              break;
            case "ULB":
-              this.speedX = 0;
+              this.speedX = -12;
               this.speedY = -15;
                 break;
            case "ULC":
@@ -85,19 +86,24 @@ class BlockFragment {
               this.speedY = -10;
                 break;
            case "ULD": 
-               this.speedX = -15;
-               this.speedY = -15;
+                this.speedX = -5;
+                this.speedY = -20;
                 break;
+
                case "URA":
-             this.speedY = -15;
-             this.speedX = 0;
+             this.speedY = -12;
+             this.speedX = 15;
                 break;
            case "URB":
-             this.speedX =   15;
-             this.speedY = - 15;
+             this.speedX =   17;
+             this.speedY = - 17;
                 break;
         //center block
-        //    case URC:
+           case "URC":
+           this.speedX = 5;
+           this.speedY = -20;
+           break;
+
            case "URD": 
                this.speedX = 15;
                this.speedY = -10
@@ -149,7 +155,6 @@ class BlockFragment {
     }
 
     draw(ctx) {
-        debugger;
         if (this.loaded) {
             ctx.drawImage(this.image, this.posX, this.posY);
         }

@@ -188,12 +188,12 @@ function () {
     value: function setSpeed() {
       switch (this.imgCode) {
         case "ULA":
-          this.speedX = -15;
-          this.speedY = -15;
+          this.speedX = -17;
+          this.speedY = -17;
           break;
 
         case "ULB":
-          this.speedX = 0;
+          this.speedX = -12;
           this.speedY = -15;
           break;
 
@@ -203,21 +203,25 @@ function () {
           break;
 
         case "ULD":
-          this.speedX = -15;
-          this.speedY = -15;
+          this.speedX = -5;
+          this.speedY = -20;
           break;
 
         case "URA":
-          this.speedY = -15;
-          this.speedX = 0;
+          this.speedY = -12;
+          this.speedX = 15;
           break;
 
         case "URB":
-          this.speedX = 15;
-          this.speedY = -15;
+          this.speedX = 17;
+          this.speedY = -17;
           break;
         //center block
-        //    case URC:
+
+        case "URC":
+          this.speedX = 5;
+          this.speedY = -20;
+          break;
 
         case "URD":
           this.speedX = 15;
@@ -273,8 +277,6 @@ function () {
   }, {
     key: "draw",
     value: function draw(ctx) {
-      debugger;
-
       if (this.loaded) {
         ctx.drawImage(this.image, this.posX, this.posY);
       }
@@ -1716,7 +1718,8 @@ function (_GameSprite) {
     key: "explody",
     value: function explody() {
       // this.game.ctx.strokeStyle = "orange";
-      this.speed = 0;
+      this.speed = 0; //TOP ROW
+
       var ula = new BlockFragment({
         imgCode: "ULA",
         posX: this.posX,
@@ -1724,6 +1727,56 @@ function (_GameSprite) {
         game: this.game
       });
       ctx.drawImage(ula.image, this.posX, this.posY);
+      var ulb = new BlockFragment({
+        imgCode: "ULB",
+        posX: this.posX + 25,
+        posY: this.posY,
+        game: this.game
+      });
+      ctx.drawImage(ulb.image, this.posX + 25, this.posY);
+      var ura = new BlockFragment({
+        imgCode: "URA",
+        posX: this.posX + 50,
+        posY: this.posY,
+        game: this.game
+      });
+      ctx.drawImage(ura.image, this.posX + 50, this.posY);
+      var urb = new BlockFragment({
+        imgCode: "URB",
+        posX: this.posX + 75,
+        posY: this.posY,
+        game: this.game
+      });
+      ctx.drawImage(urb.image, this.posX + 75, this.posY); //SECOND ROW
+
+      var ulc = new BlockFragment({
+        imgCode: "ULC",
+        posX: this.posX,
+        posY: this.posY + 25,
+        game: this.game
+      });
+      ctx.drawImage(ulc.image, this.posX, this.posY + 25);
+      var uld = new BlockFragment({
+        imgCode: "ULD",
+        posX: this.posX + 25,
+        posY: this.posY + 25,
+        game: this.game
+      });
+      ctx.drawImage(uld.image, this.posX + 25, this.posY + 25);
+      var urc = new BlockFragment({
+        imgCode: "URC",
+        posX: this.posX + 50,
+        posY: this.posY + 25,
+        game: this.game
+      });
+      ctx.drawImage(urc.image, this.posX + 50, this.posY + 25);
+      var urd = new BlockFragment({
+        imgCode: "URD",
+        posX: this.posX + 75,
+        posY: this.posY + 25,
+        game: this.game
+      });
+      ctx.drawImage(urd.image, this.posX + 75, this.posY + 25);
       var kaboosh = new Audio();
       kaboosh.src = "https://www.freesfx.co.uk/rx2/mp3s/6/17955_1464205617.mp3";
       kaboosh.play().then(this.game.remove(this)); // this.game.remove(this);
@@ -1819,8 +1872,7 @@ function (_GameSprite) {
     key: "handleCollision",
     value: function handleCollision(obstacle) {
       if (obstacle.type === "Evil Block" || obstacle.type === "LandBlock") {
-        this.draw(this.game.ctx);
-        console.log("punched the block"); //add health to Evil Blocks
+        this.draw(this.game.ctx); //add health to Evil Blocks
 
         var strike = new Audio();
         strike.src = "https://www.freesfx.co.uk/rx2/mp3s/6/18111_1464287325.mp3";
