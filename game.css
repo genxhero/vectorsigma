@@ -123,7 +123,26 @@ body {
   margin: 10px;
     width: 800px;
     padding: 20px;
-    box-shadow: 4px 4px 4px black;
+    box-shadow: 4px 4px 4px white;
+}
+
+#lose-container {
+  visibility: hidden;
+  margin-top: 40px;
+  position: absolute;
+  z-index: 1000;
+  background: black;
+  height: 600px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: red;
+  font-size: 16px;
+  margin: 10px;
+    width: 800px;
+    padding: 20px;
+    box-shadow: 4px 4px 4px white;
 }
 
 #score-sheet {

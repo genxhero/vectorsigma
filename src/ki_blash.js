@@ -9,6 +9,9 @@ class KiBlast extends GameSprite {
         this.direction = params.direction
         this.hitboxHeight = 10;
         this.hitboxWidth = 40;
+        // const shout = new Audio();
+        // shout.src = './src/Untitled.m4a';
+        // shout.play();
         const blastImage = new Image();
         if (this.direction === "left") {
             blastImage.src = "https://i.imgur.com/JTlDHcY.png";
@@ -45,7 +48,6 @@ class KiBlast extends GameSprite {
 
     handleCollision(obstacle) {
         if (obstacle.type === "Evil Block" || obstacle.type === "LandBlock") {
-          console.log("Hit the block");
           this.game.hero.killScore += 1;
           obstacle.explody();
           this.remove();

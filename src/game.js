@@ -32,6 +32,7 @@ class Game {
         // this.drawFrame.bind(this)();
         //ABOVE LINE MIGRATED TO "START"
         this.start();
+        this.pause = this.pause.bind(this);
     }
 
     pause(){
@@ -270,14 +271,7 @@ class Game {
        }
    }
 
-   lose(){
-       this.over = true;
-       this.ctx.fillStyle = "black";
-       this.ctx.fillRect(0, 0, 800, 800);
-       alert("GAME OVER");
-       document.location.reload();
-       return;
-   }
+
    
    drawFrame(){
        if (!this.paused) {
@@ -374,6 +368,17 @@ class Game {
             info.onclick = (document.location.reload);
             return;
         }
+
+    lose() {
+        // this.pause();
+        this.ctx.fillStyle = "black";
+        this.ctx.fillRect(0, 0, 800, 800);
+        this.over = true;
+        let loseModal = document.getElementById('lose-container');
+        loseModal.style.visibility = "visible";
+
+        return;
+    }
     
 }
 

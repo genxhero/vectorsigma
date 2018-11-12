@@ -632,6 +632,7 @@ function () {
     //ABOVE LINE MIGRATED TO "START"
 
     this.start();
+    this.pause = this.pause.bind(this);
   }
 
   _createClass(Game, [{
@@ -909,16 +910,6 @@ function () {
       }
     }
   }, {
-    key: "lose",
-    value: function lose() {
-      this.over = true;
-      this.ctx.fillStyle = "black";
-      this.ctx.fillRect(0, 0, 800, 800);
-      alert("GAME OVER");
-      document.location.reload();
-      return;
-    }
-  }, {
     key: "drawFrame",
     value: function drawFrame() {
       if (!this.paused) {
@@ -1014,6 +1005,17 @@ function () {
       this.ctx.fillStyle = "black";
       this.ctx.fillRect(0, 0, 800, 800);
       info.onclick = document.location.reload;
+      return;
+    }
+  }, {
+    key: "lose",
+    value: function lose() {
+      // this.pause();
+      this.ctx.fillStyle = "black";
+      this.ctx.fillRect(0, 0, 800, 800);
+      this.over = true;
+      var loseModal = document.getElementById('lose-container');
+      loseModal.style.visibility = "visible";
       return;
     }
   }]);
@@ -1548,7 +1550,10 @@ function (_GameSprite) {
     _this.type = "kiblast";
     _this.direction = params.direction;
     _this.hitboxHeight = 10;
-    _this.hitboxWidth = 40;
+    _this.hitboxWidth = 40; // const shout = new Audio();
+    // shout.src = './src/Untitled.m4a';
+    // shout.play();
+
     var blastImage = new Image();
 
     if (_this.direction === "left") {
@@ -1592,7 +1597,6 @@ function (_GameSprite) {
     key: "handleCollision",
     value: function handleCollision(obstacle) {
       if (obstacle.type === "Evil Block" || obstacle.type === "LandBlock") {
-        console.log("Hit the block");
         this.game.hero.killScore += 1;
         obstacle.explody();
         this.remove();
