@@ -59,7 +59,7 @@ class Punch extends GameSprite {
             } 
             
         }
-        this.remove();
+        // this.remove();
     }
 
     remove() {
