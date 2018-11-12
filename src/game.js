@@ -9,7 +9,7 @@ class Game {
     constructor(ctx, Key){
         this.over = false;
         this.paused = false;
-
+        this.blockLocations = [];
         this.collected = 0;
         this.punches = [];
         this.lastBlockX = 300;

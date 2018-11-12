@@ -19,6 +19,7 @@ class EvilBlock extends GameSprite {
         blockImage.width = 100;
         this.image = blockImage;
         this.draw = this.draw.bind(this);
+        this.game.blockLocations.push(this.posX);
         this.image.onload = () => {
             this.loaded = true;
         };
