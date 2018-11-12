@@ -387,7 +387,7 @@ function (_GameSprite) {
         var smack = new Audio();
         smack.src = "https://www.freesfx.co.uk/rx2/mp3s/6/18365_1464637302.mp3";
         smack.play();
-        obstacle.remove();
+        obstacle.crunchy();
       }
     }
   }, {
@@ -1958,6 +1958,126 @@ function (_GameSprite) {
       var kaboosh = new Audio();
       kaboosh.src = "https://www.freesfx.co.uk/rx2/mp3s/6/17955_1464205617.mp3";
       kaboosh.play().then(this.game.remove(this)); // this.game.remove(this);
+    }
+  }, {
+    key: "crunchy",
+    value: function crunchy() {
+      var ula = new BlockFragment({
+        imgCode: "DLC",
+        posX: this.posX,
+        posY: this.posY,
+        game: this.game
+      });
+      ctx.drawImage(ula.image, this.posX, this.posY);
+      var ulb = new BlockFragment({
+        imgCode: "DLC",
+        posX: this.posX + 25,
+        posY: this.posY,
+        game: this.game
+      });
+      ctx.drawImage(ulb.image, this.posX + 25, this.posY);
+      var ura = new BlockFragment({
+        imgCode: "DRD",
+        posX: this.posX + 50,
+        posY: this.posY,
+        game: this.game
+      });
+      ctx.drawImage(ura.image, this.posX + 50, this.posY);
+      var urb = new BlockFragment({
+        imgCode: "DRD",
+        posX: this.posX + 75,
+        posY: this.posY,
+        game: this.game
+      });
+      ctx.drawImage(urb.image, this.posX + 75, this.posY); //SECOND ROW
+
+      var ulc = new BlockFragment({
+        imgCode: "DLB",
+        posX: this.posX,
+        posY: this.posY + 25,
+        game: this.game
+      });
+      ctx.drawImage(ulc.image, this.posX, this.posY + 25);
+      var uld = new BlockFragment({
+        imgCode: "DLC",
+        posX: this.posX + 25,
+        posY: this.posY + 25,
+        game: this.game
+      });
+      ctx.drawImage(uld.image, this.posX + 25, this.posY + 25);
+      var urc = new BlockFragment({
+        imgCode: "DLC",
+        posX: this.posX + 50,
+        posY: this.posY + 25,
+        game: this.game
+      });
+      ctx.drawImage(urc.image, this.posX + 50, this.posY + 25);
+      var urd = new BlockFragment({
+        imgCode: "DLC",
+        posX: this.posX + 75,
+        posY: this.posY + 25,
+        game: this.game
+      });
+      ctx.drawImage(urd.image, this.posX + 75, this.posY + 25); //Third Row
+
+      var dla = new BlockFragment({
+        imgCode: "DLC",
+        posX: this.posX,
+        posY: this.posY + 50,
+        game: this.game
+      });
+      ctx.drawImage(dla.image, this.posX, this.posY + 50);
+      var dlb = new BlockFragment({
+        imgCode: "DLC",
+        posX: this.posX + 25,
+        posY: this.posY + 50,
+        game: this.game
+      });
+      ctx.drawImage(dlb.image, this.posX + 25, this.posY + 50);
+      var dra = new BlockFragment({
+        imgCode: "DRD",
+        posX: this.posX + 50,
+        posY: this.posY + 50,
+        game: this.game
+      });
+      ctx.drawImage(dra.image, this.posX + 50, this.posY + 50);
+      var drb = new BlockFragment({
+        imgCode: "DRD",
+        posX: this.posX + 75,
+        posY: this.posY + 50,
+        game: this.game
+      });
+      ctx.drawImage(drb.image, this.posX + 75, this.posY + 50); //fourth row
+
+      var dlc = new BlockFragment({
+        imgCode: "DLC",
+        posX: this.posX,
+        posY: this.posY + 75,
+        game: this.game
+      });
+      ctx.drawImage(dlc.image, this.posX, this.posY + 75);
+      var dld = new BlockFragment({
+        imgCode: "DRC",
+        posX: this.posX + 25,
+        posY: this.posY + 75,
+        game: this.game
+      });
+      ctx.drawImage(dld.image, this.posX + 25, this.posY + 75);
+      var drc = new BlockFragment({
+        imgCode: "DRC",
+        posX: this.posX + 50,
+        posY: this.posY + 75,
+        game: this.game
+      });
+      ctx.drawImage(drc.image, this.posX + 50, this.posY + 75);
+      var drd = new BlockFragment({
+        imgCode: "DRD",
+        posX: this.posX + 75,
+        posY: this.posY + 75,
+        game: this.game
+      });
+      ctx.drawImage(drd.image, this.posX + 75, this.posY + 75);
+      this.game.remove(this);
     }
   }]);
 

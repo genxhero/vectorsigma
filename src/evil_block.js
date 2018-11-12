@@ -44,7 +44,7 @@ class EvilBlock extends GameSprite {
             const smack = new Audio();
             smack.src = "https://www.freesfx.co.uk/rx2/mp3s/6/18365_1464637302.mp3";
             smack.play();
-            obstacle.remove();
+            obstacle.crunchy();
         }
     }
 

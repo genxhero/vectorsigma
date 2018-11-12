@@ -180,12 +180,7 @@ p {
   color: black;
 }
 
-#play-again:active {
-   box-shadow: none;
-  top: 10px;
-  margin-bottom: 0;
-  outline: 0;
-}
+
 
 #play-again:focus{
   outline: 0;
