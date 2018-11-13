@@ -2084,7 +2084,7 @@ function (_GameSprite) {
   return LandBlock;
 }(GameSprite);
 
-module.exports = LandBlock;
+module.exports = LandBlock; //testing
 
 /***/ }),
 
