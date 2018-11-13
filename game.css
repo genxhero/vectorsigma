@@ -10,14 +10,14 @@
  box-shadow: 3px 2px 2px;
  border: 2px solid black;
  position: relative;
- top: 75px;
+ top: 175px;
 }
 
 #status-bar {
   position: absolute;
     width: 800px;
     height: 80px;
-    top: 0px;
+    top: 100px;
     background: gray;
     z-index: 900;
     display: flex;
@@ -91,6 +91,7 @@ body {
  position: absolute;
  padding: 20px;
  padding-top: 40px;
+ top: 100px;
  /* top: 0;
  left: 0;
  bottom: 0;
@@ -108,6 +109,7 @@ body {
 }
 
 #victory-container {
+    top:90px;
   visibility: hidden;
   margin-top: 40px;
   position: absolute;
@@ -129,6 +131,7 @@ body {
 #lose-container {
   visibility: hidden;
   margin-top: 40px;
+  top:90px;
   position: absolute;
   z-index: 1000;
   background: black;
