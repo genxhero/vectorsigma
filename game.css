@@ -1,3 +1,31 @@
+h1 {
+
+ font-family: bwc;
+ font-size: 48px;
+ text-shadow: 1px 1px white;
+ color: gray;
+}
+
+ @font-face { 
+   font-family: BlackKnightFLF;
+   src: url(BlackKnightFLF.ttf);
+   font-weight: 200;
+}
+
+@font-face {
+  font-family: bwc;
+  src: url(blackwood-castle.regular.ttf);
+}
+
+@font-face {
+  font-family: chancery;
+  src: url(blackchancery.regular.ttf);
+}
+
+#game-title {
+  font-size: 64px;
+}
+
 #game-message {
       position: absolute;
     z-index: 900;
@@ -76,6 +104,7 @@ body {
     height: 100%;
     background-image: url("https://i.pinimg.com/originals/b5/f4/76/b5f476003b95683ed591c73c2292319a.png");
     background-repeat: repeat-x;
+    font-family: chancery;
 }
 
 .ki-blast{
@@ -88,6 +117,7 @@ body {
 }
 
 #instructions-container {
+      border: 4px solid;
  position: absolute;
  padding: 20px;
  padding-top: 40px;
@@ -125,7 +155,10 @@ body {
   margin: 10px;
     width: 800px;
     padding: 20px;
-    box-shadow: 4px 4px 4px white;
+    box-shadow: 4px 4px 4px 2px white, 
+    -4px -4px 4px 2px white;
+        border-radius: 4px;
+
 }
 
 #lose-container {
@@ -145,8 +178,9 @@ body {
   margin: 10px;
     width: 800px;
     padding: 20px;
-    box-shadow: 4px 4px 4px, 
-    -4px -4px 4px;
+    box-shadow: 4px 4px 4px 2px, 
+    -4px -4px 4px 2px;
+    border-radius: 4px;
 }
 
 #score-sheet {
@@ -191,6 +225,7 @@ p {
 
 #pwned {
       font-size: 72px;
+      color: red;
 }
 
 
