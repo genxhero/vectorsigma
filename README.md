@@ -58,11 +58,9 @@ K: Throw a ki blast.
 
 
 ### Buglist
-* Power Orbs still spawn on top of blocks occasionally, though rarely
 * Punch  is still problematic; doesn't linger long enough to appear anything but ghostly and does not draw over blocks.
-* Hero still doesn't turn left; image refusing to change.
 * Impact images (wham bursts and the like) either not loading, or not lingering for enough frames to be visible.
-*  Music doesn't play! It's supposed to be Brahms' Hungarian Dance No. 5!
+* RNG some times causes blocks to cluster, creating inescapable death traps
 
 ### Future Features 
 *  React components featuring:
