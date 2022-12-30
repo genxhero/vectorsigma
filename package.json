@@ -4,15 +4,15 @@
   "description": "Action game built in Javascript",
   "main": "game.js",
   "dependencies": {
-    "@babel/core": "^7.1.2",
+    "@babel/core": "^7.20.7",
     "@babel/preset-env": "^7.1.0",
     "@babel/preset-react": "^7.0.0",
-    "babel-loader": "^8.0.4",
+    "babel-loader": "^8.3.0",
     "browser-sync": "^2.26.3",
     "lodash": "^4.17.11",
     "react": "^16.6.0",
-    "webpack": "^4.23.1",
-    "webpack-cli": "^3.1.2"
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1"
   },
   "devDependencies": {},
   "scripts": {
